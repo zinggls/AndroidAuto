@@ -646,83 +646,6 @@ CyFxApplicationDefine (
     }
 }
 
-#ifdef CONFIG_MEM_WRITE_THROUGH
-
-#include <cyu3mmu.h>
-
-/* This is the actual section level page table and should be 16 KB aligned. */
-volatile uint32_t glPageTableCustom[4096] __attribute__ ((aligned (16384))) = {0};
-
-#define RW_ACCESS       (3 << 10)
-#define SECTION_ENTRY   (0x12)
-#define CACHE_ENABLE    (0x08)
-#define BUFFER_ENABLE   (0x04)
-
-void
-CyFxSetSysMemWriteThrough (
-        void)
-{
-    register uint32_t address = (uint32_t)glPageTableCustom;
-
-    /* First disable the MMU and unlock all TLB entries. */
-    CyU3PSysDisableMMU ();
-
-    CyU3PSysFlushTLBEntry ((uint32_t *)CYU3P_ITCM_BASE_ADDR);
-    CyU3PSysFlushTLBEntry ((uint32_t *)CYU3P_DTCM_BASE_ADDR);
-    CyU3PSysFlushTLBEntry ((uint32_t *)CYU3P_SYSMEM_BASE_ADDR);
-    CyU3PSysFlushTLBEntry ((uint32_t *)CYU3P_MMIO_BASE_ADDR);
-    CyU3PSysFlushTLBEntry ((uint32_t *)CYU3P_ROM_BASE_ADDR);
-    CyU3PSysFlushTLBEntry ((uint32_t *)CYU3P_VIC_BASE_ADDR);
-
-    /* Setup section level page tables for all valid memory regions. We are using section level entries
-     * to reduce the memory requirement to 16 KB (4096 entries of 4 bytes each).
-     */
-
-    /* Page table for the ITCM. Base address = 0x00000000. Read/Write enabled in all modes.
-     * Not cacheable, Not bufferable.
-     */
-    glPageTableCustom[0] = 0x00000000 | RW_ACCESS | 0x00 | SECTION_ENTRY;
-
-    /* Page table for the DTCM. Base address = 0x10000000. Read/Write enabled in all modes.
-     * Not cacheable. Not bufferable.
-     */
-    glPageTableCustom[256] = 0x10000000 | RW_ACCESS | 0x00 | SECTION_ENTRY;
-
-    /* Page table for SYSMEM. Base address = 0x40000000. Read/Write enabled in all modes.
-     * Cached. Not buffered (Write through cache).
-     */
-    glPageTableCustom[1024] = 0x40000000 | RW_ACCESS | CACHE_ENABLE | SECTION_ENTRY;
-
-    /* Page table for MMIO. Base address = 0xE0000000. Read/Write enabled in all modes.
-     * Not cacheable. Not bufferable.
-     */
-    glPageTableCustom[3584] = 0xE0000000 | RW_ACCESS | 0x00 | SECTION_ENTRY;
-
-    /* Page table for VIC region. Base address = 0xFFFFF000. Read/Write enabled in all modes.
-     * Not cacheable. Not bufferable.
-     */
-    glPageTableCustom[4095] = 0xFFF00000 | RW_ACCESS | 0x00 | SECTION_ENTRY;
-
-    /* The rest of the table is filled with fault entries by default. */
-
-    /* Load the page table address into the translation table base address register in CP15. */
-    __asm__ __volatile__
-        (
-         "MCR p15, 0, %0, c2, c0, 0\n\t"
-         : "+r" (address)
-         :
-         :
-        );
-
-    /* Enable the MMU. */
-    CyU3PSysEnableMMU ();
-
-    /* Load all valid page table entries into the TLB. */
-    CyU3PSysLoadTLB ();
-}
-
-#endif /* CONFIG_MEM_WRITE_THROUGH */
-
 /*
  * Main function
  */
@@ -731,11 +654,6 @@ main (void)
 {
     CyU3PIoMatrixConfig_t io_cfg;
     CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
-
-#ifdef CONFIG_MEM_WRITE_THROUGH
-    /* Load a custom page table which configures the SYSMEM as a write-through cached memory region. */
-    CyFxSetSysMemWriteThrough ();
-#endif /* CONFIG_MEM_WRITE_THROUGH */
 
     /* Initialize the device */
     status = CyU3PDeviceInit (NULL);

@@ -128,20 +128,10 @@ CyFxBulkLpDmaCallback (
         CyU3PDmaCbType_t  type,      /* Callback type.             */
         CyU3PDmaCBInput_t *input)    /* Callback status.           */
 {
-    uint16_t index;
     CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
 
     if (type == CY_U3P_DMA_CB_PROD_EVENT)
     {
-        /* This is a produce event notification to the CPU. This notification is 
-         * received upon reception of every buffer. The buffer will not be sent
-         * out unless it is explicitly committed. The call shall fail if there
-         * is a bus reset / usb disconnect or if there is any application error.
-         * Invert all bits in the received data. */
-        for (index = 0; index < input->buffer_p.count; index++)
-        {
-            input->buffer_p.buffer[index] = ~(uint8_t)input->buffer_p.buffer[index];
-        }
         status = CyU3PDmaChannelCommitBuffer (chHandle, input->buffer_p.count, 0);
         if (status != CY_U3P_SUCCESS)
         {

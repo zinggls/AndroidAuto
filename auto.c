@@ -49,6 +49,7 @@
 #include "gitcommit.h"
 #include "gpio.h"
 #include "i2c.h"
+#include "PIB.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
@@ -603,6 +604,18 @@ CyFxAutoI2cInit (void)
     }
 }
 
+/* PIB Initialization */
+void
+CyFxAutoPibInit (void)
+{
+    CyU3PReturnStatus_t apiRetStatus = PIB_Init();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "PIB initialization failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
 /* Entry function for the AutoAppThread. */
 void
 AutoThread_Entry (
@@ -616,6 +629,8 @@ AutoThread_Entry (
     CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
     CyFxAutoI2cInit();
     CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
+    CyFxAutoPibInit();
+    CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
 
     /* Initialize the bulk loop application */
     CyFxAutoApplnInit();

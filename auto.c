@@ -616,6 +616,62 @@ CyFxAutoPibInit (void)
     }
 }
 
+/* Set values for DMA channel */
+void
+CyFxSetDmaChannelCfg(
+		CyU3PDmaChannelConfig_t *pDmaCfg,
+		uint16_t size,
+		uint16_t count,
+		CyU3PDmaSocketId_t prodSckId,
+		CyU3PDmaSocketId_t consSckId,
+		uint32_t notification,
+		CyU3PDmaCallback_t cb)
+{
+	pDmaCfg->size  = size;
+	pDmaCfg->count = count;
+	pDmaCfg->prodSckId = prodSckId;
+	pDmaCfg->consSckId = consSckId;
+	pDmaCfg->dmaMode = CY_U3P_DMA_MODE_BYTE;
+	pDmaCfg->notification = notification;
+	pDmaCfg->cb = cb;
+	pDmaCfg->prodHeader = 0;
+	pDmaCfg->prodFooter = 0;
+	pDmaCfg->consHeader = 0;
+	pDmaCfg->prodAvailCount = 0;
+}
+
+/* Creating DMA Channel */
+void
+CyFxCreateChannel(
+		CyU3PDmaChannelConfig_t *pDmaCfg,
+		uint16_t size,
+		uint16_t count,
+		CyU3PDmaSocketId_t prodSckId,
+		CyU3PDmaSocketId_t consSckId,
+		uint32_t notification,
+		CyU3PDmaCallback_t cb,
+		CyU3PDmaChannel *handle,
+		CyU3PDmaType_t type)
+{
+	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
+
+	CyFxSetDmaChannelCfg(pDmaCfg, size, count, prodSckId, consSckId, notification, cb);
+	apiRetStatus = CyU3PDmaChannelCreate(handle, type, pDmaCfg);
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+
+    /* Set DMA Channel transfer size to INFINITE */
+    apiRetStatus = CyU3PDmaChannelSetXfer(handle, 0);
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
 /* Entry function for the AutoAppThread. */
 void
 AutoThread_Entry (

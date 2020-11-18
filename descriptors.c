@@ -20,7 +20,7 @@
  ## ===========================
 */
 
-/* This file contains the USB enumeration descriptors for the bulk loop application example.
+/* This file contains the USB enumeration descriptors for the Auto application example.
  * The descriptor arrays must be 32 byte aligned and multiple of 32 bytes if the D-cache is
  * turned on. If the linker used is not capable of supporting the aligned feature for this,
  * either the descriptors must be placed in a different section and the section should be 

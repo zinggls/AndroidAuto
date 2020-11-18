@@ -20,7 +20,7 @@
  ## ===========================
 */
 
-/* This file contains the constants used by the bulk loop application example */
+/* This file contains the constants used by the Auto application example */
 
 #ifndef _INCLUDED_CYFXBULKLPMANUAL_H_
 #define _INCLUDED_CYFXBULKLPMANUAL_H_

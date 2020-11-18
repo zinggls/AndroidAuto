@@ -181,7 +181,7 @@ CyFxAutoApplnEptCb (
     }
 }
 
-/* This function starts the bulk loop application. This is called
+/* This function starts the Auto application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
  * are configured and the DMA pipe is setup in this function. */
 void
@@ -286,7 +286,7 @@ CyFxAutoApplnStart (
     glIsApplnActive = CyTrue;
 }
 
-/* This function stops the bulk loop application. This shall be called whenever
+/* This function stops the Auto application. This shall be called whenever
  * a RESET or DISCONNECT event is received from the USB host. The endpoints are
  * disabled and the DMA pipe is destroyed by this function. */
 void
@@ -688,7 +688,7 @@ AutoThread_Entry (
     CyFxAutoPibInit();
     CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
 
-    /* Initialize the bulk loop application */
+    /* Initialize the Auto application */
     CyFxAutoApplnInit();
     CyU3PDebugPrint(4,"[Auto] AutoAppln Init OK\n");
 

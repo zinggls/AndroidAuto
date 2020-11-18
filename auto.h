@@ -63,6 +63,28 @@ extern const uint8_t CyFxUSBStringLangIDDscr[];
 extern const uint8_t CyFxUSBManufactureDscr[];
 extern const uint8_t CyFxUSBProductDscr[];
 
+#include "cyu3dma.h"
+
+typedef struct DMA_CHANNEL_T
+{
+	CyU3PDmaChannel Channel_;
+	uint32_t Count_;
+	uint8_t EP_;
+	uint8_t *Buffer_;
+} DMA_CHANNEL_T;
+
+typedef struct DMA_T
+{
+	uint16_t DataBurstLength_;
+	DMA_CHANNEL_T ControlOut_;
+	DMA_CHANNEL_T ControlIn_;
+	DMA_CHANNEL_T DataOut_;
+	DMA_CHANNEL_T DataIn_;
+} DMA_T;
+
+/* DMA Structure represent channels between CPU and PIB */
+DMA_T CpuPib;
+
 #include "cyu3externcend.h"
 
 #endif /* _INCLUDED_CYFXBULKLPMANUAL_H_ */

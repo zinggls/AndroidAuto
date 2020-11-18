@@ -634,6 +634,7 @@ AutoThread_Entry (
 
     /* Initialize the bulk loop application */
     CyFxAutoApplnInit();
+    CyU3PDebugPrint(4,"[Auto] AutoAppln Init OK\n");
 
     for (;;)
     {

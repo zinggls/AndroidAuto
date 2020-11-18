@@ -674,7 +674,8 @@ CyFxCreateChannel(
 
 /* Create DMA Channels between CPU-PIB */
 void
-CyFxCreateCpuPibDmaChannels (uint16_t dataBurstLength)
+CyFxCreateCpuPibDmaChannels (
+		uint16_t dataBurstLength)
 {
     uint16_t size = 1024; // super speed <- assumed condition , temporary code
 	CyFxCreateChannel(size,

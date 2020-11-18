@@ -643,7 +643,6 @@ CyFxSetDmaChannelCfg(
 /* Creating DMA Channel */
 void
 CyFxCreateChannel(
-		CyU3PDmaChannelConfig_t *pDmaCfg,
 		uint16_t size,
 		uint16_t count,
 		CyU3PDmaSocketId_t prodSckId,
@@ -653,10 +652,11 @@ CyFxCreateChannel(
 		CyU3PDmaChannel *handle,
 		CyU3PDmaType_t type)
 {
+	CyU3PDmaChannelConfig_t dmaCfg;
 	CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
-	CyFxSetDmaChannelCfg(pDmaCfg, size, count, prodSckId, consSckId, notification, cb);
-	apiRetStatus = CyU3PDmaChannelCreate(handle, type, pDmaCfg);
+	CyFxSetDmaChannelCfg(&dmaCfg, size, count, prodSckId, consSckId, notification, cb);
+	apiRetStatus = CyU3PDmaChannelCreate(handle, type, &dmaCfg);
     if (apiRetStatus != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);

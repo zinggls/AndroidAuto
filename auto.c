@@ -51,6 +51,7 @@
 #include "i2c.h"
 #include "PIB.h"
 #include "dma.h"
+#include "ControlCh.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
@@ -721,6 +722,19 @@ CyFxCreateCpuPibDmaChannels (
 	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataIn Channel created\n");
 }
 
+/* Create Control Channel Thread which receives control data generated from ZING */
+void
+CyFxCreateControlChannel (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = ControlChThread_Create();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Control Channel Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
 /* Entry function for the AutoAppThread. */
 void
 AutoThread_Entry (
@@ -739,6 +753,8 @@ AutoThread_Entry (
 
     CyFxCreateCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
     CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");
+    CyFxCreateControlChannel();
+    CyU3PDebugPrint(4,"[Auto] Control Channel Thread Created\n");
 
     /* Initialize the Auto application */
     CyFxAutoApplnInit();

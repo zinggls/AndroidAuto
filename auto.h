@@ -51,6 +51,8 @@
 #define CY_FX_EP_PRODUCER_SOCKET        CY_U3P_UIB_SOCKET_PROD_2    /* Socket 2 is producer */
 #define CY_FX_EP_CONSUMER_SOCKET        CY_U3P_UIB_SOCKET_CONS_2    /* Socket 2 is consumer */
 
+#define CY_FX_DATA_BURST_LENGTH			(8)		/* Number of Burst for the Data. USB 3.0 only, fix 8 in ZING */
+
 /* Extern definitions for the USB Descriptors */
 extern const uint8_t CyFxUSB20DeviceDscr[];
 extern const uint8_t CyFxUSB30DeviceDscr[];

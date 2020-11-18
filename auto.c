@@ -672,6 +672,52 @@ CyFxCreateChannel(
     }
 }
 
+/* Create DMA Channels between CPU-PIB */
+void
+CyFxCreteCpuPibDmaChannels (uint16_t dataBurstLength)
+{
+    uint16_t size = 1024; // super speed <- assumed condition , temporary code
+	CyFxCreateChannel(size,
+                      8,
+                      CY_U3P_CPU_SOCKET_PROD,
+                      CY_U3P_PIB_SOCKET_0,
+                      CY_U3P_DMA_CB_PROD_EVENT,
+                      0,
+                      &CpuPib.ControlOut_.Channel_,
+                      CY_U3P_DMA_TYPE_MANUAL_OUT);
+	CyU3PDebugPrint(4,"[Auto] CPU-PIB ControlOut Channel created\n");
+
+	CyFxCreateChannel(size,
+                      8,
+                      CY_U3P_PIB_SOCKET_1,
+                      CY_U3P_CPU_SOCKET_CONS,
+                      CY_U3P_DMA_CB_PROD_EVENT,
+                      0,
+                      &CpuPib.ControlIn_.Channel_,
+                      CY_U3P_DMA_TYPE_MANUAL_IN);
+	CyU3PDebugPrint(4,"[Auto] CPU-PIB ControlIn Channel created\n");
+
+	CyFxCreateChannel(size*dataBurstLength,
+                      4,
+                      CY_U3P_CPU_SOCKET_PROD,
+                      CY_U3P_PIB_SOCKET_2,
+                      CY_U3P_DMA_CB_PROD_EVENT,
+                      0,
+                      &CpuPib.DataOut_.Channel_,
+                      CY_U3P_DMA_TYPE_MANUAL_OUT);
+	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataOut Channel created\n");
+
+	CyFxCreateChannel(size*dataBurstLength,
+                      4,
+                      CY_U3P_PIB_SOCKET_3,
+                      CY_U3P_CPU_SOCKET_CONS,
+                      CY_U3P_DMA_CB_PROD_EVENT,
+                      0,
+                      &CpuPib.DataIn_.Channel_,
+                      CY_U3P_DMA_TYPE_MANUAL_IN);
+	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataIn Channel created\n");
+}
+
 /* Entry function for the AutoAppThread. */
 void
 AutoThread_Entry (
@@ -687,6 +733,9 @@ AutoThread_Entry (
     CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
     CyFxAutoPibInit();
     CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
+
+    CyFxCreteCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
+    CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");
 
     /* Initialize the Auto application */
     CyFxAutoApplnInit();

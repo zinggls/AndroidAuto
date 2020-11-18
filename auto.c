@@ -50,6 +50,7 @@
 #include "gpio.h"
 #include "i2c.h"
 #include "PIB.h"
+#include "dma.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
@@ -684,7 +685,7 @@ CyFxCreateCpuPibDmaChannels (
                       CY_U3P_PIB_SOCKET_0,
                       CY_U3P_DMA_CB_PROD_EVENT,
                       0,
-                      &CpuPib.ControlOut_.Channel_,
+                      &Dma.ControlOut_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_OUT);
 	CyU3PDebugPrint(4,"[Auto] CPU-PIB ControlOut Channel created\n");
 
@@ -694,7 +695,7 @@ CyFxCreateCpuPibDmaChannels (
                       CY_U3P_CPU_SOCKET_CONS,
                       CY_U3P_DMA_CB_PROD_EVENT,
                       0,
-                      &CpuPib.ControlIn_.Channel_,
+                      &Dma.ControlIn_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_IN);
 	CyU3PDebugPrint(4,"[Auto] CPU-PIB ControlIn Channel created\n");
 
@@ -704,7 +705,7 @@ CyFxCreateCpuPibDmaChannels (
                       CY_U3P_PIB_SOCKET_2,
                       CY_U3P_DMA_CB_PROD_EVENT,
                       0,
-                      &CpuPib.DataOut_.Channel_,
+                      &Dma.DataOut_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_OUT);
 	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataOut Channel created\n");
 
@@ -714,7 +715,7 @@ CyFxCreateCpuPibDmaChannels (
                       CY_U3P_CPU_SOCKET_CONS,
                       CY_U3P_DMA_CB_PROD_EVENT,
                       0,
-                      &CpuPib.DataIn_.Channel_,
+                      &Dma.DataIn_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_IN);
 	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataIn Channel created\n");
 }

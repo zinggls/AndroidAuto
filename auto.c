@@ -679,6 +679,7 @@ CyFxCreateCpuPibDmaChannels (
 		uint16_t dataBurstLength)
 {
     uint16_t size = 1024; // super speed <- assumed condition , temporary code
+    Dma.Mode_ = DMA_SYNC;
 	CyFxCreateChannel(size,
                       8,
                       CY_U3P_CPU_SOCKET_PROD,

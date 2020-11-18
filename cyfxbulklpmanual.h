@@ -45,11 +45,11 @@
 /* Note: For USB 2.0 the endpoints and corresponding sockets are one-to-one mapped
          i.e. EP 1 is mapped to UIB socket 1 and EP 2 to socket 2 so on */
 
-#define CY_FX_EP_PRODUCER               0x01    /* EP 1 OUT */
-#define CY_FX_EP_CONSUMER               0x81    /* EP 1 IN */
+#define CY_FX_EP_PRODUCER               0x02    /* EP 2 OUT */
+#define CY_FX_EP_CONSUMER               0x82    /* EP 2 IN */
 
-#define CY_FX_EP_PRODUCER_SOCKET        CY_U3P_UIB_SOCKET_PROD_1    /* Socket 1 is producer */
-#define CY_FX_EP_CONSUMER_SOCKET        CY_U3P_UIB_SOCKET_CONS_1    /* Socket 1 is consumer */
+#define CY_FX_EP_PRODUCER_SOCKET        CY_U3P_UIB_SOCKET_PROD_2    /* Socket 2 is producer */
+#define CY_FX_EP_CONSUMER_SOCKET        CY_U3P_UIB_SOCKET_CONS_2    /* Socket 2 is consumer */
 
 /* Extern definitions for the USB Descriptors */
 extern const uint8_t CyFxUSB20DeviceDscr[];

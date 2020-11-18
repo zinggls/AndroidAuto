@@ -47,6 +47,7 @@
 #include "cyu3uart.h"
 #include "cyu3utils.h"
 #include "gitcommit.h"
+#include "gpio.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
@@ -577,6 +578,18 @@ CyFxAutoApplnInit (void)
     }
 }
 
+/* GPIO Setup */
+void
+CyFxAutoSetupGpio (void)
+{
+    CyU3PReturnStatus_t apiRetStatus = SetupGPIO();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Setup GPIO failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
 /* Entry function for the AutoAppThread. */
 void
 AutoThread_Entry (
@@ -586,6 +599,8 @@ AutoThread_Entry (
     CyFxAutoApplnDebugInit();
 
     CyU3PDebugPrint(4,"[Auto] Git:%s\n",GIT_INFO);
+    CyFxAutoSetupGpio();
+    CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
 
     /* Initialize the bulk loop application */
     CyFxAutoApplnInit();

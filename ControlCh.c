@@ -17,8 +17,12 @@ void ControlChThread(uint32_t Value)
 	CyU3PReturnStatus_t Status;
 
 	recv = intEvt = regRead = manFrame = 0;
+	CyU3PDebugPrint (4, "[ZCH] Control channel thread started\r\n");
 	while(1) {
 		if(Dma.Mode_ == DMA_SYNC) {
+#ifdef DEBUG
+			CyU3PDebugPrint (4, "[ZCH] Zing_Transfer_Recv...\r\n");
+#endif
 			if((Status=Zing_Transfer_Recv(&Dma.ControlIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 				recv++;
 				resp_pt = (REG_Resp_t*)buf;

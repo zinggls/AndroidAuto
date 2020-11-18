@@ -42,7 +42,7 @@
 #include "cyu3os.h"
 #include "cyu3dma.h"
 #include "cyu3error.h"
-#include "cyfxbulklpmanual.h"
+#include "auto.h"
 #include "cyu3usb.h"
 #include "cyu3uart.h"
 #include "cyu3utils.h"

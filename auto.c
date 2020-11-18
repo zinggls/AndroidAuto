@@ -75,7 +75,7 @@ CyFxAppErrorHandler (
  * are routed to the UART and can be seen using a UART console
  * running at 115200 baud rate. */
 void
-CyFxBulkLpApplnDebugInit (void)
+CyFxAutoApplnDebugInit (void)
 {
     CyU3PUartConfig_t uartConfig;
     CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
@@ -123,7 +123,7 @@ CyFxBulkLpApplnDebugInit (void)
 
 /* Callback funtion for the DMA event notification. */
 void
-CyFxBulkLpDmaCallback (
+CyFxAutoDmaCallback (
         CyU3PDmaChannel   *chHandle, /* Handle to the DMA channel. */
         CyU3PDmaCbType_t  type,      /* Callback type.             */
         CyU3PDmaCBInput_t *input)    /* Callback status.           */
@@ -152,7 +152,7 @@ static volatile uint32_t glOutNakEvtCount = 0;
 static volatile uint32_t glInNakEvtCount  = 0;
 
 static void
-CyFxBulkLpApplnEptCb (
+CyFxAutoApplnEptCb (
         CyU3PUsbEpEvtType evType,
         CyU3PUSBSpeed_t   usbSpeed,
         uint8_t           epNum)
@@ -181,7 +181,7 @@ CyFxBulkLpApplnEptCb (
  * when a SET_CONF event is received from the USB host. The endpoints
  * are configured and the DMA pipe is setup in this function. */
 void
-CyFxBulkLpApplnStart (
+CyFxAutoApplnStart (
         void)
 {
     uint16_t size = 0;
@@ -246,7 +246,7 @@ CyFxBulkLpApplnStart (
     dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
     /* Enabling the callback for produce event. */
     dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-    dmaCfg.cb = CyFxBulkLpDmaCallback;
+    dmaCfg.cb = CyFxAutoDmaCallback;
     dmaCfg.prodHeader = 0;
     dmaCfg.prodFooter = 0;
     dmaCfg.consHeader = 0;
@@ -275,7 +275,7 @@ CyFxBulkLpApplnStart (
     /* Register a callback for EP events on the OUT and IN endpoints. We enable the NAK event. */
     glOutNakEvtCount = 0;
     glInNakEvtCount  = 0;
-    CyU3PUsbRegisterEpEvtCallback (CyFxBulkLpApplnEptCb, CYU3P_USBEP_NAK_EVT,
+    CyU3PUsbRegisterEpEvtCallback (CyFxAutoApplnEptCb, CYU3P_USBEP_NAK_EVT,
             (1 << CY_FX_EP_PRODUCER), (1 << (CY_FX_EP_CONSUMER & 0x7F)));
 
     /* Update the status flag. */
@@ -286,7 +286,7 @@ CyFxBulkLpApplnStart (
  * a RESET or DISCONNECT event is received from the USB host. The endpoints are
  * disabled and the DMA pipe is destroyed by this function. */
 void
-CyFxBulkLpApplnStop (
+CyFxAutoApplnStop (
         void)
 {
     CyU3PEpConfig_t epCfg;
@@ -328,7 +328,7 @@ CyFxBulkLpApplnStop (
 
 /* Callback to handle the USB setup requests. */
 CyBool_t
-CyFxBulkLpApplnUSBSetupCB (
+CyFxAutoApplnUSBSetupCB (
         uint32_t setupdat0, /* SETUP Data 0 */
         uint32_t setupdat1  /* SETUP Data 1 */
     )
@@ -410,7 +410,7 @@ CyFxBulkLpApplnUSBSetupCB (
 
 /* This is the callback function to handle the USB events. */
 void
-CyFxBulkLpApplnUSBEventCB (
+CyFxAutoApplnUSBEventCB (
     CyU3PUsbEventType_t evtype, /* Event type */
     uint16_t            evdata  /* Event data */
     )
@@ -423,10 +423,10 @@ CyFxBulkLpApplnUSBEventCB (
             /* Stop the application before re-starting. */
             if (glIsApplnActive)
             {
-                CyFxBulkLpApplnStop ();
+                CyFxAutoApplnStop ();
             }
             /* Start the loop back function. */
-            CyFxBulkLpApplnStart ();
+            CyFxAutoApplnStart ();
             break;
 
         case CY_U3P_USB_EVENT_RESET:
@@ -434,7 +434,7 @@ CyFxBulkLpApplnUSBEventCB (
             /* Stop the loop back function. */
             if (glIsApplnActive)
             {
-                CyFxBulkLpApplnStop ();
+                CyFxAutoApplnStop ();
             }
             break;
 
@@ -452,7 +452,7 @@ CyFxBulkLpApplnUSBEventCB (
    the function always return CyTrue.
  */
 CyBool_t
-CyFxBulkLpApplnLPMRqtCB (
+CyFxAutoApplnLPMRqtCB (
         CyU3PUsbLinkPowerMode link_mode)
 {
     return CyTrue;
@@ -462,7 +462,7 @@ CyFxBulkLpApplnLPMRqtCB (
  * This function does not start the bulk streaming and this is done only when
  * SET_CONF event is received. */
 void
-CyFxBulkLpApplnInit (void)
+CyFxAutoApplnInit (void)
 {
     CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
@@ -477,13 +477,13 @@ CyFxBulkLpApplnInit (void)
     /* The fast enumeration is the easiest way to setup a USB connection,
      * where all enumeration phase is handled by the library. Only the
      * class / vendor requests need to be handled by the application. */
-    CyU3PUsbRegisterSetupCallback(CyFxBulkLpApplnUSBSetupCB, CyTrue);
+    CyU3PUsbRegisterSetupCallback(CyFxAutoApplnUSBSetupCB, CyTrue);
 
     /* Register a callback to handle LPM requests from the USB 3.0 host. */
-    CyU3PUsbRegisterLPMRequestCallback(CyFxBulkLpApplnLPMRqtCB);   
+    CyU3PUsbRegisterLPMRequestCallback(CyFxAutoApplnLPMRqtCB);
 
     /* Setup the callback to handle the USB events. */
-    CyU3PUsbRegisterEventCallback(CyFxBulkLpApplnUSBEventCB);
+    CyU3PUsbRegisterEventCallback(CyFxAutoApplnUSBEventCB);
 
     /* Set the USB Enumeration descriptors */
 
@@ -576,16 +576,16 @@ CyFxBulkLpApplnInit (void)
     }
 }
 
-/* Entry function for the BulkLpAppThread. */
+/* Entry function for the AutoAppThread. */
 void
-BulkLpAppThread_Entry (
+AutoThread_Entry (
         uint32_t input)
 {
     /* Initialize the debug module */
-    CyFxBulkLpApplnDebugInit();
+    CyFxAutoApplnDebugInit();
 
     /* Initialize the bulk loop application */
-    CyFxBulkLpApplnInit();
+    CyFxAutoApplnInit();
 
     for (;;)
     {
@@ -613,7 +613,7 @@ CyFxApplicationDefine (
     /* Create the thread for the application */
     retThrdCreate = CyU3PThreadCreate (&BulkLpAppThread,           /* Bulk loop App Thread structure */
                           "21:Bulk_loop_MANUAL",                   /* Thread ID and Thread name */
-                          BulkLpAppThread_Entry,                   /* Bulk loop App Thread Entry function */
+                          AutoThread_Entry,                        /* Auto App Thread Entry function */
                           0,                                       /* No input parameter to thread */
                           ptr,                                     /* Pointer to the allocated thread stack */
                           CY_FX_BULKLP_THREAD_STACK,               /* Bulk loop App Thread stack size */

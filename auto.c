@@ -674,7 +674,7 @@ CyFxCreateChannel(
 
 /* Create DMA Channels between CPU-PIB */
 void
-CyFxCreteCpuPibDmaChannels (uint16_t dataBurstLength)
+CyFxCreateCpuPibDmaChannels (uint16_t dataBurstLength)
 {
     uint16_t size = 1024; // super speed <- assumed condition , temporary code
 	CyFxCreateChannel(size,
@@ -734,7 +734,7 @@ AutoThread_Entry (
     CyFxAutoPibInit();
     CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
 
-    CyFxCreteCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
+    CyFxCreateCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
     CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");
 
     /* Initialize the Auto application */

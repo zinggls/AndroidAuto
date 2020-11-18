@@ -46,6 +46,7 @@
 #include "cyu3usb.h"
 #include "cyu3uart.h"
 #include "cyu3utils.h"
+#include "gitcommit.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
@@ -583,6 +584,8 @@ AutoThread_Entry (
 {
     /* Initialize the debug module */
     CyFxAutoApplnDebugInit();
+
+    CyU3PDebugPrint(4,"[Auto] Git:%s\n",GIT_INFO);
 
     /* Initialize the bulk loop application */
     CyFxAutoApplnInit();

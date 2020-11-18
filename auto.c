@@ -240,7 +240,7 @@ CyFxAutoApplnStart (
     /* Create a DMA MANUAL channel between two sockets of the U port.
      * DMA size is set based on the USB speed. */
     dmaCfg.size  = size;
-    dmaCfg.count = CY_FX_BULKLP_DMA_BUF_COUNT;
+    dmaCfg.count = CY_FX_AUTO_DMA_BUF_COUNT;
     dmaCfg.prodSckId = CY_FX_EP_PRODUCER_SOCKET;
     dmaCfg.consSckId = CY_FX_EP_CONSUMER_SOCKET;
     dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
@@ -265,7 +265,7 @@ CyFxAutoApplnStart (
     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
 
     /* Set DMA Channel transfer size */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glChHandleBulkLp, CY_FX_BULKLP_DMA_TX_SIZE);
+    apiRetStatus = CyU3PDmaChannelSetXfer (&glChHandleBulkLp, CY_FX_AUTO_DMA_TX_SIZE);
     if (apiRetStatus != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
@@ -392,7 +392,7 @@ CyFxAutoApplnUSBSetupCB (
                     CyU3PUsbFlushEp (CY_FX_EP_CONSUMER);
                     CyU3PUsbResetEp (CY_FX_EP_PRODUCER);
                     CyU3PUsbResetEp (CY_FX_EP_CONSUMER);
-                    CyU3PDmaChannelSetXfer (&glChHandleBulkLp, CY_FX_BULKLP_DMA_TX_SIZE);
+                    CyU3PDmaChannelSetXfer (&glChHandleBulkLp, CY_FX_AUTO_DMA_TX_SIZE);
                     CyU3PUsbStall (wIndex, CyFalse, CyTrue);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyFalse);
@@ -608,7 +608,7 @@ CyFxApplicationDefine (
     uint32_t retThrdCreate = CY_U3P_SUCCESS;
 
     /* Allocate the memory for the threads */
-    ptr = CyU3PMemAlloc (CY_FX_BULKLP_THREAD_STACK);
+    ptr = CyU3PMemAlloc (CY_FX_AUTO_THREAD_STACK);
 
     /* Create the thread for the application */
     retThrdCreate = CyU3PThreadCreate (&AutoAppThread,             /* Auto App Thread structure */
@@ -616,9 +616,9 @@ CyFxApplicationDefine (
                           AutoThread_Entry,                        /* Auto App Thread Entry function */
                           0,                                       /* No input parameter to thread */
                           ptr,                                     /* Pointer to the allocated thread stack */
-                          CY_FX_BULKLP_THREAD_STACK,               /* Autop App Thread stack size */
-                          CY_FX_BULKLP_THREAD_PRIORITY,            /* Auto App Thread priority */
-                          CY_FX_BULKLP_THREAD_PRIORITY,            /* Auto App Thread priority */
+                          CY_FX_AUTO_THREAD_STACK,                 /* Autop App Thread stack size */
+                          CY_FX_AUTO_THREAD_PRIORITY,              /* Auto App Thread priority */
+                          CY_FX_AUTO_THREAD_PRIORITY,              /* Auto App Thread priority */
                           CYU3P_NO_TIME_SLICE,                     /* No time slice for the application thread */
                           CYU3P_AUTO_START                         /* Start the Thread immediately */
                           );

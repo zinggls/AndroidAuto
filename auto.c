@@ -48,6 +48,7 @@
 #include "cyu3utils.h"
 #include "gitcommit.h"
 #include "gpio.h"
+#include "i2c.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
@@ -590,6 +591,18 @@ CyFxAutoSetupGpio (void)
     }
 }
 
+/* I2C Initialization */
+void
+CyFxAutoI2cInit (void)
+{
+    CyU3PReturnStatus_t apiRetStatus = I2C_Init();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "I2C initialization failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
 /* Entry function for the AutoAppThread. */
 void
 AutoThread_Entry (
@@ -601,6 +614,8 @@ AutoThread_Entry (
     CyU3PDebugPrint(4,"[Auto] Git:%s\n",GIT_INFO);
     CyFxAutoSetupGpio();
     CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
+    CyFxAutoI2cInit();
+    CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
 
     /* Initialize the bulk loop application */
     CyFxAutoApplnInit();
@@ -685,7 +700,7 @@ main (void)
     io_cfg.s0Mode = CY_U3P_SPORT_INACTIVE;
     io_cfg.s1Mode = CY_U3P_SPORT_INACTIVE;
     io_cfg.useUart   = CyTrue;
-    io_cfg.useI2C    = CyFalse;
+    io_cfg.useI2C    = CyTrue;
     io_cfg.useI2S    = CyFalse;
     io_cfg.useSpi    = CyFalse;
     io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_UART_ONLY;

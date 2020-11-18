@@ -612,13 +612,13 @@ CyFxApplicationDefine (
 
     /* Create the thread for the application */
     retThrdCreate = CyU3PThreadCreate (&AutoAppThread,             /* Auto App Thread structure */
-                          "21:Bulk_loop_MANUAL",                   /* Thread ID and Thread name */
+                          "1:Auto",                                /* Thread ID and Thread name */
                           AutoThread_Entry,                        /* Auto App Thread Entry function */
                           0,                                       /* No input parameter to thread */
                           ptr,                                     /* Pointer to the allocated thread stack */
-                          CY_FX_BULKLP_THREAD_STACK,               /* Bulk loop App Thread stack size */
-                          CY_FX_BULKLP_THREAD_PRIORITY,            /* Bulk loop App Thread priority */
-                          CY_FX_BULKLP_THREAD_PRIORITY,            /* Bulk loop App Thread priority */
+                          CY_FX_BULKLP_THREAD_STACK,               /* Autop App Thread stack size */
+                          CY_FX_BULKLP_THREAD_PRIORITY,            /* Auto App Thread priority */
+                          CY_FX_BULKLP_THREAD_PRIORITY,            /* Auto App Thread priority */
                           CYU3P_NO_TIME_SLICE,                     /* No time slice for the application thread */
                           CYU3P_AUTO_START                         /* Start the Thread immediately */
                           );

@@ -47,7 +47,7 @@
 #include "cyu3uart.h"
 #include "cyu3utils.h"
 
-CyU3PThread     BulkLpAppThread;	 /* Bulk loop application thread structure */
+CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleBulkLp;        /* DMA Channel handle */
 
 uint32_t glDMARxCount = 0;               /* Counter to track the number of buffers received. */
@@ -611,7 +611,7 @@ CyFxApplicationDefine (
     ptr = CyU3PMemAlloc (CY_FX_BULKLP_THREAD_STACK);
 
     /* Create the thread for the application */
-    retThrdCreate = CyU3PThreadCreate (&BulkLpAppThread,           /* Bulk loop App Thread structure */
+    retThrdCreate = CyU3PThreadCreate (&AutoAppThread,             /* Auto App Thread structure */
                           "21:Bulk_loop_MANUAL",                   /* Thread ID and Thread name */
                           AutoThread_Entry,                        /* Auto App Thread Entry function */
                           0,                                       /* No input parameter to thread */

@@ -572,7 +572,7 @@ CyFxAutoApplnInit (void)
         CyFxAppErrorHandler(apiRetStatus);
     }
 
-    CyFxZintInit();
+    CyFxZingInit();
     CyU3PDebugPrint(4,"[Auto] ZING Init OK\n");
 }
 

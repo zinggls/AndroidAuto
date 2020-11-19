@@ -159,7 +159,7 @@ CyFxCreateControlChannel (
 }
 
 void
-CyFxZintInit (
+CyFxZingInit (
 		void)
 {
     CyU3PReturnStatus_t apiRetStatus = Zing_Init();

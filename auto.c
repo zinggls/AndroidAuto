@@ -451,6 +451,18 @@ CyFxAutoApplnInit (void)
 {
     CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
+    CyFxAutoSetupGpio();
+    CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
+    CyFxAutoI2cInit();
+    CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
+    CyFxAutoPibInit();
+    CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
+
+    CyFxCreateCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
+    CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");
+    CyFxCreateControlChannel();
+    CyU3PDebugPrint(4,"[Auto] Control Channel Thread Created\n");
+
     /* Start the USB functionality. */
     apiRetStatus = CyU3PUsbStart();
     if (apiRetStatus != CY_U3P_SUCCESS)
@@ -570,17 +582,6 @@ AutoThread_Entry (
     CyFxAutoApplnDebugInit();
 
     CyU3PDebugPrint(4,"[Auto] Git:%s\n",GIT_INFO);
-    CyFxAutoSetupGpio();
-    CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
-    CyFxAutoI2cInit();
-    CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
-    CyFxAutoPibInit();
-    CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
-
-    CyFxCreateCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
-    CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");
-    CyFxCreateControlChannel();
-    CyU3PDebugPrint(4,"[Auto] Control Channel Thread Created\n");
 
     /* Initialize the Auto application */
     CyFxAutoApplnInit();

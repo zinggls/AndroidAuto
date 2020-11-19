@@ -6,6 +6,7 @@
 #include "PIB.h"
 #include "dma.h"
 #include "ControlCh.h"
+#include "util.h"
 
 void
 CyFxAutoSetupGpio (

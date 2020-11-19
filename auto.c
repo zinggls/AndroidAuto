@@ -571,6 +571,9 @@ CyFxAutoApplnInit (void)
         CyU3PDebugPrint (4, "USB Connect failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler(apiRetStatus);
     }
+
+    CyFxZintInit();
+    CyU3PDebugPrint(4,"[Auto] ZING Init OK\n");
 }
 
 /* Entry function for the AutoAppThread. */

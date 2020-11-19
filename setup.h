@@ -61,4 +61,14 @@ void
 CyFxSetHRCP (
 		void);
 
+/* Create AutoUSB to Zing Thread */
+void
+CyFxCreateAutoUsbToZingThread (
+        void);
+
+/* Create Zing to AutoUSB Thread */
+void
+CyFxCreateZingToAutoUsbThread (
+        void);
+
 #endif

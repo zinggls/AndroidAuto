@@ -8,6 +8,8 @@
 #include "ControlCh.h"
 #include "Zing.h"
 #include "ZingHw.h"
+#include "AutoUsbToZing.h"
+#include "ZingToAutoUsb.h"
 #include "util.h"
 
 void
@@ -182,4 +184,28 @@ CyFxSetHRCP (
 #else
 	Zing_SetHRCP(DEV);
 #endif
+}
+
+void
+CyFxCreateAutoUsbToZingThread (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = CreateAutoUsbToZingThread();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "AutoUSB to Zing Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
+void
+CyFxCreateZingToAutoUsbThread (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = CreateZingToAutoUsbThread();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Zing to AutoUSB Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
 }

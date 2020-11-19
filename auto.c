@@ -586,11 +586,11 @@ AutoThread_Entry (
     /* Initialize the debug module */
     CyFxAutoApplnDebugInit();
 
-    CyU3PDebugPrint(4,"[Auto] Git:%s\n",GIT_INFO);
+    CyU3PDebugPrint(4,"[Auto] Git:%s\r\n",GIT_INFO);
 
     /* Initialize the Auto application */
     CyFxAutoApplnInit();
-    CyU3PDebugPrint(4,"[Auto] AutoAppln Init OK\n");
+    CyU3PDebugPrint(4,"[Auto] AutoAppln Init OK\r\n");
 
     for (;;)
     {

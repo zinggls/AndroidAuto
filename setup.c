@@ -6,6 +6,7 @@
 #include "PIB.h"
 #include "dma.h"
 #include "ControlCh.h"
+#include "Zing.h"
 #include "util.h"
 
 void
@@ -153,6 +154,18 @@ CyFxCreateControlChannel (
     if (apiRetStatus != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (4, "Control Channel Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
+void
+CyFxZintInit (
+		void)
+{
+    CyU3PReturnStatus_t apiRetStatus = Zing_Init();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "ZING initialization failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler(apiRetStatus);
     }
 }

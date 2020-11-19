@@ -51,4 +51,9 @@ void
 CyFxCreateControlChannel (
         void);
 
+/* ZING Initialization */
+void
+CyFxZintInit (
+		void);
+
 #endif

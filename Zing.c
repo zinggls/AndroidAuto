@@ -157,7 +157,7 @@ CyU3PReturnStatus_t Zing_RegWrite(uint16_t addr, uint8_t* buf, uint16_t len)
 		for(i=0;i<len;i++) {
 			CyU3PDebugPrint(4,"0x%X, ",buf[i]);
 		}
-		CyU3PDebugPrint(4,"\r\n");
+		CyU3PDebugPrint(4," Zing_Transfer_Send=%d\r\n",apiRetStatus);
 	}
 #endif
 

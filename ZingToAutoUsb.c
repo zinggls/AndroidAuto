@@ -1,6 +1,9 @@
 #include "ZingToAutoUsb.h"
 #include "cyu3os.h"
 #include "cyu3system.h"
+#include "cyu3error.h"
+#include "dma.h"
+#include "Zing.h"
 
 CyU3PThread ZingToAutoUsbThreadHandle;
 
@@ -30,5 +33,16 @@ void
 ZingToAutoUsbThread(
 		uint32_t Value)
 {
+	uint32_t rt_len;
+	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (Dma.DataIn_.Channel_.size);
+	CyU3PReturnStatus_t Status;
 
+	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
+	while(1){
+		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			CyU3PDebugPrint(4,"Z");
+		}else{
+			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);
+		}
+	}
 }

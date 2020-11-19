@@ -51,7 +51,8 @@
 #include "util.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
-CyU3PDmaChannel glChHandleAutoLp;        /* DMA Channel handle */
+CyU3PDmaChannel glChHandleAutoDataIn;    /* DMA Channel handle */
+CyU3PDmaChannel glChHandleAutoDataOut;   /* DMA Channel handle */
 
 uint32_t glDMARxCount = 0;               /* Counter to track the number of buffers received. */
 CyBool_t glIsApplnActive = CyFalse;      /* Whether the loopback application is active or not. */
@@ -171,7 +172,6 @@ CyFxAutoApplnStart (
 {
     uint16_t size = 0;
     CyU3PEpConfig_t epCfg;
-    CyU3PDmaChannelConfig_t dmaCfg;
     CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
     CyU3PUSBSpeed_t usbSpeed = CyU3PUsbGetSpeed();
 
@@ -224,38 +224,29 @@ CyFxAutoApplnStart (
 
     /* Create a DMA MANUAL channel between two sockets of the U port.
      * DMA size is set based on the USB speed. */
-    dmaCfg.size  = size;
-    dmaCfg.count = CY_FX_AUTO_DMA_BUF_COUNT;
-    dmaCfg.prodSckId = CY_FX_EP_PRODUCER_SOCKET;
-    dmaCfg.consSckId = CY_FX_EP_CONSUMER_SOCKET;
-    dmaCfg.dmaMode = CY_U3P_DMA_MODE_BYTE;
-    /* Enabling the callback for produce event. */
-    dmaCfg.notification = CY_U3P_DMA_CB_PROD_EVENT;
-    dmaCfg.cb = CyFxAutoDmaCallback;
-    dmaCfg.prodHeader = 0;
-    dmaCfg.prodFooter = 0;
-    dmaCfg.consHeader = 0;
-    dmaCfg.prodAvailCount = 0;
+	CyFxCreateChannel(size,
+                      CY_FX_AUTO_DMA_BUF_COUNT,
+                      CY_FX_EP_PRODUCER_SOCKET,
+                      CY_U3P_CPU_SOCKET_CONS,
+                      CY_U3P_DMA_CB_PROD_EVENT,
+                      0,
+                      &glChHandleAutoDataIn,
+                      CY_U3P_DMA_TYPE_MANUAL_IN);
+	CyU3PDebugPrint(4,"[Auto] USB Prod - CPU Consumer DMA channel created\n");
 
-    apiRetStatus = CyU3PDmaChannelCreate (&glChHandleAutoLp,
-            CY_U3P_DMA_TYPE_MANUAL, &dmaCfg);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "CyU3PDmaChannelCreate failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
+	CyFxCreateChannel(size,
+                      CY_FX_AUTO_DMA_BUF_COUNT,
+                      CY_U3P_CPU_SOCKET_PROD,
+                      CY_FX_EP_CONSUMER_SOCKET,
+                      CY_U3P_DMA_CB_PROD_EVENT,
+                      0,
+                      &glChHandleAutoDataOut,
+                      CY_U3P_DMA_TYPE_MANUAL_OUT);
+	CyU3PDebugPrint(4,"[Auto] CPU Producer - USB Consumer DMA channel created\n");
 
     /* Flush the Endpoint memory */
     CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-
-    /* Set DMA Channel transfer size */
-    apiRetStatus = CyU3PDmaChannelSetXfer (&glChHandleAutoLp, CY_FX_AUTO_DMA_TX_SIZE);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "CyU3PDmaChannelSetXfer Failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
 
     /* Register a callback for EP events on the OUT and IN endpoints. We enable the NAK event. */
     glOutNakEvtCount = 0;
@@ -288,7 +279,8 @@ CyFxAutoApplnStop (
     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
 
     /* Destroy the channel */
-    CyU3PDmaChannelDestroy (&glChHandleAutoLp);
+    CyU3PDmaChannelDestroy (&glChHandleAutoDataIn);
+    CyU3PDmaChannelDestroy (&glChHandleAutoDataOut);
 
     /* Disable endpoints. */
     CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof (epCfg));
@@ -372,12 +364,14 @@ CyFxAutoApplnUSBSetupCB (
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyTrue);
                     CyU3PBusyWait (125);
 
-                    CyU3PDmaChannelReset (&glChHandleAutoLp);
+                    CyU3PDmaChannelReset (&glChHandleAutoDataIn);
+                    CyU3PDmaChannelReset (&glChHandleAutoDataOut);
                     CyU3PUsbFlushEp (CY_FX_EP_PRODUCER);
                     CyU3PUsbFlushEp (CY_FX_EP_CONSUMER);
                     CyU3PUsbResetEp (CY_FX_EP_PRODUCER);
                     CyU3PUsbResetEp (CY_FX_EP_CONSUMER);
-                    CyU3PDmaChannelSetXfer (&glChHandleAutoLp, CY_FX_AUTO_DMA_TX_SIZE);
+                    CyU3PDmaChannelSetXfer (&glChHandleAutoDataIn, CY_FX_AUTO_DMA_TX_SIZE);
+                    CyU3PDmaChannelSetXfer (&glChHandleAutoDataOut, CY_FX_AUTO_DMA_TX_SIZE);
                     CyU3PUsbStall (wIndex, CyFalse, CyTrue);
 
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyFalse);

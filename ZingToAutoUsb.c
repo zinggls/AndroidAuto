@@ -6,6 +6,7 @@
 #include "Zing.h"
 
 CyU3PThread ZingToAutoUsbThreadHandle;
+extern CyU3PDmaChannel glChHandleAutoDataOut;
 
 CyU3PReturnStatus_t
 CreateZingToAutoUsbThread(
@@ -40,7 +41,11 @@ ZingToAutoUsbThread(
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			CyU3PDebugPrint(4,"Z");
+			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
+				CyU3PDebugPrint(4,"Z");
+			}else{
+				CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
+			}
 		}else{
 			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}

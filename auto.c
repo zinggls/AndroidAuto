@@ -574,6 +574,9 @@ CyFxAutoApplnInit (void)
 
     CyFxZingInit();
     CyU3PDebugPrint(4,"[Auto] ZING Init OK\n");
+
+    CyFxSetHRCP();
+    CyU3PDebugPrint(4,"[Auto] Set HRCP done\n");
 }
 
 /* Entry function for the AutoAppThread. */

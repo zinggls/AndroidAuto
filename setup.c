@@ -7,6 +7,7 @@
 #include "dma.h"
 #include "ControlCh.h"
 #include "Zing.h"
+#include "ZingHw.h"
 #include "util.h"
 
 void
@@ -168,4 +169,17 @@ CyFxZingInit (
         CyU3PDebugPrint (4, "ZING initialization failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler(apiRetStatus);
     }
+}
+
+void
+CyFxSetHRCP (
+		void)
+{
+#ifdef HRCP_PPC
+	Zing_SetHRCP(PPC);
+#elif HRCP_DEV
+	Zing_SetHRCP(DEV);
+#else
+	Zing_SetHRCP(DEV);
+#endif
 }

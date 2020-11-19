@@ -56,4 +56,9 @@ void
 CyFxZingInit (
 		void);
 
+/* Set PPC/DEV */
+void
+CyFxSetHRCP (
+		void);
+
 #endif

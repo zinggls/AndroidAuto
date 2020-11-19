@@ -595,12 +595,7 @@ AutoThread_Entry (
     for (;;)
     {
         CyU3PThreadSleep (5000);
-        if (glIsApplnActive)
-        {
-            /* Print the number of buffers received so far from the USB host. */
-            CyU3PDebugPrint (6, "Data tracker: Number of buffers received: %d\r\n", glDMARxCount);
-            CyU3PDebugPrint (6, "Endpoint event counts: %d %d\r\n", glOutNakEvtCount, glInNakEvtCount);
-        }
+        /* Do nothing */
     }
 }
 

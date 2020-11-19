@@ -571,6 +571,11 @@ CyFxAutoApplnInit (void)
 
     CyFxSetHRCP();
     CyU3PDebugPrint(4,"[Auto] Set HRCP done\n");
+
+    CyFxCreateAutoUsbToZingThread ();
+    CyU3PDebugPrint(4,"[Auto] AutoUsb To Zing Thread Created\n");
+    CyFxCreateZingToAutoUsbThread ();
+    CyU3PDebugPrint(4,"[Auto] Zing To AutoUsb Thread Created\n");
 }
 
 /* Entry function for the AutoAppThread. */

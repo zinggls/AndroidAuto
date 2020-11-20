@@ -71,4 +71,9 @@ void
 CyFxCreateZingToAutoUsbThread (
         void);
 
+/* Connect USB */
+void
+CyFxUsbConnect (
+		void);
+
 #endif

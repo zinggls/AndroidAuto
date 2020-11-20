@@ -49,6 +49,7 @@
 #include "gitcommit.h"
 #include "setup.h"
 #include "util.h"
+#include "gpio.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoDataIn;    /* DMA Channel handle */
@@ -558,14 +559,6 @@ CyFxAutoApplnInit (void)
         CyFxAppErrorHandler(apiRetStatus);
     }
 
-    /* Connect the USB Pins with super speed operation enabled. */
-    apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "USB Connect failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
-
     CyFxZingInit();
     CyU3PDebugPrint(4,"[Auto] ZING Init OK\n");
 
@@ -591,6 +584,9 @@ AutoThread_Entry (
     /* Initialize the Auto application */
     CyFxAutoApplnInit();
     CyU3PDebugPrint(4,"[Auto] AutoAppln Init OK\r\n");
+
+    CyFxUsbConnect();
+    CyU3PDebugPrint(4,"[Auto] USB Connected\r\n");
 
     for (;;)
     {
@@ -671,7 +667,7 @@ main (void)
 	io_cfg.useI2C    = CyTrue;
 	io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_DEFAULT;
 	io_cfg.gpioSimpleEn[0]  = 0;
-	io_cfg.gpioSimpleEn[1]  = 0;
+	io_cfg.gpioSimpleEn[1]  = 1<<(GPIO57-32); // TP2 in schematic
 	status = CyU3PDeviceConfigureIOMatrix(&io_cfg);
     if (status != CY_U3P_SUCCESS)
     {

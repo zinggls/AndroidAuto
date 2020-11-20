@@ -1,5 +1,7 @@
 #include "cyu3error.h"
 #include "cyu3system.h"
+#include "cyu3usb.h"
+#include "cyu3gpio.h"
 #include "setup.h"
 #include "gpio.h"
 #include "i2c.h"
@@ -208,4 +210,53 @@ CyFxCreateZingToAutoUsbThread (
         CyU3PDebugPrint (4, "Zing to AutoUSB Thread Creation failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler(apiRetStatus);
     }
+}
+
+void
+CyFxUsbConnect (
+		void)
+{
+	/* type-c connector
+	 * Check the enumeration MuxControl_GPIO to High */
+
+	CyU3PReturnStatus_t apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "USB Connect failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+
+	CyU3PUSBSpeed_t usbSpeed;
+	if((usbSpeed=CyU3PUsbGetSpeed()) != CY_U3P_SUPER_SPEED)
+	{
+		CyU3PDebugPrint (4, "CyU3PUsbGetSpeed = %d\n",usbSpeed);
+		apiRetStatus = CyU3PConnectState(CyFalse, CyFalse);
+	    if (apiRetStatus != CY_U3P_SUCCESS)
+	    {
+	        CyU3PDebugPrint (4, "USB Disconnect failed, Error code = %d\n", apiRetStatus);
+	        CyFxAppErrorHandler(apiRetStatus);
+	    }
+
+		/* Check in other orientation */
+	    apiRetStatus = CyU3PGpioSetValue(GPIO57, CyTrue);
+	    if (apiRetStatus != CY_U3P_SUCCESS)
+	    {
+	        CyU3PDebugPrint (4, "GPIO Set Value failed, Error code = %d\n", apiRetStatus);
+	        CyFxAppErrorHandler(apiRetStatus);
+	    }
+
+		apiRetStatus = CyU3PUsbControlUsb2Support (CyTrue);
+	    if (apiRetStatus != CY_U3P_SUCCESS)
+	    {
+	        CyU3PDebugPrint (4, "Enable USB2.0 device operation failed, Error code = %d\n", apiRetStatus);
+	        CyFxAppErrorHandler(apiRetStatus);
+	    }
+
+		apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
+	    if (apiRetStatus != CY_U3P_SUCCESS)
+	    {
+	        CyU3PDebugPrint (4, "USB Connect failed, Error code = %d\n", apiRetStatus);
+	        CyFxAppErrorHandler(apiRetStatus);
+	    }
+	}
 }

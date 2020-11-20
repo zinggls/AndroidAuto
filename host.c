@@ -80,6 +80,7 @@
 #include "gpio_regs.h"
 #include "host.h"
 #include "phonedrv.h"
+#include "setup.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -583,6 +584,8 @@ CyFxApplnInit (void)
     /* Since VBATT or VBUS is required for OTG operation enable it. */
     status = CyU3PUsbVBattEnable (CyTrue);
 
+    CyFxAutoSetupGpio();
+    CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
     return status;
 }
 

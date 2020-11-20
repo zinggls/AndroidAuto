@@ -50,6 +50,16 @@
 			<locationURI>PARENT-1-PROJECT_LOC/cyfxtx.c</locationURI>
 		</link>
 		<link>
+			<name>gpio.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/gpio.c</locationURI>
+		</link>
+		<link>
+			<name>gpio.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/gpio.h</locationURI>
+		</link>
+		<link>
 			<name>host.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/host.c</locationURI>
@@ -68,6 +78,16 @@
 			<name>phonedrv.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/phonedrv.h</locationURI>
+		</link>
+		<link>
+			<name>setup.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/setup.c</locationURI>
+		</link>
+		<link>
+			<name>setup.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/setup.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

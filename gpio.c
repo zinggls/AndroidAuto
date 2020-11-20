@@ -14,7 +14,7 @@ CyU3PReturnStatus_t SetupGPIO(void)
 	GpioClock.simpleDiv = CY_U3P_GPIO_SIMPLE_DIV_BY_2;
 	GpioClock.clkSrc = CY_U3P_SYS_CLK;
 	GpioClock.halfDiv = 0;
-	CHECK(CyU3PGpioInit(&GpioClock, 0));
+	CyU3PGpioInit(&GpioClock, 0);
 
 	// GPIO57 - TP2
 	CHECK(CyU3PDeviceGpioOverride(GPIO57, CyTrue));

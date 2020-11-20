@@ -59,5 +59,15 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/host.h</locationURI>
 		</link>
+		<link>
+			<name>phonedrv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/phonedrv.c</locationURI>
+		</link>
+		<link>
+			<name>phonedrv.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/phonedrv.h</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

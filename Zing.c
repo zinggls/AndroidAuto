@@ -418,8 +418,10 @@ CyU3PReturnStatus_t Zing_Transfer_Send(CyU3PDmaChannel* dma_ch,uint8_t *data,uin
 		CyU3PMemCopy (Buf.buffer, data, length);
 		Buf.count = length;
 
-		if ((status = CyU3PDmaChannelCommitBuffer (dma_ch, Buf.count, 0))!=CY_U3P_SUCCESS)
+		if ((status = CyU3PDmaChannelCommitBuffer (dma_ch, Buf.count, 0))!=CY_U3P_SUCCESS) {
+			CyU3PDebugPrint (4, "length=%d,Buf.count=%d\n", length,Buf.count);
 			CyU3PDebugPrint (4, "Zing_Transfer_Send,CyU3PDmaChannelCommitBuffer failed(0x%x)\n", status);
+		}
 	}
 	return status;
 }

@@ -585,9 +585,9 @@ CyFxApplnInit (void)
     status = CyU3PUsbVBattEnable (CyTrue);
 
     CyFxAutoSetupGpio();
-    CyU3PDebugPrint(4,"[Auto] Setup GPIO OK\n");
+    CyU3PDebugPrint(4,"[Phone] Setup GPIO OK\n");
     CyFxAutoI2cInit();
-    CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
+    CyU3PDebugPrint(4,"[Phone] I2C Init OK\n");
     return status;
 }
 

@@ -588,6 +588,8 @@ CyFxApplnInit (void)
     CyU3PDebugPrint(4,"[Phone] Setup GPIO OK\n");
     CyFxAutoI2cInit();
     CyU3PDebugPrint(4,"[Phone] I2C Init OK\n");
+    CyFxAutoPibInit();
+    CyU3PDebugPrint(4,"[Phone] PIB Init OK\n");
     return status;
 }
 

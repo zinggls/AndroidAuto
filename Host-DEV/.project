@@ -25,6 +25,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>PIB.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/PIB.c</locationURI>
+		</link>
+		<link>
+			<name>PIB.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/PIB.h</locationURI>
+		</link>
+		<link>
 			<name>cyfx_gcc_startup.S</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/cyfx_gcc_startup.S</locationURI>

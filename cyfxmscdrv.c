@@ -42,7 +42,7 @@
 #include "cyu3usbhost.h"
 #include "cyu3usbotg.h"
 #include "cyu3utils.h"
-#include "cyfxusbhost.h"
+#include "host.h"
 
 #define CY_FX_MSC_ENABLE_WRITE_TEST
 

@@ -78,7 +78,7 @@
 #include "cyu3gpio.h"
 #include "cyu3utils.h"
 #include "gpio_regs.h"
-#include "cyfxusbhost.h"
+#include "host.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */

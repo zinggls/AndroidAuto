@@ -30,7 +30,7 @@
 #include "cyu3usbhost.h"
 #include "cyu3usbotg.h"
 #include "cyu3utils.h"
-#include "cyfxusbhost.h"
+#include "host.h"
 
 static uint8_t         gEchoInEp = 0;
 static uint8_t         gEchoOutEp = 0;

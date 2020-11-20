@@ -44,7 +44,7 @@
 #include "cyu3usbhost.h"
 #include "cyu3usbotg.h"
 #include "cyu3utils.h"
-#include "cyfxusbhost.h"
+#include "host.h"
 
 uint8_t glHostMouseEp = 0;                      /* Interrupt endpoint used by the mouse application. */
 

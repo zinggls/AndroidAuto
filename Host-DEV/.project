@@ -50,14 +50,14 @@
 			<locationURI>PARENT-1-PROJECT_LOC/cyfxtx.c</locationURI>
 		</link>
 		<link>
-			<name>cyfxusbhost.c</name>
+			<name>host.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/cyfxusbhost.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/host.c</locationURI>
 		</link>
 		<link>
-			<name>cyfxusbhost.h</name>
+			<name>host.h</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/cyfxusbhost.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/host.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

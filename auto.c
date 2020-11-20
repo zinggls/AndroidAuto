@@ -108,62 +108,6 @@ CyFxAutoApplnDebugInit (void)
     CyU3PDebugPreamble (CyFalse);
 }
 
-/* Callback funtion for the DMA event notification. */
-void
-CyFxAutoDmaCallback (
-        CyU3PDmaChannel   *chHandle, /* Handle to the DMA channel. */
-        CyU3PDmaCbType_t  type,      /* Callback type.             */
-        CyU3PDmaCBInput_t *input)    /* Callback status.           */
-{
-    CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
-
-    if (type == CY_U3P_DMA_CB_PROD_EVENT)
-    {
-        status = CyU3PDmaChannelCommitBuffer (chHandle, input->buffer_p.count, 0);
-        if (status != CY_U3P_SUCCESS)
-        {
-            CyU3PDebugPrint (4, "CyU3PDmaChannelCommitBuffer failed, Error code = %d\n", status);
-        }
-
-        /* Increment the counter. */
-        glDMARxCount++;
-
-        /* Re-enable the NAK event on each of the endpoints. */
-        CyU3PUsbEpEvtControl (CY_FX_EP_PRODUCER, CYU3P_USBEP_NAK_EVT);
-        CyU3PUsbEpEvtControl (CY_FX_EP_CONSUMER, CYU3P_USBEP_NAK_EVT);
-    }
-}
-
-/* Counter variables for each endpoint event type. */
-static volatile uint32_t glOutNakEvtCount = 0;
-static volatile uint32_t glInNakEvtCount  = 0;
-
-static void
-CyFxAutoApplnEptCb (
-        CyU3PUsbEpEvtType evType,
-        CyU3PUSBSpeed_t   usbSpeed,
-        uint8_t           epNum)
-{
-    if (epNum == CY_FX_EP_PRODUCER)
-    {
-        /* Once a NAK event is received, keep it disabled until we have received another data packet. */
-        if (evType == CYU3P_USBEP_NAK_EVT)
-        {
-            glOutNakEvtCount++;
-            CyU3PUsbEpEvtControl (CY_FX_EP_PRODUCER, 0);
-        }
-    }
-    else
-    {
-        /* Once a NAK event is received, keep it disabled until we have committed another data packet. */
-        if (evType == CYU3P_USBEP_NAK_EVT)
-        {
-            glInNakEvtCount++;
-            CyU3PUsbEpEvtControl (CY_FX_EP_CONSUMER, 0);
-        }
-    }
-}
-
 /* This function starts the Auto application. This is called
  * when a SET_CONF event is received from the USB host. The endpoints
  * are configured and the DMA pipe is setup in this function. */
@@ -248,12 +192,6 @@ CyFxAutoApplnStart (
     /* Flush the Endpoint memory */
     CyU3PUsbFlushEp(CY_FX_EP_PRODUCER);
     CyU3PUsbFlushEp(CY_FX_EP_CONSUMER);
-
-    /* Register a callback for EP events on the OUT and IN endpoints. We enable the NAK event. */
-    glOutNakEvtCount = 0;
-    glInNakEvtCount  = 0;
-    CyU3PUsbRegisterEpEvtCallback (CyFxAutoApplnEptCb, CYU3P_USBEP_NAK_EVT,
-            (1 << CY_FX_EP_PRODUCER), (1 << (CY_FX_EP_CONSUMER & 0x7F)));
 
     /* Update the status flag. */
     glIsApplnActive = CyTrue;

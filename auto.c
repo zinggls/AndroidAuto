@@ -55,7 +55,6 @@ CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoDataIn;    /* DMA Channel handle */
 CyU3PDmaChannel glChHandleAutoDataOut;   /* DMA Channel handle */
 
-uint32_t glDMARxCount = 0;               /* Counter to track the number of buffers received. */
 CyBool_t glIsApplnActive = CyFalse;      /* Whether the loopback application is active or not. */
 
 /* This function initializes the debug module. The debug prints

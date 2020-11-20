@@ -63,6 +63,8 @@
 
 #define CY_FX_USB_CHANGE_EVENT          (1 << 0)        /* Event signaling that a peripheral change is detected. */
 
+#define CY_FX_DATA_BURST_LENGTH			(8)				/* Number of Burst for the Data. USB 3.0 only, fix 8 in ZING */
+
 extern uint8_t glEp0Buffer[];                           /* Buffer to send / receive data for EP0. */
 
 /* Summary

@@ -25,6 +25,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>ControlCh.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/ControlCh.c</locationURI>
+		</link>
+		<link>
+			<name>ControlCh.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/ControlCh.h</locationURI>
+		</link>
+		<link>
 			<name>PIB.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/PIB.c</locationURI>
@@ -33,6 +43,16 @@
 			<name>PIB.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/PIB.h</locationURI>
+		</link>
+		<link>
+			<name>Zing.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Zing.c</locationURI>
+		</link>
+		<link>
+			<name>Zing.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Zing.h</locationURI>
 		</link>
 		<link>
 			<name>cyfx_gcc_startup.S</name>

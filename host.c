@@ -79,6 +79,7 @@
 #include "cyu3utils.h"
 #include "gpio_regs.h"
 #include "host.h"
+#include "phonedrv.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -371,6 +372,20 @@ CyFxApplnStart ()
         {
             glIsApplnActive = CyTrue;
             glHostOwner     = CY_FX_HOST_OWNER_ECHO_DRIVER;
+            return;
+        }
+    }
+
+    /* Any device is okay for the moment because I don't have enough information yet */
+    if(1)
+    {
+        CyU3PDebugPrint (6, "Smart phone is detected\r\n");
+        status = PhoneDriverInit ();
+        if (status == CY_U3P_SUCCESS)
+        {
+            glIsApplnActive = CyTrue;
+            glHostOwner     = CY_FX_HOST_OWNER_PHONE_DRIVER;
+            CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
             return;
         }
     }

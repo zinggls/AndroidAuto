@@ -598,6 +598,8 @@ CyFxApplnInit (void)
     CyU3PDebugPrint(4,"[Phone] Control Channel Thread Created\n");
 	CyFxZingInit();
 	CyU3PDebugPrint(4,"[Phone] ZING Init OK\n");
+    CyFxSetHRCP();
+    CyU3PDebugPrint(4,"[Phone] Set HRCP done\n");
     return status;
 }
 

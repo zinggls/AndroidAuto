@@ -68,7 +68,13 @@ PhoneUsbToZingThread(
         Status = CyU3PDmaChannelWaitForCompletion (&glChHandlePhoneDataIn,CYU3P_NO_WAIT);
         if(Status!=CY_U3P_SUCCESS) {
 			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PDmaChannelWaitForCompletion error(%d)\n", Status);
+			continue;
         }
-        CyU3PDebugPrint (4, "P");
+
+		if((Status=Zing_DataWrite(Buf.buffer,Buf.size))==CY_U3P_SUCCESS) {
+			CyU3PDebugPrint(4,"P");
+		}else{
+			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite error(0x%x)\n",Status);
+		}
 	}
 }

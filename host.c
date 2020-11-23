@@ -391,6 +391,9 @@ CyFxApplnStart ()
 
             CyFxCreateZingToPhoneUsbThread ();
             CyU3PDebugPrint(4,"[Phone] Zing To PhoneUsb Thread Created\n");
+
+            CyFxCreatePhoneUsbToZingThread ();
+            CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
             return;
         }
     }

@@ -38,8 +38,10 @@ ZingToPhoneUsbThread(
 	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (Dma.DataIn_.Channel_.size);
 	CyU3PReturnStatus_t Status;
 
+	CyU3PDebugPrint(4,"[Z-P] Zing to Phone USB thread starts\n");
 	CyU3PDebugPrint(4,"[Z-P] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	while(1){
-
+        CyU3PThreadSleep (1000);
+        /* Do nothing */
 	}
 }

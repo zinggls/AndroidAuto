@@ -37,8 +37,10 @@ PhoneUsbToZingThread(
 	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (glChHandlePhoneDataIn.size);
 	CyU3PReturnStatus_t Status;
 
+	CyU3PDebugPrint(4,"[P-Z] Phone USB to Zing thread starts\n");
 	CyU3PDebugPrint(4,"[P-Z] PhoneDataIn.size=%d\n",glChHandlePhoneDataIn.size);
 	while(1){
-
+        CyU3PThreadSleep (1000);
+        /* Do nothing */
 	}
 }

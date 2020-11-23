@@ -39,14 +39,6 @@ PhoneUsbToZingThread(
 
 	CyU3PDebugPrint(4,"[P-Z] PhoneDataIn.size=%d\n",glChHandlePhoneDataIn.size);
 	while(1){
-		if((Status=Zing_Transfer_Recv(&glChHandlePhoneDataIn,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			if((Status=Zing_DataWrite(buf,rt_len))==CY_U3P_SUCCESS) {
-				CyU3PDebugPrint(4,"P");
-			}else{
-				CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite error(0x%x)\n",Status);
-			}
-		}else{
-			CyU3PDebugPrint (4, "[P-Z] Zing_Transfer_Recv error(0x%x)\n",Status);
-		}
+
 	}
 }

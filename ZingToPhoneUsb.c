@@ -40,14 +40,6 @@ ZingToPhoneUsbThread(
 
 	CyU3PDebugPrint(4,"[Z-P] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	while(1){
-		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			if((Status=Zing_Transfer_Send(&glChHandlePhoneDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
-				CyU3PDebugPrint(4,"Z");
-			}else{
-				CyU3PDebugPrint (4, "[Z-P] Zing_DataWrite error(0x%x)\n",Status);
-			}
-		}else{
-			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
-		}
+
 	}
 }

@@ -46,7 +46,7 @@
    the VBUS causing a hardware damage.
 
    Please refer to the FX3 DVK user manual for enabling VBUS control.
-   The current example controls the VBUS supply via GPIO 21. The example assumes
+   The current example controls the VBUS supply VBUS_GPIO. The example assumes
    that a low on this line will turn on VBUS and allow remotely connected B-device
    to enumerate. A high / tri-state  on this line will turn off VBUS supply from
    the board. Also this requires that FX3 DVK is powered using external power supply.
@@ -475,12 +475,12 @@ CyFxUsbVBusControl (
         /* Drive VBUS only if no-one else is driving. */
         if (!CyU3POtgIsVBusValid ())
         {
-            CyU3PGpioSimpleSetValue (21, CY_FX_HOST_VBUS_ENABLE_VALUE);
+            CyU3PGpioSimpleSetValue (VBUS_GPIO, CY_FX_HOST_VBUS_ENABLE_VALUE);
         }
     }
     else
     {
-        CyU3PGpioSimpleSetValue (21, CY_FX_HOST_VBUS_DISABLE_VALUE);
+        CyU3PGpioSimpleSetValue (VBUS_GPIO, CY_FX_HOST_VBUS_DISABLE_VALUE);
     }
 
     CyU3PDebugPrint (2, "VBUS enable:%d\r\n", isEnable);
@@ -549,20 +549,20 @@ CyFxApplnInit (void)
     CyU3PGpioSimpleConfig_t simpleCfg;
     CyU3PReturnStatus_t status;
 
-    /* Override GPIO 21 for VBUS control. */
-    status = CyU3PDeviceGpioOverride (21, CyTrue);
+    /* Override VBUS_GPIO for VBUS control. */
+    status = CyU3PDeviceGpioOverride (VBUS_GPIO, CyTrue);
     if (status != CY_U3P_SUCCESS)
     {
         return status;
     }
 
-    /* Configure GPIO 21 as output for VBUS control. */
+    /* Configure VBUS_GPIO as output for VBUS control. */
     simpleCfg.outValue = CY_FX_HOST_VBUS_DISABLE_VALUE;
     simpleCfg.driveLowEn = CyTrue;
     simpleCfg.driveHighEn = CyTrue;
     simpleCfg.inputEn = CyFalse;
     simpleCfg.intrMode = CY_U3P_GPIO_NO_INTR;
-    status = CyU3PGpioSetSimpleConfig (21, &simpleCfg);
+    status = CyU3PGpioSetSimpleConfig (VBUS_GPIO, &simpleCfg);
     if (status != CY_U3P_SUCCESS)
     {
         return status;
@@ -754,7 +754,7 @@ main (void)
     io_cfg.useI2S    = CyFalse;
     io_cfg.useSpi    = CyFalse;
     io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_UART_ONLY;
-    /* GPIO 21 is enabled for VBUS control. But since this IO is part of p-port
+    /* VBUS_GPIO is enabled for VBUS control. But since this IO is part of p-port
      * it has to be overridden. Here no GPIO is enabled. */
     io_cfg.gpioSimpleEn[0]  = 0;
     io_cfg.gpioSimpleEn[1]  = 0;

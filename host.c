@@ -600,11 +600,6 @@ CyFxApplnInit (void)
 	CyU3PDebugPrint(4,"[Phone] ZING Init OK\n");
     CyFxSetHRCP();
     CyU3PDebugPrint(4,"[Phone] Set HRCP done\n");
-
-    CyFxCreatePhoneUsbToZingThread ();
-    CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
-    CyFxCreateZingToPhoneUsbThread ();
-    CyU3PDebugPrint(4,"[Phone] Zing To PhoneUsb Thread Created\n");
     return status;
 }
 

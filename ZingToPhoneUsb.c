@@ -41,7 +41,10 @@ ZingToPhoneUsbThread(
 	CyU3PDebugPrint(4,"[Z-P] Zing to Phone USB thread starts\n");
 	CyU3PDebugPrint(4,"[Z-P] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	while(1){
-        CyU3PThreadSleep (1000);
-        /* Do nothing */
+		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			/* Code which sends data to Phone USB must be here*/
+		}else{
+			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
+		}
 	}
 }

@@ -81,6 +81,7 @@
 #include "host.h"
 #include "phonedrv.h"
 #include "setup.h"
+#include "gpio.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -595,6 +596,8 @@ CyFxApplnInit (void)
     CyU3PDebugPrint(4,"[Phone] DMA Channels for CPU-PIB Created\n");
     CyFxCreateControlChannel();
     CyU3PDebugPrint(4,"[Phone] Control Channel Thread Created\n");
+	CyFxZingInit();
+	CyU3PDebugPrint(4,"[Phone] ZING Init OK\n");
     return status;
 }
 
@@ -727,9 +730,17 @@ main (void)
 {
     CyU3PIoMatrixConfig_t io_cfg;
     CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
+    CyU3PSysClockConfig_t clkCfg;
 
-    /* Initialize the device */
-    status = CyU3PDeviceInit (NULL);
+	/* Initialize the device
+	 * setSysClk400 clock configurations */
+	clkCfg.setSysClk400 = CyTrue;   /* FX3 device's master clock is set to a frequency > 400 MHz */
+	clkCfg.cpuClkDiv = 2;           /* CPU clock divider */
+	clkCfg.dmaClkDiv = 2;           /* DMA clock divider */
+	clkCfg.mmioClkDiv = 2;          /* MMIO clock divider */
+	clkCfg.useStandbyClk = CyFalse; /* device has no 32KHz clock supplied */
+	clkCfg.clkSrc = CY_U3P_SYS_CLK; /* Clock source for a peripheral block  */
+	status = CyU3PDeviceInit(&clkCfg);
     if (status != CY_U3P_SUCCESS)
     {
         goto handle_fatal_error;
@@ -746,18 +757,16 @@ main (void)
      * is connected to the IO(53:56). This means that either DQ32 mode should be
      * selected or lppMode should be set to UART_ONLY. Here we are choosing
      * UART_ONLY configuration. */
-    io_cfg.isDQ32Bit = CyFalse;
+    io_cfg.isDQ32Bit = CyTrue;
     io_cfg.s0Mode = CY_U3P_SPORT_INACTIVE;
     io_cfg.s1Mode = CY_U3P_SPORT_INACTIVE;
     io_cfg.useUart   = CyTrue;
     io_cfg.useI2C    = CyTrue;
     io_cfg.useI2S    = CyFalse;
     io_cfg.useSpi    = CyFalse;
-    io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_UART_ONLY;
-    /* VBUS_GPIO is enabled for VBUS control. But since this IO is part of p-port
-     * it has to be overridden. Here no GPIO is enabled. */
+    io_cfg.lppMode   = CY_U3P_IO_MATRIX_LPP_DEFAULT;
     io_cfg.gpioSimpleEn[0]  = 0;
-    io_cfg.gpioSimpleEn[1]  = 0;
+    io_cfg.gpioSimpleEn[1]  = 1<<(GPIO57-32); // TP2 in schematic
     io_cfg.gpioComplexEn[0] = 0;
     io_cfg.gpioComplexEn[1] = 0;
     status = CyU3PDeviceConfigureIOMatrix (&io_cfg);

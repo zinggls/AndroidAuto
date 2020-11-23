@@ -214,6 +214,20 @@ CyFxCreateZingToAutoUsbThread (
 }
 
 void
+CyFxCreatePhoneUsbToZingThread (
+        void)
+{
+
+}
+
+void
+CyFxCreateZingToPhoneUsbThread (
+        void)
+{
+
+}
+
+void
 CyFxUsbConnect (
 		void)
 {

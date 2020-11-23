@@ -72,6 +72,16 @@ void
 CyFxCreateZingToAutoUsbThread (
         void);
 
+/* Create PhoneUSB to Zing Thread */
+void
+CyFxCreatePhoneUsbToZingThread (
+        void);
+
+/* Create Zing to PhoneUSB Thread */
+void
+CyFxCreateZingToPhoneUsbThread (
+        void);
+
 /* Connect USB */
 void
 CyFxUsbConnect (

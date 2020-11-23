@@ -106,6 +106,7 @@ CyFxCreateChannel(
 
 void
 CyFxCreateCpuPibDmaChannels (
+		const char *tag,
 		uint16_t dataBurstLength)
 {
     uint16_t size = 1024; // super speed <- assumed condition , temporary code
@@ -118,7 +119,7 @@ CyFxCreateCpuPibDmaChannels (
                       0,
                       &Dma.ControlOut_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_OUT);
-	CyU3PDebugPrint(4,"[Auto] CPU-PIB ControlOut Channel created\n");
+	CyU3PDebugPrint(4,"%s CPU-PIB ControlOut Channel created\n",tag);
 
 	CyFxCreateChannel(size,
                       8,
@@ -128,7 +129,7 @@ CyFxCreateCpuPibDmaChannels (
                       0,
                       &Dma.ControlIn_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_IN);
-	CyU3PDebugPrint(4,"[Auto] CPU-PIB ControlIn Channel created\n");
+	CyU3PDebugPrint(4,"%s CPU-PIB ControlIn Channel created\n",tag);
 
 	CyFxCreateChannel(size*dataBurstLength,
                       4,
@@ -138,7 +139,7 @@ CyFxCreateCpuPibDmaChannels (
                       0,
                       &Dma.DataOut_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_OUT);
-	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataOut Channel created\n");
+	CyU3PDebugPrint(4,"%s CPU-PIB DataOut Channel created\n",tag);
 
 	CyFxCreateChannel(size*dataBurstLength,
                       4,
@@ -148,7 +149,7 @@ CyFxCreateCpuPibDmaChannels (
                       0,
                       &Dma.DataIn_.Channel_,
                       CY_U3P_DMA_TYPE_MANUAL_IN);
-	CyU3PDebugPrint(4,"[Auto] CPU-PIB DataIn Channel created\n");
+	CyU3PDebugPrint(4,"%s CPU-PIB DataIn Channel created\n",tag);
 }
 
 void

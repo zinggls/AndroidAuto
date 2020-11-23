@@ -390,7 +390,7 @@ CyFxAutoApplnInit (void)
     CyFxAutoPibInit();
     CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
 
-    CyFxCreateCpuPibDmaChannels(CY_FX_DATA_BURST_LENGTH);
+    CyFxCreateCpuPibDmaChannels("[Auto]",CY_FX_DATA_BURST_LENGTH);
     CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");
     CyFxCreateControlChannel();
     CyU3PDebugPrint(4,"[Auto] Control Channel Thread Created\n");

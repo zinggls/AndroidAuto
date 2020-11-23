@@ -44,6 +44,7 @@ CyFxCreateChannel(
 /* Create DMA Channels between CPU-PIB */
 void
 CyFxCreateCpuPibDmaChannels (
+		const char *tag,
 		uint16_t dataBurstLength);
 
 /* Create Control Channel Thread which receives control data generated from ZING */

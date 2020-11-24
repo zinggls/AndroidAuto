@@ -37,6 +37,7 @@ AutoUsbToZingThread(
 	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (glChHandleAutoDataIn.size);
 	CyU3PReturnStatus_t Status;
 
+	CyU3PThreadSleep (100);
 	CyU3PDebugPrint(4,"[A-Z] AutoDataIn.size=%d\n",glChHandleAutoDataIn.size);
 	while(1){
 		if((Status=Zing_Transfer_Recv(&glChHandleAutoDataIn,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {

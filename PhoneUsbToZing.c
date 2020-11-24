@@ -49,7 +49,7 @@ PhoneUsbToZingThread(
 	while(1){
 		Status = CyU3PDmaChannelSetupRecvBuffer (&glChHandlePhoneDataIn, &Buf);
 		if(Status!=CY_U3P_SUCCESS) {
-			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PUsbHostEpSetXfer error(%d)\n", Status);
+			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PDmaChannelSetupRecvBuffer error(%d)\n", Status);
 			continue;
 		}
 

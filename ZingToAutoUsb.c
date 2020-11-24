@@ -49,7 +49,7 @@ ZingToAutoUsbThread(
 				if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
 					CyU3PDebugPrint(4,"Z");
 				}else{
-					CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
+					CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite error(0x%x)\n",Status);
 				}
 	    	}
 		}else{

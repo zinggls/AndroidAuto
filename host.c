@@ -82,6 +82,7 @@
 #include "phonedrv.h"
 #include "setup.h"
 #include "gpio.h"
+#include "Zing.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */

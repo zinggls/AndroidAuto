@@ -522,8 +522,10 @@ AutoThread_Entry (
     CyFxAutoApplnInit();
     CyU3PDebugPrint(4,"[Auto] AutoAppln Init OK\r\n");
 
+#ifdef PERSISTENT_USB
     CyFxUsbConnect();
     CyU3PDebugPrint(4,"[Auto] USB Connected\r\n");
+#endif
 
     for (;;)
     {

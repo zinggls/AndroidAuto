@@ -502,8 +502,10 @@ CyFxAutoApplnInit (void)
     CyFxSetHRCP();
     CyU3PDebugPrint(4,"[Auto] Set HRCP done\n");
 
+#ifdef PERSISTENT_USB
     CyFxCreateAutoUsbToZingThread ();
     CyU3PDebugPrint(4,"[Auto] AutoUsb To Zing Thread Created\n");
+#endif
     CyFxCreateZingToAutoUsbThread ();
     CyU3PDebugPrint(4,"[Auto] Zing To AutoUsb Thread Created\n");
 }

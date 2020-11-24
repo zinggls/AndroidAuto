@@ -48,6 +48,9 @@ ZingToAutoUsbThread(
 	    		CyU3PDebugPrint(4,"PING ON received. Connecting USB...\r\n");
 	    	    CyFxUsbConnect();
 	    	    CyU3PDebugPrint(4,"USB Connected\r\n");
+
+	    	    CyFxCreateAutoUsbToZingThread ();
+	    	    CyU3PDebugPrint(4,"[Auto] AutoUsb To Zing Thread Created\n");
 	    	    continue;
 	    	}
 #endif

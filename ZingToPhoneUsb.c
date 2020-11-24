@@ -4,6 +4,8 @@
 #include "cyu3error.h"
 #include "dma.h"
 #include "Zing.h"
+#include "phonedrv.h"
+#include "cyu3usbhost.h"
 
 CyU3PThread ZingToPhoneUsbThreadHandle;
 extern CyU3PDmaChannel glChHandlePhoneDataOut;
@@ -34,15 +36,47 @@ void
 ZingToPhoneUsbThread(
 		uint32_t Value)
 {
+	CyU3PReturnStatus_t Status;
+	CyU3PDmaBuffer_t Buf;
+	CyU3PUsbHostEpStatus_t epStatus;
+
 	uint32_t rt_len;
 	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (Dma.DataIn_.Channel_.size);
-	CyU3PReturnStatus_t Status;
 
 	CyU3PDebugPrint(4,"[Z-P] Zing to Phone USB thread starts\n");
 	CyU3PDebugPrint(4,"[Z-P] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
+
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			/* Code which sends data to Phone USB must be here*/
+			Buf.buffer = buf;
+			Buf.count = rt_len;
+			Buf.size = ((rt_len + 0x0F) & ~0x0F);;
+			Buf.status = 0;
+			Status = CyU3PDmaChannelSetupSendBuffer (&glChHandlePhoneDataOut, &Buf);
+			if(Status!=CY_U3P_SUCCESS) {
+				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PDmaChannelSetupSendBuffer error(%d)\n", Status);
+				continue;
+			}
+
+	        Status = CyU3PUsbHostEpSetXfer (Phone.outEp, 0, glChHandlePhoneDataOut.size);
+	        if(Status!=CY_U3P_SUCCESS) {
+				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PUsbHostEpSetXfer error(%d)\n", Status);
+				continue;
+	        }
+
+	        Status = CyU3PUsbHostEpWaitForCompletion (Phone.outEp, &epStatus, CYU3P_WAIT_FOREVER);
+	        if(Status!=CY_U3P_SUCCESS) {
+				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PUsbHostEpWaitForCompletion error(%d)\n", Status);
+				continue;
+	        }
+
+	        Status = CyU3PDmaChannelWaitForCompletion (&glChHandlePhoneDataOut,CYU3P_NO_WAIT);
+	        if(Status!=CY_U3P_SUCCESS) {
+				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PDmaChannelWaitForCompletion error(%d)\n", Status);
+				continue;
+	        }
+
+	        CyU3PDebugPrint(4,"Z");
 		}else{
 			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}

@@ -394,6 +394,13 @@ CyFxApplnStart ()
 
             CyFxCreatePhoneUsbToZingThread ();
             CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
+
+            status = Zing_DataWrite((uint8_t*)"PING ON", strlen("PING ON"));
+            if (status == CY_U3P_SUCCESS) {
+            	CyU3PDebugPrint(4,"[Phone] PING ON sent\n");
+            }else{
+            	CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
+            }
             return;
         }
     }

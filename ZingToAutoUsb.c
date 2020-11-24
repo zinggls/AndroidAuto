@@ -41,11 +41,17 @@ ZingToAutoUsbThread(
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
-				CyU3PDebugPrint(4,"Z");
-			}else{
-				CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
-			}
+	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x4E )
+	    	{
+	    		/* PING ON received*/
+	    		CyU3PDebugPrint(4,"[Z-A] PING ON received");
+	    	}else{
+				if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
+					CyU3PDebugPrint(4,"Z");
+				}else{
+					CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
+				}
+	    	}
 		}else{
 			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}

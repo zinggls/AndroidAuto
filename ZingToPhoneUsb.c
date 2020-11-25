@@ -53,31 +53,22 @@ ZingToPhoneUsbThread(
 			Buf.count = rt_len;
 			Buf.size = ((rt_len + 0x0F) & ~0x0F);;
 			Buf.status = 0;
+			CyU3PDebugPrint(4,"[Z-P] count=%d, size=%d\r\n",Buf.count,Buf.size);
 			Status = CyU3PDmaChannelSetupSendBuffer (&glChHandlePhoneDataOut, &Buf);
-			if(Status!=CY_U3P_SUCCESS) {
-				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PDmaChannelSetupSendBuffer error(%d)\n", Status);
-				continue;
-			}
+		    if (Status == CY_U3P_SUCCESS)
+		    	Status = CyU3PUsbHostEpSetXfer (0x81, CY_U3P_USB_HOST_EPXFER_NORMAL, Buf.count);
 
-	        Status = CyU3PUsbHostEpSetXfer (Phone.outEp, 0, glChHandlePhoneDataOut.size);
-	        if(Status!=CY_U3P_SUCCESS) {
-				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PUsbHostEpSetXfer error(%d)\n", Status);
-				continue;
-	        }
+		    if (Status == CY_U3P_SUCCESS)
+		    	Status = CyU3PUsbHostEpWaitForCompletion (0x81, &epStatus, PHONE_DATAOUT_WAIT_TIMEOUT);
 
-	        Status = CyU3PUsbHostEpWaitForCompletion (Phone.outEp, &epStatus, CYU3P_WAIT_FOREVER);
-	        if(Status!=CY_U3P_SUCCESS) {
-				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PUsbHostEpWaitForCompletion error(%d)\n", Status);
-				continue;
-	        }
+		    if (Status == CY_U3P_SUCCESS)
+		    	Status = CyU3PDmaChannelWaitForCompletion (&glChHandlePhoneDataOut, CYU3P_NO_WAIT);
 
-	        Status = CyU3PDmaChannelWaitForCompletion (&glChHandlePhoneDataOut,CYU3P_NO_WAIT);
-	        if(Status!=CY_U3P_SUCCESS) {
-				CyU3PDebugPrint (4, "ZingToPhoneUsbThread, CyU3PDmaChannelWaitForCompletion error(%d)\n", Status);
-				continue;
-	        }
-
-	        CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut\r\n",Buf.size);
+		    if (Status != CY_U3P_SUCCESS)
+				CyU3PDebugPrint(4,"[Z-P] sending %d bytes to PhoneDataOut failed error(%d),EP=0x%x,Buf.count=%d,Buf.size=%d,epStatus=0x%x\r\n",
+						Buf.count,Status,Phone.outEp,Buf.count,Buf.size,epStatus);
+		    else
+		    	CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut\r\n",Buf.size);
 		}else{
 			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}

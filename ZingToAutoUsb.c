@@ -42,6 +42,7 @@ ZingToAutoUsbThread(
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			CyU3PDebugPrint(4,"[Z-A] %d bytes received from GpifDataIn\r\n",rt_len);
 #ifndef PERSISTENT_USB
 	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x4E )
 	    	{
@@ -55,7 +56,7 @@ ZingToAutoUsbThread(
 	    	}
 #endif
 			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
-				CyU3PDebugPrint(4,"Z");
+				CyU3PDebugPrint(4,"[A-Z] %d bytes sent to AutoDataOut\r\n",rt_len);
 			}else{
 				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite error(0x%x)\n",Status);
 			}

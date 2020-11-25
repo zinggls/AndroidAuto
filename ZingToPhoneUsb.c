@@ -48,6 +48,7 @@ ZingToPhoneUsbThread(
 
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			CyU3PDebugPrint(4,"[Z-P] %d bytes received from GpifDataIn\r\n",rt_len);
 			Buf.buffer = buf;
 			Buf.count = rt_len;
 			Buf.size = ((rt_len + 0x0F) & ~0x0F);;
@@ -76,7 +77,7 @@ ZingToPhoneUsbThread(
 				continue;
 	        }
 
-	        CyU3PDebugPrint(4,"Z");
+	        CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut\r\n",Buf.size);
 		}else{
 			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}

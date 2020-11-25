@@ -211,6 +211,7 @@ CyFxAutoApplnStop (
     CyU3PEpConfig_t epCfg;
     CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
+    CyU3PDebugPrint (1, "CyFxAutoApplnStop start\r\n");
     /* Update the flag. */
     glIsApplnActive = CyFalse;
 
@@ -244,6 +245,7 @@ CyFxAutoApplnStop (
         CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler (apiRetStatus);
     }
+    CyU3PDebugPrint (1, "CyFxAutoApplnStop end\r\n");
 }
 
 /* Callback to handle the USB setup requests. */

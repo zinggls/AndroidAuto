@@ -39,6 +39,7 @@ PhoneUsbToZingThread(
 	CyU3PDmaBuffer_t Buf;
 	CyU3PUsbHostEpStatus_t epStatus;
 
+	CyU3PThreadSleep (1000);
 	CyU3PDebugPrint(4,"[P-Z] Phone USB to Zing thread starts\n");
 	CyU3PDebugPrint(4,"[P-Z] PhoneDataIn.size=%d\n",glChHandlePhoneDataIn.size);
 

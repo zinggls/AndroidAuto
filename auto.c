@@ -123,18 +123,22 @@ CyFxAutoApplnStart (
      * create a DMA channel and start the transfer on this. */
 
     /* Based on the Bus Speed configure the endpoint packet size */
+    CyU3PDebugPrint (1, "CyFxAutoApplnStart start\r\n",size);
     switch (usbSpeed)
     {
         case CY_U3P_FULL_SPEED:
             size = 64;
+            CyU3PDebugPrint (1, "CyFxAutoApplnStart, CY_U3P_FULL_SPEED(%d)\r\n",size);
             break;
 
         case CY_U3P_HIGH_SPEED:
             size = 512;
+            CyU3PDebugPrint (1, "CyFxAutoApplnStart, CY_U3P_HIGH_SPEED(%d)\r\n",size);
             break;
 
         case  CY_U3P_SUPER_SPEED:
             size = 1024;
+            CyU3PDebugPrint (1, "CyFxAutoApplnStart, CY_U3P_SUPER_SPEED(%d)\r\n",size);
             break;
 
         default:
@@ -194,6 +198,7 @@ CyFxAutoApplnStart (
 
     /* Update the status flag. */
     glIsApplnActive = CyTrue;
+    CyU3PDebugPrint (1, "CyFxAutoApplnStart end\r\n",size);
 }
 
 /* This function stops the Auto application. This shall be called whenever
@@ -335,6 +340,7 @@ CyFxAutoApplnUSBEventCB (
     switch (evtype)
     {
         case CY_U3P_USB_EVENT_SETCONF:
+        	CyU3PDebugPrint (4, "CY_U3P_USB_EVENT_SETCONF\n");
             /* Disable the low power entry to optimize USB throughput */
             CyU3PUsbLPMDisable();		
             /* Stop the application before re-starting. */
@@ -347,7 +353,9 @@ CyFxAutoApplnUSBEventCB (
             break;
 
         case CY_U3P_USB_EVENT_RESET:
+        	CyU3PDebugPrint (4, "CY_U3P_USB_EVENT_RESET\n");
         case CY_U3P_USB_EVENT_DISCONNECT:
+        	CyU3PDebugPrint (4, "CY_U3P_USB_EVENT_DISCONNECT\n");
             /* Stop the loop back function. */
             if (glIsApplnActive)
             {
@@ -356,6 +364,7 @@ CyFxAutoApplnUSBEventCB (
             break;
 
         default:
+        	CyU3PDebugPrint (4, "event not handled(%d)\n",evtype);
             break;
     }
 }

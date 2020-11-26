@@ -6,6 +6,7 @@
 #include "Zing.h"
 #include "phonedrv.h"
 #include "cyu3usbhost.h"
+#include "uhbuf.h"
 
 CyU3PThread ZingToPhoneUsbThreadHandle;
 extern CyU3PDmaChannel glChHandlePhoneDataOut;
@@ -37,9 +38,6 @@ ZingToPhoneUsbThread(
 		uint32_t Value)
 {
 	CyU3PReturnStatus_t Status;
-	CyU3PDmaBuffer_t Buf;
-	CyU3PUsbHostEpStatus_t epStatus;
-
 	uint32_t rt_len;
 	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (Dma.DataIn_.Channel_.size);
 
@@ -49,26 +47,11 @@ ZingToPhoneUsbThread(
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,buf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 			CyU3PDebugPrint(4,"[Z-P] %d bytes received from GpifDataIn\r\n",rt_len);
-			Buf.buffer = buf;
-			Buf.count = rt_len;
-			Buf.size = ((rt_len + 0x0F) & ~0x0F);;
-			Buf.status = 0;
-			CyU3PDebugPrint(4,"[Z-P] count=%d, size=%d\r\n",Buf.count,Buf.size);
-			Status = CyU3PDmaChannelSetupSendBuffer (&glChHandlePhoneDataOut, &Buf);
-		    if (Status == CY_U3P_SUCCESS)
-		    	Status = CyU3PUsbHostEpSetXfer (0x81, CY_U3P_USB_HOST_EPXFER_NORMAL, Buf.count);
 
-		    if (Status == CY_U3P_SUCCESS)
-		    	Status = CyU3PUsbHostEpWaitForCompletion (0x81, &epStatus, PHONE_DATAOUT_WAIT_TIMEOUT);
-
-		    if (Status == CY_U3P_SUCCESS)
-		    	Status = CyU3PDmaChannelWaitForCompletion (&glChHandlePhoneDataOut, CYU3P_NO_WAIT);
-
-		    if (Status != CY_U3P_SUCCESS)
-				CyU3PDebugPrint(4,"[Z-P] sending %d bytes to PhoneDataOut failed error(%d),EP=0x%x,Buf.count=%d,Buf.size=%d,epStatus=0x%x\r\n",
-						Buf.count,Status,Phone.outEp,Buf.count,Buf.size,epStatus);
+		    if ((Status=CyFxSendBuffer (Phone.outEp,&glChHandlePhoneDataOut,buf,rt_len)) != CY_U3P_SUCCESS)
+				CyU3PDebugPrint(4,"[Z-P] sending %d bytes to PhoneDataOut failed error(0x%x),EP=0x%x\r\n",rt_len,Status,Phone.outEp);
 		    else
-		    	CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut\r\n",Buf.size);
+		    	CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut,EP=0x%x\r\n",rt_len,Phone.outEp);
 		}else{
 			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}

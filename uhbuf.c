@@ -7,14 +7,14 @@
 CyU3PReturnStatus_t
 CyFxChanRecovery (
 		uint8_t Ep,
-		CyU3PDmaChannel Ch)
+		CyU3PDmaChannel *Ch)
 {
     CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
 
     /* Abort and reset the endpoint. */
     if (Ep != 0)
     {
-        CyU3PDmaChannelReset (&Ch);
+        CyU3PDmaChannelReset (Ch);
         CyU3PUsbHostEpAbort (Ep);
 
         status = CyFxSendSetupRqt (0x02, CY_U3P_USB_SC_CLEAR_FEATURE,
@@ -30,7 +30,7 @@ CyFxChanRecovery (
 CyU3PReturnStatus_t
 CyFxSendBuffer (
 		uint8_t outEp,
-		CyU3PDmaChannel outCh,
+		CyU3PDmaChannel *outCh,
         uint8_t *buffer,
         uint16_t count)
 {
@@ -43,7 +43,7 @@ CyFxSendBuffer (
     buf_p.count  = count;
     buf_p.size   = ((count + 0x0F) & ~0x0F);
     buf_p.status = 0;
-    status = CyU3PDmaChannelSetupSendBuffer (&outCh, &buf_p);
+    status = CyU3PDmaChannelSetupSendBuffer (outCh, &buf_p);
     if (status == CY_U3P_SUCCESS)
     {
         status = CyU3PUsbHostEpSetXfer (outEp,
@@ -56,7 +56,7 @@ CyFxSendBuffer (
     }
     if (status == CY_U3P_SUCCESS)
     {
-        status = CyU3PDmaChannelWaitForCompletion (&outCh, CYU3P_NO_WAIT);
+        status = CyU3PDmaChannelWaitForCompletion (outCh, CYU3P_NO_WAIT);
     }
 
     if (status != CY_U3P_SUCCESS)
@@ -70,7 +70,7 @@ CyFxSendBuffer (
 CyU3PReturnStatus_t
 CyFxRecvBuffer (
 		uint8_t inpEp,
-		CyU3PDmaChannel inpCh,
+		CyU3PDmaChannel *inpCh,
         uint8_t *buffer,
         uint16_t count)
 {
@@ -83,7 +83,7 @@ CyFxRecvBuffer (
     buf_p.count  = 0;
     buf_p.size   = ((count + 0x0F) & ~0x0F);
     buf_p.status = 0;
-    status = CyU3PDmaChannelSetupRecvBuffer (&inpCh, &buf_p);
+    status = CyU3PDmaChannelSetupRecvBuffer (inpCh, &buf_p);
     if (status == CY_U3P_SUCCESS)
     {
         status = CyU3PUsbHostEpSetXfer (inpEp,
@@ -96,7 +96,7 @@ CyFxRecvBuffer (
     }
     if (status == CY_U3P_SUCCESS)
     {
-        status = CyU3PDmaChannelWaitForCompletion (&inpCh, CYU3P_NO_WAIT);
+        status = CyU3PDmaChannelWaitForCompletion (inpCh, CYU3P_NO_WAIT);
     }
 
     if (status != CY_U3P_SUCCESS)

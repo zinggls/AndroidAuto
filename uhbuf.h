@@ -9,19 +9,19 @@
 CyU3PReturnStatus_t
 CyFxChanRecovery (
 		uint8_t Ep,
-		CyU3PDmaChannel Ch);
+		CyU3PDmaChannel *Ch);
 
 CyU3PReturnStatus_t
 CyFxSendBuffer (
 		uint8_t outEp,
-		CyU3PDmaChannel outCh,
+		CyU3PDmaChannel *outCh,
         uint8_t *buffer,
         uint16_t count);
 
 CyU3PReturnStatus_t
 CyFxRecvBuffer (
 		uint8_t inpEp,
-		CyU3PDmaChannel inpCh,
+		CyU3PDmaChannel *inpCh,
         uint8_t *buffer,
         uint16_t count);
 

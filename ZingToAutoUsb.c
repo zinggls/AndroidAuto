@@ -56,6 +56,10 @@ ZingToAutoUsbThread(
 	    	}
 #endif
 			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,buf,rt_len))==CY_U3P_SUCCESS) {
+
+			    for(uint32_t i=0;i<rt_len;i++) CyU3PDebugPrint (6,"%x ", buf[i]);
+			    CyU3PDebugPrint(6, "\n");
+
 				CyU3PDebugPrint(4,"[A-Z] %d bytes sent to AutoDataOut\r\n",rt_len);
 			}else{
 				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite error(0x%x)\n",Status);

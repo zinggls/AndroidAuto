@@ -84,6 +84,14 @@ PhoneDriverInit ()
         offset += glEp0Buffer[offset];
     }
 
+    /* Set the new configuration. */
+    status = CyFxSendSetupRqt (0x00, CY_U3P_USB_SC_SET_CONFIGURATION,
+            1, 0, 0, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
     CyU3PDebugPrint (1, "[PhoneDriverInit] outEp=%d(0x%x), inEp=%d(0x%x), epSize=%d\n",Phone.outEp,Phone.outEp,Phone.inEp,Phone.inEp,Phone.epSize);
 
     /* Add the IN endpoint. */

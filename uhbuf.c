@@ -97,7 +97,7 @@ CyFxRecvBuffer (
     if (status == CY_U3P_SUCCESS)
     {
         status = CyU3PUsbHostEpWaitForCompletion (inpEp, &epStatus,
-        		CY_FX_WAIT_TIMEOUT);
+        		CYU3P_WAIT_FOREVER);
     }
     if (status == CY_U3P_SUCCESS)
     {

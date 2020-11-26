@@ -23,6 +23,7 @@ CyFxRecvBuffer (
 		uint8_t inpEp,
 		CyU3PDmaChannel *inpCh,
         uint8_t *buffer,
-        uint16_t count);
+        uint16_t count,
+        uint32_t *length);
 
 #endif

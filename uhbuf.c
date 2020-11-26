@@ -72,12 +72,17 @@ CyFxRecvBuffer (
 		uint8_t inpEp,
 		CyU3PDmaChannel *inpCh,
         uint8_t *buffer,
-        uint16_t count)
+        uint16_t count,
+        uint32_t *length)
 {
     CyU3PDmaBuffer_t buf_p;
     CyU3PUsbHostEpStatus_t epStatus;
     CyU3PReturnStatus_t status = CY_U3P_SUCCESS;
+    uint32_t prodXferCount = 0;
+    uint32_t consXferCount = 0;
+    CyU3PDmaState_t state = 0;
 
+    *length = 0;
     /* Setup the DMA for transfer. */
     buf_p.buffer = buffer;
     buf_p.count  = 0;
@@ -97,6 +102,12 @@ CyFxRecvBuffer (
     if (status == CY_U3P_SUCCESS)
     {
         status = CyU3PDmaChannelWaitForCompletion (inpCh, CYU3P_NO_WAIT);
+    }
+
+    if (status == CY_U3P_SUCCESS)
+    {
+    	status = CyU3PDmaChannelGetStatus (inpCh, &state, &prodXferCount, &consXferCount);
+        if (status == CY_U3P_SUCCESS) *length = prodXferCount;
     }
 
     if (status != CY_U3P_SUCCESS)

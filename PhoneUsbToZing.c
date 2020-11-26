@@ -5,6 +5,7 @@
 #include "Zing.h"
 #include "phonedrv.h"
 #include "cyu3usbhost.h"
+#include "uhbuf.h"
 
 CyU3PThread PhoneUsbToZingThreadHandle;
 extern CyU3PDmaChannel glChHandlePhoneDataIn;
@@ -36,45 +37,26 @@ PhoneUsbToZingThread(
 		uint32_t Value)
 {
 	CyU3PReturnStatus_t Status;
+	uint32_t rt_len;
 	CyU3PDmaBuffer_t Buf;
-	CyU3PUsbHostEpStatus_t epStatus;
+	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (glChHandlePhoneDataIn.size);
 
 	CyU3PThreadSleep (1000);
 	CyU3PDebugPrint(4,"[P-Z] Phone USB to Zing thread starts\n");
 	CyU3PDebugPrint(4,"[P-Z] PhoneDataIn.size=%d\n",glChHandlePhoneDataIn.size);
 
-	Buf.buffer = (uint8_t *)CyU3PDmaBufferAlloc (glChHandlePhoneDataIn.size);
+	Buf.buffer = buf;
 	Buf.count = 0;
 	Buf.size = glChHandlePhoneDataIn.size;
 	Buf.status = 0;
 	while(1){
-		Status = CyU3PDmaChannelSetupRecvBuffer (&glChHandlePhoneDataIn, &Buf);
-		if(Status!=CY_U3P_SUCCESS) {
-			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PDmaChannelSetupRecvBuffer error(%d)\n", Status);
-			continue;
-		}
+	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS)
+			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
+	    else
+	    	CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",rt_len);
 
-        Status = CyU3PUsbHostEpSetXfer (Phone.inEp, 0, glChHandlePhoneDataIn.size);
-        if(Status!=CY_U3P_SUCCESS) {
-			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PUsbHostEpSetXfer error(%d)\n", Status);
-			continue;
-        }
-
-        Status = CyU3PUsbHostEpWaitForCompletion (Phone.inEp, &epStatus, CYU3P_WAIT_FOREVER);
-        if(Status!=CY_U3P_SUCCESS) {
-			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PUsbHostEpWaitForCompletion error(%d)\n", Status);
-			continue;
-        }
-
-        Status = CyU3PDmaChannelWaitForCompletion (&glChHandlePhoneDataIn,CYU3P_NO_WAIT);
-        if(Status!=CY_U3P_SUCCESS) {
-			CyU3PDebugPrint (4, "PhoneUsbToZingThread, CyU3PDmaChannelWaitForCompletion error(%d)\n", Status);
-			continue;
-        }
-        CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",Buf.size);
-
-		if((Status=Zing_DataWrite(Buf.buffer,Buf.size))==CY_U3P_SUCCESS) {
-			CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",Buf.size);
+		if((Status=Zing_DataWrite(buf,rt_len))==CY_U3P_SUCCESS) {
+			CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",rt_len);
 		}else{
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite error(0x%x)\n",Status);
 		}

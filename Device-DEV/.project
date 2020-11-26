@@ -100,6 +100,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/auto.h</locationURI>
 		</link>
 		<link>
+			<name>cyfx_app_descriptor-2EP.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/cyfx_app_descriptor-2EP.c</locationURI>
+		</link>
+		<link>
 			<name>cyfx_gcc_startup.S</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/cyfx_gcc_startup.S</locationURI>
@@ -108,11 +113,6 @@
 			<name>cyfxtx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/cyfxtx.c</locationURI>
-		</link>
-		<link>
-			<name>descriptors.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/descriptors.c</locationURI>
 		</link>
 		<link>
 			<name>dma.h</name>

@@ -149,5 +149,15 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/setup.h</locationURI>
 		</link>
+		<link>
+			<name>uhbuf.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/uhbuf.c</locationURI>
+		</link>
+		<link>
+			<name>uhbuf.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/uhbuf.h</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

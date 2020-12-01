@@ -237,35 +237,46 @@ CyFxSendSetupRqt (
 void
 CyFxApplnStart ()
 {
-    uint16_t length;
     CyU3PReturnStatus_t status;
     CyU3PUsbHostEpConfig_t epCfg;
+    CyU3PUsbHostPortStatus_t portStatus;
+    CyU3PUsbHostOpSpeed_t    portSpeed;
+
+    //CyU3PUsbHostPortStatus
+    status = CyU3PUsbHostGetPortStatus(&portStatus, &portSpeed);
+    CyU3PDebugPrint (1, "[CyFxApplnStart] call CyU3PUsbHostGetPortStatus, status=%d, portStatus=%d, portSpeed=%d\r\n", status, portStatus, portSpeed);
 
     /* Add EP0 to the scheduler. */
     CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof(epCfg));
     epCfg.type = CY_U3P_USB_EP_CONTROL;
     epCfg.mult = 1;
     /* Start off with 8 byte EP0 packet size. */
-    epCfg.maxPktSize = 8;
+    epCfg.maxPktSize = 64;//8;
     epCfg.pollingRate = 0;
-    epCfg.fullPktSize = 8;
+    epCfg.fullPktSize = 64;//8;
     epCfg.isStreamMode = CyFalse;
+
+    CyU3PDebugPrint (1, "[CyFxApplnStart] call CyU3PUsbHostEpAdd\r\n");
     status = CyU3PUsbHostEpAdd (0, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
+        CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd error\r\n");
+
         goto enum_error;
     }
+    CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd returned\r\n");
+	    CyU3PThreadSleep (100);
 
-    CyU3PThreadSleep (100);
+    CyU3PDebugPrint (1, "[CyFxApplnStart] call CyFxSendSetupRqt\r\n");
 
     /* Get the device descriptor. */
     status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
             (CY_U3P_USB_DEVICE_DESCR << 8), 0, 8, glEp0Buffer);
     if (status != CY_U3P_SUCCESS)
     {
+        CyU3PDebugPrint (1, "[CyFxApplnStart] CyFxSendSetupRqt error\r\n");
         goto enum_error;
     }
-
     CyU3PDebugPrint (6, "Device descriptor received\r\n");
 
     /* Identify the EP0 packet size and update the scheduler. */
@@ -289,9 +300,6 @@ CyFxApplnStart ()
         goto enum_error;
     }
 
-    /* Save the device descriptor. */
-    CyU3PMemCopy (glDeviceDesc, glEp0Buffer, 18);
-
     /* Set the peripheral device address. */
     status = CyFxSendSetupRqt (0x00, CY_U3P_USB_SC_SET_ADDRESS,
             CY_FX_HOST_PERIPHERAL_ADDRESS, 0, 0, glEp0Buffer);
@@ -305,114 +313,155 @@ CyFxApplnStart ()
         goto enum_error;
     }
 
+    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
+            (CY_U3P_USB_DEVICE_DESCR << 8), 0, 18, glEp0Buffer);
+    if (status != CY_U3P_SUCCESS)
+    {
+        goto enum_error;
+    }
+
     CyU3PDebugPrint (6, "Device address set\r\n");
 
-    /* Read first four bytes of configuration descriptor to determine
-     * the total length. */
-    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
-            (CY_U3P_USB_CONFIG_DESCR << 8), 0, 4, glEp0Buffer);
-    if (status != CY_U3P_SUCCESS)
-    {
-        goto enum_error;
-    }
-
-    /* Identify the length of the data received. */
-    length = CY_U3P_MAKEWORD(glEp0Buffer[3], glEp0Buffer[2]);
-    if (length > CY_FX_HOST_EP0_BUFFER_SIZE)
-    {
-        goto enum_error;
-    }
-
-    /* Read the full configuration descriptor. */
-    status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
-            (CY_U3P_USB_CONFIG_DESCR << 8), 0, length, glEp0Buffer);
-    if (status != CY_U3P_SUCCESS)
-    {
-        goto enum_error;
-    }
-
-    /* Identify if this is an HID mouse or MSC device that can be
-     * supported. If the device cannot be supported, just disable
-     * the port and wait for a new device to be attached. We support
-     * only single interface with interface class = HID(0x03),
-     * interface sub class = Boot (0x01) 
-     * and interface protocol = Mouse (0x02).
-     * or single interface with interface class = MSC(0x08),
-     * interface sub class 0x06 and interface protocol BOT (0x50). */
-    if ((glEp0Buffer[5] == 1) && (glEp0Buffer[14] == 0x03) &&
-            (glEp0Buffer[15] == 0x01) && (glEp0Buffer[16] == 0x02) &&
-            (glEp0Buffer[28] == CY_U3P_USB_ENDPNT_DESCR))
-    {
-        CyU3PDebugPrint (6, "Mouse device detected\r\n");
-        status = CyFxMouseDriverInit ();
-        if (status == CY_U3P_SUCCESS)
+    status = CyFxSendSetupRqt(0x00, CY_U3P_USB_SC_SET_CONFIGURATION,
+        1, 0, 0, glEp0Buffer);
+        if (status != CY_U3P_SUCCESS)
         {
-            glIsApplnActive = CyTrue;
-            glHostOwner = CY_FX_HOST_OWNER_MOUSE_DRIVER;
-            return;
+            CyU3PDebugPrint (6, "Set configured Error!!\r\n");
+            goto enum_error;
         }
-    }
 
-    if ((glEp0Buffer[5] == 1) && (glEp0Buffer[14] == 0x08) &&
-            (glEp0Buffer[15] == 0x06) && (glEp0Buffer[16] == 0x50))
-    {
-        CyU3PDebugPrint (6, "MSC device detected\r\n");
-        status = CyFxMscDriverInit ();
-        if (status == CY_U3P_SUCCESS)
+        status = CY_U3P_ERROR_NOT_SUPPORTED;
+
+        // 핸드폰을 연결하는 상황을 확인한다
+        if ((glEp0Buffer[8] == 0xd1) && (glEp0Buffer[9] == 0x18) &&
+            (glEp0Buffer[10] == 0x00) && (glEp0Buffer[11] == 0x2d))
         {
-            glIsApplnActive = CyTrue;
-            glHostOwner = CY_FX_HOST_OWNER_MSC_DRIVER;
-            return;
-        }
-    }
+            CyU3PDebugPrint (6, "auto ready!!\r\n");
+            CyU3PDebugPrint (6, "Smart phone is detected\r\n");
+            status = PhoneDriverInit ();
+            if (status == CY_U3P_SUCCESS)
+            {
+                glIsApplnActive = CyTrue;
+                glHostOwner     = CY_FX_HOST_OWNER_PHONE_DRIVER;
+                CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
 
-    if ((CY_U3P_MAKEWORD (glDeviceDesc[9], glDeviceDesc[8]) == 0x04B4) &&
-            (CY_U3P_MAKEWORD (glDeviceDesc[11], glDeviceDesc[10]) == 0x00F1))
-    {
-        CyU3PDebugPrint (6, "Echo device type\r\n");
-        status = CyFxEchoDriverInit ();
-        if (status == CY_U3P_SUCCESS)
-        {
-            glIsApplnActive = CyTrue;
-            glHostOwner     = CY_FX_HOST_OWNER_ECHO_DRIVER;
-            return;
-        }
-    }
+                CyFxCreateZingToPhoneUsbThread ();
+                CyU3PDebugPrint(4,"[Phone] Zing To PhoneUsb Thread Created\n");
 
-    /* Any device is okay for the moment because I don't have enough information yet */
-    if(1)
-    {
-        CyU3PDebugPrint (6, "Smart phone is detected\r\n");
-        status = PhoneDriverInit ();
-        if (status == CY_U3P_SUCCESS)
-        {
-            glIsApplnActive = CyTrue;
-            glHostOwner     = CY_FX_HOST_OWNER_PHONE_DRIVER;
-            CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
+                CyFxCreatePhoneUsbToZingThread ();
+                CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
 
-            CyFxCreateZingToPhoneUsbThread ();
-            CyU3PDebugPrint(4,"[Phone] Zing To PhoneUsb Thread Created\n");
-
-            CyFxCreatePhoneUsbToZingThread ();
-            CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
-
-            status = Zing_DataWrite((uint8_t*)"PING ON", strlen("PING ON"));
-            if (status == CY_U3P_SUCCESS) {
-            	CyU3PDebugPrint(4,"[Phone] PING ON sent\n");
-            }else{
-            	CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
+                status = Zing_DataWrite((uint8_t*)"PING ON", strlen("PING ON"));
+                if (status == CY_U3P_SUCCESS) {
+                	CyU3PDebugPrint(4,"[Phone] PING ON sent\n");
+                }else{
+                	CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
+                }
+                return;
             }
-            return;
         }
-    }
+        else
+        {
+            // no google..
+            // send request
+            CyU3PDebugPrint (6, "convert to auto..!!\r\n");
 
-    /* We do not support this device. Fall-through to disable the USB port. */
-    CyU3PDebugPrint (6, "Unknown device type\r\n");
-    status = CY_U3P_ERROR_NOT_SUPPORTED;
+            //C0 33 00 00 00 00 02 00
+            status = CyFxSendSetupRqt(0xC0, 0x33,
+                0, 0, 0x2, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x33) Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 34 00 00 00 00 08 00
+            //41 6E 64 72 6F 69 64 00
+            glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
+            glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x34,
+                0, 0, 0x8, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-1 Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 34 00 00 01 00 0D 00
+            //41 6E 64 72 6F 69 64 20 41 75 74 6F 00
+            glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
+            glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
+            glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x34,
+                0, 1, 0xD, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-2 Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 34 00 00 01 00 0D 00
+            //41 6E 64 72 6F 69 64 20 41 75 74 6F 00
+            glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
+            glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
+            glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x34,
+                0, 2, 0xD, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-3 Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 34 00 00 03 00 04 00
+            //31 2E 30 00
+            glEp0Buffer[0] = 0x31;glEp0Buffer[1] = 0x2E;glEp0Buffer[2] = 0x30;glEp0Buffer[3] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x34,
+                0, 3, 0x4, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-4 Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 34 00 00 04 00 01 00
+            //00
+            glEp0Buffer[0] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x34,
+                0, 4, 0x1, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-5 Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 34 00 00 05 00 01 00
+            //00
+            glEp0Buffer[0] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x34,
+                0, 5, 0x1, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-6 Error!!\r\n");
+                goto enum_error;
+            }
+
+            //40 35 00 00 00 00 00 00
+            glEp0Buffer[0] = 0x00;
+            status = CyFxSendSetupRqt(0x40, 0x35,
+                0, 0, 0, glEp0Buffer);
+            if (status != CY_U3P_SUCCESS)
+            {
+                CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x35) Error!!\r\n");
+                goto enum_error;
+            }
+
+            goto enum_error;
+        }
 
 enum_error:
+    glIsApplnActive = CyFalse;
     /* Remove EP0. and disable the port. */
-    glHostOwner = CY_FX_HOST_OWNER_NONE;
     CyU3PUsbHostEpRemove (0);
     CyU3PUsbHostPortDisable ();
     CyU3PDebugPrint (4, "Application start failed with error: %d.\r\n", status);

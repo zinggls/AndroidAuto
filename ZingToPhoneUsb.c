@@ -51,10 +51,6 @@ ZingToPhoneUsbThread(
 		    if ((Status=CyFxSendBuffer (Phone.outEp,&glChHandlePhoneDataOut,buf,rt_len)) != CY_U3P_SUCCESS)
 				CyU3PDebugPrint(4,"[Z-P] sending %d bytes to PhoneDataOut failed error(0x%x),EP=0x%x\r\n",rt_len,Status,Phone.outEp);
 		    else {
-
-			    for(uint32_t i=0;i<rt_len;i++) CyU3PDebugPrint (6,"%x ", buf[i]);
-			    CyU3PDebugPrint(6, "\n");
-
 		    	CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut,EP=0x%x\r\n",rt_len,Phone.outEp);
 		    }
 		}else{

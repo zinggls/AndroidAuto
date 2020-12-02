@@ -6,6 +6,7 @@
 #include "phonedrv.h"
 #include "cyu3usbhost.h"
 #include "uhbuf.h"
+#include "PacketFormat.h"
 
 CyU3PThread PhoneUsbToZingThreadHandle;
 extern CyU3PDmaChannel glChHandlePhoneDataIn;
@@ -39,23 +40,30 @@ PhoneUsbToZingThread(
 	CyU3PReturnStatus_t Status;
 	uint32_t rt_len;
 	CyU3PDmaBuffer_t Buf;
-	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (glChHandlePhoneDataIn.size);
+
+	PacketFormat *pf;
+	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*17))==0){
+		CyU3PDebugPrint(4,"[A-Z] PacketFormat CyU3PDmaBufferAlloc error\r\n");
+		return;
+	}
 
 	CyU3PThreadSleep (1000);
 	CyU3PDebugPrint(4,"[P-Z] Phone USB to Zing thread starts\n");
 	CyU3PDebugPrint(4,"[P-Z] PhoneDataIn.size=%d\n",glChHandlePhoneDataIn.size);
 
-	Buf.buffer = buf;
+	Buf.buffer = pf->data;
 	Buf.count = 0;
 	Buf.size = glChHandlePhoneDataIn.size;
 	Buf.status = 0;
 	while(1){
 	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS)
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
-	    else
+	    else{
 	    	CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",rt_len);
+	    }
 
-		if((Status=Zing_DataWrite(buf,rt_len))==CY_U3P_SUCCESS) {
+	    pf->size = rt_len;
+		if((Status=Zing_DataWrite((uint8_t*)pf,pf->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
 			CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",rt_len);
 		}else{
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite error(0x%x)\n",Status);

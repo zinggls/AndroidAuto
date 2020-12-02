@@ -172,7 +172,7 @@ CyFxAutoApplnStart (
 
     /* Create a DMA MANUAL channel between two sockets of the U port.
      * DMA size is set based on the USB speed. */
-	CyFxCreateChannel(size,
+	CyFxCreateChannel(size*8,
                       CY_FX_AUTO_DMA_BUF_COUNT,
                       CY_FX_EP_PRODUCER_SOCKET,
                       CY_U3P_CPU_SOCKET_CONS,
@@ -182,7 +182,7 @@ CyFxAutoApplnStart (
                       CY_U3P_DMA_TYPE_MANUAL_IN);
 	CyU3PDebugPrint(4,"[Auto] USB Prod - CPU Consumer DMA channel created\n");
 
-	CyFxCreateChannel(size,
+	CyFxCreateChannel(size*8,
                       CY_FX_AUTO_DMA_BUF_COUNT,
                       CY_U3P_CPU_SOCKET_PROD,
                       CY_FX_EP_CONSUMER_SOCKET,

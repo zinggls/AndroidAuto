@@ -362,7 +362,7 @@ CyFxApplnStart ()
                 CyU3PMemCopy (pf->data,(uint8_t*)"PING ON",pf->size);
                 status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t));
                 if (status == CY_U3P_SUCCESS) {
-                	CyU3PDebugPrint(4,"[Phone] PING ON sent\n");
+                	CyU3PDebugPrint(4,"[Phone] PING ON %d bytes sent\n",pf->size);
                 }else{
                 	CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
                 }

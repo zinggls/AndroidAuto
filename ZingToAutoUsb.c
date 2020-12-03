@@ -73,15 +73,11 @@ ZingToAutoUsbThread(
 #endif
 			}else{
 				zingToAutoUsbCnt.sendErr++;
-#ifdef DEBUG_THREAD_LOOP
 				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite error(0x%x)\n",Status);
-#endif
 			}
 		}else{
 			zingToAutoUsbCnt.receiveErr++;
-#ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);
-#endif
 		}
 	}
 }

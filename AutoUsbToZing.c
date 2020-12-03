@@ -64,15 +64,11 @@ AutoUsbToZingThread(
 #endif
 			}else{
 				autoUsbToZingCnt.sendErr++;
-#ifdef DEBUG_THREAD_LOOP
 				CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
-#endif
 			}
 		}else{
 			autoUsbToZingCnt.receiveErr++;
-#ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint (4, "[A-Z] Zing_Transfer_Recv error(0x%x)\n",Status);
-#endif
 		}
 	}
 }

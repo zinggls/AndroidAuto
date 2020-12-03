@@ -50,7 +50,9 @@ ZingToAutoUsbThread(
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,(uint8_t*)pf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 			zingToAutoUsbCnt.receiveOk++;
+#ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint(4,"[Z-A] %d->%d bytes received from GpifDataIn\r\n",rt_len,pf->size);
+#endif
 #ifndef PERSISTENT_USB
 			uint8_t *buf = pf->data;
 	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x4E )
@@ -66,14 +68,20 @@ ZingToAutoUsbThread(
 #endif
 			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,pf->data,pf->size))==CY_U3P_SUCCESS) {
 				zingToAutoUsbCnt.sendOk++;
+#ifdef DEBUG_THREAD_LOOP
 				CyU3PDebugPrint(4,"[A-Z] %d bytes sent to AutoDataOut\r\n",pf->size);
+#endif
 			}else{
 				zingToAutoUsbCnt.sendErr++;
+#ifdef DEBUG_THREAD_LOOP
 				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite error(0x%x)\n",Status);
+#endif
 			}
 		}else{
 			zingToAutoUsbCnt.receiveErr++;
+#ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);
+#endif
 		}
 	}
 }

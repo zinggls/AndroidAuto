@@ -544,11 +544,10 @@ AutoThread_Entry (
 
     for (;;)
     {
-        CyU3PThreadSleep (10);
+        CyU3PThreadSleep (1000);
 #ifndef DEBUG_THREAD_LOOP
-        CyU3PDebugPrint (2, "[AutoUsb->Zing] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
-        		autoUsbToZingCnt.receiveOk,autoUsbToZingCnt.receiveErr,autoUsbToZingCnt.sendOk,autoUsbToZingCnt.sendErr);
-        CyU3PDebugPrint (2, "[Zing->AutoUsb] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
+        CyU3PDebugPrint (2, "[A->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [Z->A] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r",
+        		autoUsbToZingCnt.receiveOk,autoUsbToZingCnt.receiveErr,autoUsbToZingCnt.sendOk,autoUsbToZingCnt.sendErr,
         		zingToAutoUsbCnt.receiveOk,zingToAutoUsbCnt.receiveErr,zingToAutoUsbCnt.sendOk,zingToAutoUsbCnt.sendErr);
 #endif
     }

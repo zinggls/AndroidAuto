@@ -686,6 +686,7 @@ ApplnThread_Entry (
     CyU3PReturnStatus_t status    = CY_U3P_SUCCESS;
     CyU3PGpioClock_t    clkCfg;
     uint32_t            evStat;
+    uint32_t			loop;
 
     /* Initialize GPIO module. */
     clkCfg.fastClkDiv = 2;
@@ -711,6 +712,7 @@ ApplnThread_Entry (
         CyFxAppErrorHandler (status);
     }
 
+    loop = 0;
     for (;;)
     {
         /* Wait until a peripheral change event has been detected, or until the poll interval has elapsed. */
@@ -749,11 +751,14 @@ ApplnThread_Entry (
             }
         }
 
+        loop++;
+
 #ifndef DEBUG_THREAD_LOOP
-        CyU3PDebugPrint (2, "[Zing->PhoneUsb] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
-        		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr);
-        CyU3PDebugPrint (2, "[PhoneUsb->Zing] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
-        		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
+        if(loop%100==0) {	//To print every 1 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
+        	CyU3PDebugPrint (2, "[Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r",
+            		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr,
+            		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
+        }
 #endif
 
         /* If a mass storage device is attached, perform the periodic test actions. */

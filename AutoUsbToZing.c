@@ -45,16 +45,21 @@ AutoUsbToZingThread(
 
 	CyU3PThreadSleep (1000);
 	CyU3PDebugPrint(4,"[A-Z] AutoDataIn.size=%d\n",glChHandleAutoDataIn.size);
+	memset(&autoUsbToZingCnt,0,sizeof(autoUsbToZingCnt));
 	while(1){
 		if((Status=Zing_Transfer_Recv(&glChHandleAutoDataIn,(uint8_t*)pf->data,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			autoUsbToZingCnt.receiveOk++;
 			CyU3PDebugPrint(4,"[A-Z] %d bytes received from AutoDataIn\r\n",rt_len);
 			pf->size = rt_len;
 			if((Status=Zing_DataWrite((uint8_t*)pf,pf->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
+				autoUsbToZingCnt.sendOk++;
 				CyU3PDebugPrint(4,"[A-Z] %d bytes sent to GpifDataOut\r\n",rt_len);
 			}else{
+				autoUsbToZingCnt.sendErr++;
 				CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
 			}
 		}else{
+			autoUsbToZingCnt.receiveErr++;
 			CyU3PDebugPrint (4, "[A-Z] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}
 	}

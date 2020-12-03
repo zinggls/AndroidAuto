@@ -55,17 +55,22 @@ PhoneUsbToZingThread(
 	Buf.count = 0;
 	Buf.size = glChHandlePhoneDataIn.size;
 	Buf.status = 0;
+	memset(&phoneUsbToZingCnt,0,sizeof(phoneUsbToZingCnt));
 	while(1){
-	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS)
+	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
+	    	phoneUsbToZingCnt.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
-	    else{
+	    }else{
+	    	phoneUsbToZingCnt.receiveOk++;
 	    	CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",rt_len);
 	    }
 
 	    pf->size = rt_len;
 		if((Status=Zing_DataWrite((uint8_t*)pf,pf->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
+			phoneUsbToZingCnt.sendOk++;
 			CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",rt_len);
 		}else{
+			phoneUsbToZingCnt.sendErr++;
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite error(0x%x)\n",Status);
 		}
 	}

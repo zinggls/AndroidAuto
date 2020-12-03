@@ -2,6 +2,7 @@
 #define __ZINGTOAUTOUSB_H__
 
 #include "cyu3types.h"
+#include "Counter.h"
 
 #define ZINGTOAUTOUSB_THREAD_STACK		(0x1000)
 #define ZINGTOAUTOUSB_THREAD_PRIORITY	(8)
@@ -13,5 +14,7 @@ CreateZingToAutoUsbThread(
 void
 ZingToAutoUsbThread(
 		uint32_t Value);
+
+Counter zingToAutoUsbCnt;
 
 #endif

@@ -2,6 +2,7 @@
 #define __PHONEUSBTOZING_H__
 
 #include "cyu3types.h"
+#include "Counter.h"
 
 #define PHONEUSBTOZING_THREAD_STACK		(0x1000)
 #define PHONEUSBTOZING_THREAD_PRIORITY	(8)
@@ -13,5 +14,7 @@ CreatePhoneUsbToZingThread(
 void
 PhoneUsbToZingThread(
 		uint32_t Value);
+
+Counter phoneUsbToZingCnt;
 
 #endif

@@ -50,6 +50,8 @@
 #include "setup.h"
 #include "util.h"
 #include "gpio.h"
+#include "AutoUsbToZing.h"
+#include "ZingToAutoUsb.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoDataIn;    /* DMA Channel handle */
@@ -542,8 +544,13 @@ AutoThread_Entry (
 
     for (;;)
     {
-        CyU3PThreadSleep (5000);
-        /* Do nothing */
+        CyU3PThreadSleep (10);
+#ifndef DEBUG_THREAD_LOOP
+        CyU3PDebugPrint (2, "[AutoUsb->Zing] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
+        		autoUsbToZingCnt.receiveOk,autoUsbToZingCnt.receiveErr,autoUsbToZingCnt.sendOk,autoUsbToZingCnt.sendErr);
+        CyU3PDebugPrint (2, "[Zing->AutoUsb] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
+        		zingToAutoUsbCnt.receiveOk,zingToAutoUsbCnt.receiveErr,zingToAutoUsbCnt.sendOk,zingToAutoUsbCnt.sendErr);
+#endif
     }
 }
 

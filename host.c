@@ -84,6 +84,8 @@
 #include "gpio.h"
 #include "Zing.h"
 #include "PacketFormat.h"
+#include "ZingToPhoneUsb.h"
+#include "PhoneUsbToZing.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -746,6 +748,13 @@ ApplnThread_Entry (
                 }
             }
         }
+
+#ifndef DEBUG_THREAD_LOOP
+        CyU3PDebugPrint (2, "[Zing->PhoneUsb] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
+        		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr);
+        CyU3PDebugPrint (2, "[PhoneUsb->Zing] Receive(ok:%d err:%d) Send(ok:%d err:%d)\r\n",
+        		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
+#endif
 
         /* If a mass storage device is attached, perform the periodic test actions. */
         if (glHostOwner == CY_FX_HOST_OWNER_MSC_DRIVER)

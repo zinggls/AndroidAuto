@@ -5,7 +5,7 @@
 #define I2C_DeviceAddress				(0x08)
 
 //etc
-#define ZING_HW_TIMEOUT     1000                /* 1000 ms */
+#define ZING_HW_TIMEOUT     5000                /* 5000 ms */
 #define AFC_N	64
 
 //Zing Header

@@ -43,7 +43,11 @@ AutoUsbToZingThread(
 		return;
 	}
 
-	CyU3PThreadSleep (1000);
+	if(glChHandleAutoDataIn.size==0) {
+		CyU3PDebugPrint(4,"[A-Z] Waiting for AutoDataIn.size=%d to be filled in...\n",glChHandleAutoDataIn.size);
+		while(glChHandleAutoDataIn.size==0) CyU3PThreadSleep (10);
+	}
+
 	CyU3PDebugPrint(4,"[A-Z] AutoDataIn.size=%d\n",glChHandleAutoDataIn.size);
 	memset(&autoUsbToZingCnt,0,sizeof(autoUsbToZingCnt));
 	while(1){

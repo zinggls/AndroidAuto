@@ -754,8 +754,8 @@ ApplnThread_Entry (
         loop++;
 
 #ifndef DEBUG_THREAD_LOOP
-        if(loop%100==0) {	//To print every 1 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
-        	CyU3PDebugPrint (2, "[Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r",
+        if(loop%500==0) {	//To print every 5 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
+        	CyU3PDebugPrint (2, "[Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",
             		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr,
             		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
         }

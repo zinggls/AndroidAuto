@@ -686,7 +686,7 @@ ApplnThread_Entry (
     CyU3PReturnStatus_t status    = CY_U3P_SUCCESS;
     CyU3PGpioClock_t    clkCfg;
     uint32_t            evStat;
-    uint32_t			loop;
+    uint32_t			loop,iter;
 
     /* Initialize GPIO module. */
     clkCfg.fastClkDiv = 2;
@@ -712,7 +712,7 @@ ApplnThread_Entry (
         CyFxAppErrorHandler (status);
     }
 
-    loop = 0;
+    loop = iter = 0;
     for (;;)
     {
         /* Wait until a peripheral change event has been detected, or until the poll interval has elapsed. */
@@ -755,7 +755,8 @@ ApplnThread_Entry (
 
 #ifndef DEBUG_THREAD_LOOP
         if(loop%500==0) {	//To print every 5 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
-        	CyU3PDebugPrint (2, "[Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",
+        	iter++;
+        	CyU3PDebugPrint (2, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
             		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr,
             		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
         }

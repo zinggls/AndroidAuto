@@ -237,21 +237,21 @@ CyFxSendSetupRqt (
 }
 
 void
-SendPingOn ()
+SendMessage (const char *msg)
 {
 	CyU3PReturnStatus_t status;
 	PacketFormat *pf;
 	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*17))==0){
-		CyU3PDebugPrint(4,"[Z-A] PacketFormat CyU3PDmaBufferAlloc error\r\n");
+		CyU3PDebugPrint(4,"[Z-A] %s, PacketFormat CyU3PDmaBufferAlloc error\r\n",msg);
 		return;
 	}
 
-	pf->size = strlen("PING ON");
-	CyU3PMemCopy (pf->data,(uint8_t*)"PING ON",pf->size);
+	pf->size = strlen(msg);
+	CyU3PMemCopy (pf->data,(uint8_t*)msg,pf->size);
 	if ((status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t))) == CY_U3P_SUCCESS) {
-		CyU3PDebugPrint(4,"[Phone] PING ON %d bytes sent\n",pf->size);
+		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,pf->size);
 	}else{
-		CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
+		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
 	}
 	CyU3PDmaBufferFree(pf);
 }
@@ -374,7 +374,7 @@ CyFxApplnStart ()
 			CyFxCreatePhoneUsbToZingThread ();
 			CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
 
-			SendPingOn ();
+			SendMessage("PING ON");
 			return;
 		}
 	}

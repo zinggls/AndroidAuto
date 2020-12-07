@@ -256,6 +256,108 @@ SendMessage (const char *msg)
 	CyU3PDmaBufferFree(pf);
 }
 
+CyU3PReturnStatus_t
+MakeAndroidOpenAccessory()
+{
+	CyU3PReturnStatus_t status;
+
+	// no google..
+	// send request
+	CyU3PDebugPrint (6, "convert to auto..!!\r\n");
+
+	//C0 33 00 00 00 00 02 00
+	status = CyFxSendSetupRqt(0xC0, 0x33,
+		0, 0, 0x2, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x33) Error!!\r\n");
+		return status;
+	}
+
+	//40 34 00 00 00 00 08 00
+	//41 6E 64 72 6F 69 64 00
+	glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
+	glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x34,
+		0, 0, 0x8, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-1 Error!!\r\n");
+		return status;
+	}
+
+	//40 34 00 00 01 00 0D 00
+	//41 6E 64 72 6F 69 64 20 41 75 74 6F 00
+	glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
+	glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
+	glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x34,
+		0, 1, 0xD, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-2 Error!!\r\n");
+		return status;
+	}
+
+	//40 34 00 00 01 00 0D 00
+	//41 6E 64 72 6F 69 64 20 41 75 74 6F 00
+	glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
+	glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
+	glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x34,
+		0, 2, 0xD, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-3 Error!!\r\n");
+		return status;
+	}
+
+	//40 34 00 00 03 00 04 00
+	//31 2E 30 00
+	glEp0Buffer[0] = 0x31;glEp0Buffer[1] = 0x2E;glEp0Buffer[2] = 0x30;glEp0Buffer[3] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x34,
+		0, 3, 0x4, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-4 Error!!\r\n");
+		return status;
+	}
+
+	//40 34 00 00 04 00 01 00
+	//00
+	glEp0Buffer[0] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x34,
+		0, 4, 0x1, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-5 Error!!\r\n");
+		return status;
+	}
+
+	//40 34 00 00 05 00 01 00
+	//00
+	glEp0Buffer[0] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x34,
+		0, 5, 0x1, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-6 Error!!\r\n");
+		return status;
+	}
+
+	//40 35 00 00 00 00 00 00
+	glEp0Buffer[0] = 0x00;
+	status = CyFxSendSetupRqt(0x40, 0x35,
+		0, 0, 0, glEp0Buffer);
+	if (status != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x35) Error!!\r\n");
+		return status;
+	}
+
+	return CY_U3P_SUCCESS;
+}
+
 /* This function initializes the mouse driver application. */
 void
 CyFxApplnStart ()
@@ -380,101 +482,7 @@ CyFxApplnStart ()
 	}
 	else
 	{
-		// no google..
-		// send request
-		CyU3PDebugPrint (6, "convert to auto..!!\r\n");
-
-		//C0 33 00 00 00 00 02 00
-		status = CyFxSendSetupRqt(0xC0, 0x33,
-			0, 0, 0x2, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x33) Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 34 00 00 00 00 08 00
-		//41 6E 64 72 6F 69 64 00
-		glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
-		glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x34,
-			0, 0, 0x8, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-1 Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 34 00 00 01 00 0D 00
-		//41 6E 64 72 6F 69 64 20 41 75 74 6F 00
-		glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
-		glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
-		glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x34,
-			0, 1, 0xD, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-2 Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 34 00 00 01 00 0D 00
-		//41 6E 64 72 6F 69 64 20 41 75 74 6F 00
-		glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
-		glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
-		glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x34,
-			0, 2, 0xD, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-3 Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 34 00 00 03 00 04 00
-		//31 2E 30 00
-		glEp0Buffer[0] = 0x31;glEp0Buffer[1] = 0x2E;glEp0Buffer[2] = 0x30;glEp0Buffer[3] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x34,
-			0, 3, 0x4, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-4 Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 34 00 00 04 00 01 00
-		//00
-		glEp0Buffer[0] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x34,
-			0, 4, 0x1, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-5 Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 34 00 00 05 00 01 00
-		//00
-		glEp0Buffer[0] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x34,
-			0, 5, 0x1, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-6 Error!!\r\n");
-			goto enum_error;
-		}
-
-		//40 35 00 00 00 00 00 00
-		glEp0Buffer[0] = 0x00;
-		status = CyFxSendSetupRqt(0x40, 0x35,
-			0, 0, 0, glEp0Buffer);
-		if (status != CY_U3P_SUCCESS)
-		{
-			CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x35) Error!!\r\n");
-			goto enum_error;
-		}
-
-		goto enum_error;
+		MakeAndroidOpenAccessory();
 	}
 
 enum_error:

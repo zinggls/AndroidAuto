@@ -503,7 +503,7 @@ CyFxApplnStop ()
             break;
         case CY_FX_HOST_OWNER_PHONE_DRIVER:
         	SendMessage("PING OFF");
-        	PhoneDriverDeInit();
+        	CyU3PDeviceReset(CyFalse);
         	break;
         default:
             break;

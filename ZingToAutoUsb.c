@@ -71,6 +71,7 @@ ZingToAutoUsbThread(
 	    		CyU3PDebugPrint(4,"PING OFF received. Disconnecting USB...\r\n");
 	    		CyFxUsbDisconnect();
 	    		CyU3PDebugPrint(4,"USB Disconnected\r\n");
+	    		CyU3PDeviceReset(CyFalse);
 	    		continue;
 	    	}
 #endif

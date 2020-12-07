@@ -236,6 +236,26 @@ CyFxSendSetupRqt (
     return status;
 }
 
+void
+SendPingOn ()
+{
+	CyU3PReturnStatus_t status;
+	PacketFormat *pf;
+	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*17))==0){
+		CyU3PDebugPrint(4,"[Z-A] PacketFormat CyU3PDmaBufferAlloc error\r\n");
+		return;
+	}
+
+	pf->size = strlen("PING ON");
+	CyU3PMemCopy (pf->data,(uint8_t*)"PING ON",pf->size);
+	if ((status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t))) == CY_U3P_SUCCESS) {
+		CyU3PDebugPrint(4,"[Phone] PING ON %d bytes sent\n",pf->size);
+	}else{
+		CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
+	}
+	CyU3PDmaBufferFree(pf);
+}
+
 /* This function initializes the mouse driver application. */
 void
 CyFxApplnStart ()
@@ -354,21 +374,7 @@ CyFxApplnStart ()
 			CyFxCreatePhoneUsbToZingThread ();
 			CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
 
-			PacketFormat *pf;
-			if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*17))==0){
-				CyU3PDebugPrint(4,"[Z-A] PacketFormat CyU3PDmaBufferAlloc error\r\n");
-				return;
-			}
-
-			pf->size = strlen("PING ON");
-			CyU3PMemCopy (pf->data,(uint8_t*)"PING ON",pf->size);
-			status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t));
-			if (status == CY_U3P_SUCCESS) {
-				CyU3PDebugPrint(4,"[Phone] PING ON %d bytes sent\n",pf->size);
-			}else{
-				CyU3PDebugPrint(4,"[Phone] PING ON sent failed error: %d\n",status);
-			}
-			CyU3PDmaBufferFree(pf);
+			SendPingOn ();
 			return;
 		}
 	}

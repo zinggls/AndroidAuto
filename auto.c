@@ -548,8 +548,8 @@ AutoThread_Entry (
     for (;;)
     {
         CyU3PThreadSleep (5000);
-#ifndef DEBUG_THREAD_LOOP
         iter++;
+#ifndef DEBUG_THREAD_LOOP
         CyU3PDebugPrint (2, "%d [A->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [Z->A] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
         		autoUsbToZingCnt.receiveOk,autoUsbToZingCnt.receiveErr,autoUsbToZingCnt.sendOk,autoUsbToZingCnt.sendErr,
         		zingToAutoUsbCnt.receiveOk,zingToAutoUsbCnt.receiveErr,zingToAutoUsbCnt.sendOk,zingToAutoUsbCnt.sendErr);

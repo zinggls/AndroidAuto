@@ -763,14 +763,14 @@ ApplnThread_Entry (
 
         loop++;
 
-#ifndef DEBUG_THREAD_LOOP
         if(loop%500==0) {	//To print every 5 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
         	iter++;
+#ifndef DEBUG_THREAD_LOOP
         	CyU3PDebugPrint (2, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
             		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr,
             		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
-        }
 #endif
+        }
 
         /* If a mass storage device is attached, perform the periodic test actions. */
         if (glHostOwner == CY_FX_HOST_OWNER_MSC_DRIVER)

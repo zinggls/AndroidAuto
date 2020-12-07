@@ -65,6 +65,14 @@ ZingToAutoUsbThread(
 	    	    CyU3PDebugPrint(4,"[Auto] AutoUsb To Zing Thread Created\n");
 	    	    continue;
 	    	}
+
+	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x46 && buf[7]==0x46)
+	    	{
+	    		CyU3PDebugPrint(4,"PING OFF received. Disconnecting USB...\r\n");
+	    		CyFxUsbDisconnect();
+	    		CyU3PDebugPrint(4,"USB Disconnected\r\n");
+	    		continue;
+	    	}
 #endif
 			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,pf->data,pf->size))==CY_U3P_SUCCESS) {
 				zingToAutoUsbCnt.sendOk++;

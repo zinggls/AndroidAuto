@@ -87,4 +87,9 @@ void
 CyFxUsbConnect (
 		void);
 
+/* Disconnect USB */
+void
+CyFxUsbDisconnect (
+		void);
+
 #endif

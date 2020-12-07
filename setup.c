@@ -287,3 +287,15 @@ CyFxUsbConnect (
 	    }
 	}
 }
+
+void
+CyFxUsbDisconnect (
+	void)
+{
+	CyU3PReturnStatus_t apiRetStatus = CyU3PConnectState(CyFalse, CyFalse);
+	if (apiRetStatus != CY_U3P_SUCCESS)
+	{
+		CyU3PDebugPrint (4, "USB Disconnect failed, Error code = %d\n", apiRetStatus);
+		CyFxAppErrorHandler(apiRetStatus);
+	}
+}

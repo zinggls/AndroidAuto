@@ -501,6 +501,10 @@ CyFxApplnStop ()
         case CY_FX_HOST_OWNER_ECHO_DRIVER:
             CyFxEchoDriverDeInit ();
             break;
+        case CY_FX_HOST_OWNER_PHONE_DRIVER:
+        	SendMessage("PING OFF");
+        	PhoneDriverDeInit();
+        	break;
         default:
             break;
     }

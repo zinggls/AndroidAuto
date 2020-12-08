@@ -854,7 +854,7 @@ ApplnThread_Entry (
 
         loop++;
 
-        if(loop%500==0) {	//To print every 5 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
+        if(loop%300==0) {	//To print every 3 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
         	if(prevCount == zingToPhoneUsbCnt.receiveOk) {
         		CyU3PDebugPrint (2, "%d [Z->P] No input data Time out, Reset\r\n",iter);
         		CyU3PDeviceReset(CyFalse);

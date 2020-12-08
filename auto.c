@@ -548,7 +548,7 @@ AutoThread_Entry (
     prevCount = -1;
     for (;;)
     {
-        CyU3PThreadSleep (5000);
+        CyU3PThreadSleep (3000);
     	if(prevCount == zingToAutoUsbCnt.receiveOk) {
     		CyU3PDebugPrint (2, "%d [A->Z] No input data Time out, Reset\r\n",iter);
     		CyU3PDeviceReset(CyFalse);

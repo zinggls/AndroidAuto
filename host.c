@@ -555,7 +555,7 @@ CyFxApplnStart ()
 			SendMessage("PING ON");
 			return;
 		}else{
-			CyU3PDebugPrint (6, "Smart phone driver initialization failed, error: %d\r\n",status);
+			CyU3PDebugPrint (4, "Smart phone driver initialization failed, error: %d\r\n",status);
 			goto enum_error;
 		}
 	}

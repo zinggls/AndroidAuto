@@ -271,6 +271,7 @@ CyU3PReturnStatus_t
 AttemptToStartInAccessoryMode()
 {
 	CyU3PReturnStatus_t status;
+	uint16_t version;
 	CyU3PDebugPrint (4, "Attempt to start in accessory mode...\r\n");
 
 	/* Step.1
@@ -285,6 +286,13 @@ AttemptToStartInAccessoryMode()
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.1 CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
+	}
+	version = (glEp0Buffer[1]<<8)|glEp0Buffer[0];
+	CyU3PDebugPrint (4, "Supported protocol version:%d(0x%x)\r\n",version,version);
+
+	if(version==0) {
+		CyU3PDebugPrint (4, "Device does not support Android accessory protocol\r\n");
+		return CY_U3P_ERROR_NOT_SUPPORTED;
 	}
 
 	/* Step.2 manufacturer name

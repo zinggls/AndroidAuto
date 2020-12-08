@@ -534,8 +534,6 @@ CyFxApplnStart ()
 		goto enum_error;
 	}
 
-	status = CY_U3P_ERROR_NOT_SUPPORTED;
-
 	CyU3PDebugPrint (6, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
 	CyU3PDebugPrint (6, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
 	if ( IsDeviceInAccessoryMode () )
@@ -558,17 +556,18 @@ CyFxApplnStart ()
 			return;
 		}else{
 			CyU3PDebugPrint (4, "Smart phone driver initialization failed, error: %d\r\n",status);
-			goto enum_error;
 		}
 	}
 	else
 	{
 		CyU3PDebugPrint (6, "Device is not in Accessory Mode\r\n");
-		if((status = AttemptToStartInAccessoryMode())!=CY_U3P_SUCCESS) {
+		if((status = AttemptToStartInAccessoryMode())!=CY_U3P_SUCCESS)
 			CyU3PDebugPrint (4, "Attempt to start in accessory mode failed, error: %d\r\n",status);
-			goto enum_error;
-		}
 	}
+
+    /* We do not support this device. Fall-through to disable the USB port. */
+    CyU3PDebugPrint (6, "Unknown device type\r\n");
+    status = CY_U3P_ERROR_NOT_SUPPORTED;
 
 enum_error:
     glIsApplnActive = CyFalse;

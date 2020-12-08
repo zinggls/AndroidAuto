@@ -281,13 +281,11 @@ AttemptToStartInAccessoryMode()
 	 * index: 0
 	 * length: 2
 	 * data: protocol version number (16 bits little endian sent from the device to the accessory) */
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.1 Before Request");
 	if ((status = CyFxSendSetupRqt(0xC0, 0x33, 0, 0, 0x2, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.1 CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.1 After Request");
 
 	/* Step.2 manufacturer name
 	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
@@ -299,13 +297,11 @@ AttemptToStartInAccessoryMode()
 	 * data: 41 6E 64 72 6F 69 64 00 ("Android" zero terminated UTF8 string sent from accessory to device) */
 	glEp0Buffer[0] = 0x41; glEp0Buffer[1] = 0x6E; glEp0Buffer[2] = 0x64; glEp0Buffer[3] = 0x72;
 	glEp0Buffer[4] = 0x6F; glEp0Buffer[5] = 0x69; glEp0Buffer[6] = 0x64; glEp0Buffer[7] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 manufacturer name Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 0, 0x8, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 manufacturer name CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 manufacturer name After Request");
 
 	/* Step.2 model name
 	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
@@ -318,13 +314,11 @@ AttemptToStartInAccessoryMode()
 	glEp0Buffer[0] = 0x41; glEp0Buffer[1] = 0x6E; glEp0Buffer[2] = 0x64; glEp0Buffer[3] = 0x72;
 	glEp0Buffer[4] = 0x6F; glEp0Buffer[5] = 0x69; glEp0Buffer[6] = 0x64; glEp0Buffer[7] = 0x20;
 	glEp0Buffer[8] = 0x41; glEp0Buffer[9] = 0x75; glEp0Buffer[10] = 0x74; glEp0Buffer[11] = 0x6F; glEp0Buffer[12] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 model name Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 1, 0xD, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 model name CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 model name After Request");
 
 	/* Step.2 description
 	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
@@ -337,13 +331,11 @@ AttemptToStartInAccessoryMode()
 	glEp0Buffer[0] = 0x41; glEp0Buffer[1] = 0x6E; glEp0Buffer[2] = 0x64; glEp0Buffer[3] = 0x72;
 	glEp0Buffer[4] = 0x6F; glEp0Buffer[5] = 0x69; glEp0Buffer[6] = 0x64; glEp0Buffer[7] = 0x20;
 	glEp0Buffer[8] = 0x41; glEp0Buffer[9] = 0x75; glEp0Buffer[10] = 0x74; glEp0Buffer[11] = 0x6F; glEp0Buffer[12] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 description Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 2, 0xD, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 description CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 description After Request");
 
 	/* Step.2 version
 	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
@@ -354,13 +346,11 @@ AttemptToStartInAccessoryMode()
 	 * length: 4
 	 * data: 31 2E 30 00 (zero terminated UTF8 string sent from accessory to device) */
 	glEp0Buffer[0] = 0x31; glEp0Buffer[1] = 0x2E; glEp0Buffer[2] = 0x30; glEp0Buffer[3] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 version Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 3, 0x4, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 version CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 version After Request");
 
 	/* Step.2 version
 	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
@@ -371,13 +361,11 @@ AttemptToStartInAccessoryMode()
 	 * length: 1
 	 * data: 00 (zero terminated UTF8 string sent from accessory to device) */
 	glEp0Buffer[0] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 URI Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 4, 0x1, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 URI CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 URI After Request");
 
 	/* Step.2 serial number
 	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
@@ -388,13 +376,11 @@ AttemptToStartInAccessoryMode()
 	 * length: 1
 	 * data: 00 (zero terminated UTF8 string sent from accessory to device) */
 	glEp0Buffer[0] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 serial number Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 5, 0x1, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 serial number CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 serial number After Request");
 
 	/* Step.3
 	 * Send a control request to ask the device to start in accessory mode.
@@ -405,13 +391,11 @@ AttemptToStartInAccessoryMode()
 	 * length: 0
 	 * data: none */
 	glEp0Buffer[0] = 0x00;
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.3 Before Request");
 	if ((status = CyFxSendSetupRqt(0x40, 0x35, 0, 0, 0, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
 		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.3 CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.3 After Request");
 	return CY_U3P_SUCCESS;
 }
 

@@ -561,7 +561,10 @@ CyFxApplnStart ()
 	}
 	else
 	{
-		AttemptToStartInAccessoryMode();
+		if((status = AttemptToStartInAccessoryMode())!=CY_U3P_SUCCESS) {
+			CyU3PDebugPrint (4, "Attempt to start in accessory mode failed, error: %d\r\n",status);
+			goto enum_error;
+		}
 	}
 
 enum_error:

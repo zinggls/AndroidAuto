@@ -417,8 +417,11 @@ IsGoogleVendorID ()
 
 uint8_t IsAndroidPoweredDevice ()
 {
-	/* 0x2D00 is reserved for Android-powered devices that support accessory mode */
+	/* 0x2D00 is reserved for Android-powered devices that support accessory mode
+	 * 0x2D01 is reserved for devices that support accessory mode as well as the
+	 * Android Debug Bridge (ADB) protocol, which exposes a second interface with two bulk endpoints for ADB.*/
 	if ((glEp0Buffer[10] == 0x00) && (glEp0Buffer[11] == 0x2d)) return 1;
+	if ((glEp0Buffer[10] == 0x01) && (glEp0Buffer[11] == 0x2d)) return 1;
 	return 0;
 }
 
@@ -535,7 +538,7 @@ CyFxApplnStart ()
 	}
 
 	CyU3PDebugPrint (6, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
-	CyU3PDebugPrint (6, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
+	CyU3PDebugPrint (6, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00 or 0x2D01)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
 	if ( IsDeviceInAccessoryMode () )
 	{
 		CyU3PDebugPrint (6, "Device is in Accessory Mode\r\n");

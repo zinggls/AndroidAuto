@@ -536,6 +536,8 @@ CyFxApplnStart ()
 
 	status = CY_U3P_ERROR_NOT_SUPPORTED;
 
+	CyU3PDebugPrint (6, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
+	CyU3PDebugPrint (6, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
 	if ( IsDeviceInAccessoryMode () )
 	{
 		CyU3PDebugPrint (6, "Device is in Accessory Mode\r\n");
@@ -561,6 +563,7 @@ CyFxApplnStart ()
 	}
 	else
 	{
+		CyU3PDebugPrint (6, "Device is not in Accessory Mode\r\n");
 		if((status = AttemptToStartInAccessoryMode())!=CY_U3P_SUCCESS) {
 			CyU3PDebugPrint (4, "Attempt to start in accessory mode failed, error: %d\r\n",status);
 			goto enum_error;

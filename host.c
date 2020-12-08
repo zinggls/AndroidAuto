@@ -256,105 +256,162 @@ SendMessage (const char *msg)
 	CyU3PDmaBufferFree(pf);
 }
 
+void
+DebugPrintBuffer(
+		const char *msg)
+{
+    CyU3PDebugPrint (4, "%s\r\n",msg);
+    for(int i=0;i<CY_FX_HOST_EP0_BUFFER_SIZE;i++) CyU3PDebugPrint (4,"%x ", glEp0Buffer[i]);
+    CyU3PDebugPrint (4, "\r\n");
+}
+
+/* Ref
+ * https://source.android.com/devices/accessories/aoa#attempt-to-start-in-accessory-mode */
 CyU3PReturnStatus_t
-MakeAndroidOpenAccessory()
+AttemptToStartInAccessoryMode()
 {
 	CyU3PReturnStatus_t status;
+	CyU3PDebugPrint (4, "Attempt to start in accessory mode...\r\n");
 
-	// no google..
-	// send request
-	CyU3PDebugPrint (6, "convert to auto..!!\r\n");
-
-	//C0 33 00 00 00 00 02 00
-	status = CyFxSendSetupRqt(0xC0, 0x33,
-		0, 0, 0x2, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	/* Step.1
+	 * Send a 51 control request ("Get Protocol") to determine if the device supports the Android accessory protocol.
+	 * requestType: USB_DIR_IN | USB_TYPE_VENDOR = 0xC0
+	 * request: 51 (0x33)
+	 * value: 0
+	 * index: 0
+	 * length: 2
+	 * data: protocol version number (16 bits little endian sent from the device to the accessory) */
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.1 Before Request");
+	if ((status = CyFxSendSetupRqt(0xC0, 0x33, 0, 0, 0x2, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x33) Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.1 CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.1 After Request");
 
-	//40 34 00 00 00 00 08 00
-	//41 6E 64 72 6F 69 64 00
-	glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
-	glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x34,
-		0, 0, 0x8, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	/* Step.2 manufacturer name
+	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 52 (0x34)
+	 * value: 0
+	 * index: 0 (manufacturer name:0)
+	 * length: 8
+	 * data: 41 6E 64 72 6F 69 64 00 ("Android" zero terminated UTF8 string sent from accessory to device) */
+	glEp0Buffer[0] = 0x41; glEp0Buffer[1] = 0x6E; glEp0Buffer[2] = 0x64; glEp0Buffer[3] = 0x72;
+	glEp0Buffer[4] = 0x6F; glEp0Buffer[5] = 0x69; glEp0Buffer[6] = 0x64; glEp0Buffer[7] = 0x00;
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 manufacturer name Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 0, 0x8, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-1 Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 manufacturer name CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 manufacturer name After Request");
 
-	//40 34 00 00 01 00 0D 00
-	//41 6E 64 72 6F 69 64 20 41 75 74 6F 00
-	glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
-	glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
-	glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x34,
-		0, 1, 0xD, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	/* Step.2 model name
+	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 52 (0x34)
+	 * value: 0
+	 * index: 1 (model name:1)
+	 * length: 13
+	 * data: 41 6E 64 72 6F 69 64 20 41 75 74 6F 00 ("Android Auto" zero terminated UTF8 string sent from accessory to device) */
+	glEp0Buffer[0] = 0x41; glEp0Buffer[1] = 0x6E; glEp0Buffer[2] = 0x64; glEp0Buffer[3] = 0x72;
+	glEp0Buffer[4] = 0x6F; glEp0Buffer[5] = 0x69; glEp0Buffer[6] = 0x64; glEp0Buffer[7] = 0x20;
+	glEp0Buffer[8] = 0x41; glEp0Buffer[9] = 0x75; glEp0Buffer[10] = 0x74; glEp0Buffer[11] = 0x6F; glEp0Buffer[12] = 0x00;
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 model name Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 1, 0xD, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-2 Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 model name CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 model name After Request");
 
-	//40 34 00 00 01 00 0D 00
-	//41 6E 64 72 6F 69 64 20 41 75 74 6F 00
-	glEp0Buffer[0] = 0x41;glEp0Buffer[1] = 0x6E;glEp0Buffer[2] = 0x64;glEp0Buffer[3] = 0x72;
-	glEp0Buffer[4] = 0x6F;glEp0Buffer[5] = 0x69;glEp0Buffer[6] = 0x64;glEp0Buffer[7] = 0x20;
-	glEp0Buffer[8] = 0x41;glEp0Buffer[9] = 0x75;glEp0Buffer[10] = 0x74;glEp0Buffer[11] = 0x6F;glEp0Buffer[12] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x34,
-		0, 2, 0xD, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	/* Step.2 description
+	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 52 (0x34)
+	 * value: 0
+	 * index: 2 (description:2)
+	 * length: 13
+	 * data: 41 6E 64 72 6F 69 64 20 41 75 74 6F 00 ("Android Auto" zero terminated UTF8 string sent from accessory to device) */
+	glEp0Buffer[0] = 0x41; glEp0Buffer[1] = 0x6E; glEp0Buffer[2] = 0x64; glEp0Buffer[3] = 0x72;
+	glEp0Buffer[4] = 0x6F; glEp0Buffer[5] = 0x69; glEp0Buffer[6] = 0x64; glEp0Buffer[7] = 0x20;
+	glEp0Buffer[8] = 0x41; glEp0Buffer[9] = 0x75; glEp0Buffer[10] = 0x74; glEp0Buffer[11] = 0x6F; glEp0Buffer[12] = 0x00;
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 description Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 2, 0xD, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-3 Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 description CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 description After Request");
 
-	//40 34 00 00 03 00 04 00
-	//31 2E 30 00
-	glEp0Buffer[0] = 0x31;glEp0Buffer[1] = 0x2E;glEp0Buffer[2] = 0x30;glEp0Buffer[3] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x34,
-		0, 3, 0x4, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	/* Step.2 version
+	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 52 (0x34)
+	 * value: 0
+	 * index: 3 (version:3)
+	 * length: 4
+	 * data: 31 2E 30 00 (zero terminated UTF8 string sent from accessory to device) */
+	glEp0Buffer[0] = 0x31; glEp0Buffer[1] = 0x2E; glEp0Buffer[2] = 0x30; glEp0Buffer[3] = 0x00;
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 version Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 3, 0x4, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-4 Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 version CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 version After Request");
 
-	//40 34 00 00 04 00 01 00
-	//00
+	/* Step.2 version
+	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 52 (0x34)
+	 * value: 0
+	 * index: 4 (URI:4)
+	 * length: 1
+	 * data: 00 (zero terminated UTF8 string sent from accessory to device) */
 	glEp0Buffer[0] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x34,
-		0, 4, 0x1, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 URI Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 4, 0x1, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-5 Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 URI CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 URI After Request");
 
-	//40 34 00 00 05 00 01 00
-	//00
+	/* Step.2 serial number
+	 * If the device returns a supported protocol version, send a control request with identifying string information to the device.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 52 (0x34)
+	 * value: 0
+	 * index: 5 (serial number:5)
+	 * length: 1
+	 * data: 00 (zero terminated UTF8 string sent from accessory to device) */
 	glEp0Buffer[0] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x34,
-		0, 5, 0x1, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 serial number Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x34, 0, 5, 0x1, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x34)-6 Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.2 serial number CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.2 serial number After Request");
 
-	//40 35 00 00 00 00 00 00
+	/* Step.3
+	 * Send a control request to ask the device to start in accessory mode.
+	 * requestType: USB_DIR_OUT | USB_TYPE_VENDOR = 0x40
+	 * request: 53 (0x35)
+	 * value: 0
+	 * index: 0
+	 * length: 0
+	 * data: none */
 	glEp0Buffer[0] = 0x00;
-	status = CyFxSendSetupRqt(0x40, 0x35,
-		0, 0, 0, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.3 Before Request");
+	if ((status = CyFxSendSetupRqt(0x40, 0x35, 0, 0, 0, glEp0Buffer)) != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "CyFxSendSetupRqt(0x35) Error!!\r\n");
+		CyU3PDebugPrint (4, "AttemptToStartInAccessoryMode Step.3 CyFxSendSetupRqt Error(0x%x)\r\n",status);
 		return status;
 	}
-
+	DebugPrintBuffer ("AttemptToStartInAccessoryMode, Step.3 After Request");
 	return CY_U3P_SUCCESS;
 }
 
@@ -509,7 +566,7 @@ CyFxApplnStart ()
 	}
 	else
 	{
-		MakeAndroidOpenAccessory();
+		AttemptToStartInAccessoryMode();
 	}
 
 enum_error:

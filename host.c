@@ -358,6 +358,36 @@ MakeAndroidOpenAccessory()
 	return CY_U3P_SUCCESS;
 }
 
+uint8_t
+IsGoogleVendorID ()
+{
+	/* Google's ID (0x18D1) */
+	if ((glEp0Buffer[8] == 0xd1) && (glEp0Buffer[9] == 0x18) ) return 1;
+	return 0;
+}
+
+uint8_t IsAndroidPoweredDevice ()
+{
+	/* 0x2D00 is reserved for Android-powered devices that support accessory mode */
+	if ((glEp0Buffer[10] == 0x00) && (glEp0Buffer[11] == 0x2d)) return 1;
+	return 0;
+}
+
+uint8_t
+IsDeviceInAccessoryMode ()
+{
+	/* The vendor ID should match Google's ID (0x18D1).
+	 * If the device is already in accessory mode,
+	 * the product ID should be 0x2D00 or 0x2D01
+	 * and the accessory can establish communication with the device
+	 * through bulk transfer endpoints using its own communication protocol
+	 *
+	 * Ref. Android Open Accessory Protocol 1.0
+	 * https://source.android.com/devices/accessories/aoa */
+	if(IsGoogleVendorID () && IsAndroidPoweredDevice ()) return 1;
+	return 0;
+}
+
 /* This function initializes the mouse driver application. */
 void
 CyFxApplnStart ()
@@ -457,12 +487,9 @@ CyFxApplnStart ()
 
 	status = CY_U3P_ERROR_NOT_SUPPORTED;
 
-	// 핸드폰을 연결하는 상황을 확인한다
-	if ((glEp0Buffer[8] == 0xd1) && (glEp0Buffer[9] == 0x18) &&
-		(glEp0Buffer[10] == 0x00) && (glEp0Buffer[11] == 0x2d))
+	if ( IsDeviceInAccessoryMode () )
 	{
-		CyU3PDebugPrint (6, "auto ready!!\r\n");
-		CyU3PDebugPrint (6, "Smart phone is detected\r\n");
+		CyU3PDebugPrint (6, "Device is in Accessory Mode\r\n");
 		status = PhoneDriverInit ();
 		if (status == CY_U3P_SUCCESS)
 		{

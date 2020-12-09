@@ -18,6 +18,7 @@ PhoneDriverInit ()
     CyU3PReturnStatus_t status;
     CyU3PUsbHostEpConfig_t epCfg;
     CyU3PDmaChannelConfig_t dmaCfg;
+    uint8_t epSizeSet,inEpSet,outEpSet;
     memset(&Phone,sizeof(Phone),0);
 
     /* Read first four bytes of configuration descriptor to determine
@@ -53,7 +54,7 @@ PhoneDriverInit ()
     CyU3PDebugPrint(6, "\n");
 
     /* Identify the EP characteristics. */
-    offset = 0;
+    offset = epSizeSet = inEpSet = outEpSet =0;
     while (offset < length)
     {
         if (glEp0Buffer[offset + 1] == CY_U3P_USB_ENDPNT_DESCR)
@@ -64,17 +65,17 @@ PhoneDriverInit ()
                 		offset+3,glEp0Buffer[offset+3],CY_U3P_USB_EP_BULK);
             }else{
                 /* Retreive the information. */
-                Phone.epSize = CY_U3P_MAKEWORD(glEp0Buffer[offset + 5],glEp0Buffer[offset + 4]);
+                if(!epSizeSet) { Phone.epSize = CY_U3P_MAKEWORD(glEp0Buffer[offset + 5],glEp0Buffer[offset + 4]); epSizeSet=1; }
                 CyU3PDebugPrint (1, "[PhoneDriverInit] EpSize=%d\n", Phone.epSize);
 
                 if (glEp0Buffer[offset + 2] & 0x80)
                 {
-                	Phone.inEp = glEp0Buffer[offset + 2];
+                	if(!inEpSet) { Phone.inEp = glEp0Buffer[offset + 2]; inEpSet=1; }
                 	CyU3PDebugPrint (1, "[PhoneDriverInit] inEp=%d(0x%x)\n", Phone.inEp,Phone.inEp);
                 }
                 else
                 {
-                	Phone.outEp = glEp0Buffer[offset + 2];
+                	if(!outEpSet) { Phone.outEp = glEp0Buffer[offset + 2]; outEpSet=1; }
                 	CyU3PDebugPrint (1, "[PhoneDriverInit] outEp=%d(0x%x)\n", Phone.outEp,Phone.outEp);
                 }
             }

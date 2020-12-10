@@ -9,6 +9,7 @@
 
 CyU3PThread ZingToAutoUsbThreadHandle;
 extern CyU3PDmaChannel glChHandleAutoDataOut;
+extern CyBool_t glIsApplnActive;
 
 CyU3PReturnStatus_t
 CreateZingToAutoUsbThread(
@@ -74,6 +75,11 @@ ZingToAutoUsbThread(
 	    		CyU3PDeviceReset(CyFalse);
 	    		continue;
 	    	}
+
+	    	/* If USB is connected and Application started properly, glIsApplnActive should become True.
+	    	 * Otherwise, Zing_Transfer_Send should be delayed until it becomes True.
+	    	 * */
+	    	if(!glIsApplnActive) continue;
 #endif
 			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,pf->data,pf->size))==CY_U3P_SUCCESS) {
 				zingToAutoUsbCnt.sendOk++;

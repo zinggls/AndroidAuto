@@ -23,5 +23,6 @@ void Zing_Test_DataSink2 (uint32_t cnt, uint32_t timeout);
 CyU3PReturnStatus_t Zing_Transfer_Send(CyU3PDmaChannel* dma_ch,uint8_t *data,uint32_t length);
 CyU3PReturnStatus_t Zing_Transfer_Recv(CyU3PDmaChannel *dma_ch,uint8_t *data,uint32_t *length_pt,uint32_t waitOption);
 CyU3PReturnStatus_t Zing_Management_Send(uint8_t *data,uint32_t length);
+CyU3PReturnStatus_t Zing_Golay(uint32_t val);
 
 #endif

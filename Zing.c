@@ -803,3 +803,17 @@ CyU3PReturnStatus_t Zing_Init(void)
 
 	return CY_U3P_SUCCESS;
 }
+
+CyU3PReturnStatus_t Zing_Golay(uint32_t val)
+{
+	uint32_t rt_reg_val;
+	HW_CFG *TempReg_pt;
+
+	CHECK(Zing_RegRead(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
+	TempReg_pt = (HW_CFG*)&rt_reg_val;
+	TempReg_pt->golaycode_en = val;
+	CHECK(Zing_RegWrite(REG_HW_CFG,(uint8_t*)&rt_reg_val,4));
+
+	CyU3PDebugPrint (4, "Zing_Golay=%d\n",val);
+	return CY_U3P_SUCCESS;
+}

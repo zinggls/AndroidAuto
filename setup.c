@@ -299,3 +299,14 @@ CyFxUsbDisconnect (
 		CyFxAppErrorHandler(apiRetStatus);
 	}
 }
+
+void
+CyFxGolay (
+		void)
+{
+#ifdef GOLAY_CODE_ENABLE
+	Zing_Golay(1);
+#else
+	Zing_Golay(0);
+#endif
+}

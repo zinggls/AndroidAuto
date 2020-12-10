@@ -92,4 +92,9 @@ void
 CyFxUsbDisconnect (
 		void);
 
+/* Enable or Disable Golay code */
+void
+CyFxGolay (
+		void);
+
 #endif

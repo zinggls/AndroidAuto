@@ -780,6 +780,8 @@ CyFxApplnInit (void)
 	CyU3PDebugPrint(4,"[Phone] ZING Init OK\n");
     CyFxSetHRCP();
     CyU3PDebugPrint(4,"[Phone] Set HRCP done\n");
+    CyFxGolay();
+    CyU3PDebugPrint(4,"[Phone] Golay code done\n");
     return status;
 }
 

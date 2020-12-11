@@ -53,6 +53,12 @@ ZingToPhoneUsbThread(
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,(uint8_t*)pf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 			zingToPhoneUsbCnt.receiveOk++;
+            if(pf->size==0) {
+                CyU3PDebugPrint(4,"[Z-P] Data size(%D) received from GpifDataIn is zero, Skip further processing\r\n",pf->size);
+                continue;
+            }else if(pf->size>512){
+                CyU3PDebugPrint(4,"[Z-P] Data size(%d) received from GpifDataIn is greater than 512\r\n",pf->size);
+            }
 #ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint(4,"[Z-P] %d->%d bytes received from GpifDataIn\r\n",rt_len,pf->size);
 #endif

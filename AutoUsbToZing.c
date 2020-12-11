@@ -53,6 +53,12 @@ AutoUsbToZingThread(
 	while(1){
 		if((Status=Zing_Transfer_Recv(&glChHandleAutoDataIn,(uint8_t*)pf->data,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 			autoUsbToZingCnt.receiveOk++;
+            if(rt_len==0) {
+                CyU3PDebugPrint(4,"[A-Z] Data size(%D) received from AutoDataIn is zero, Skip further processing\r\n",rt_len);
+                continue;
+            }else if(rt_len>512){
+                CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is greater than 512\r\n",rt_len);
+            }
 #ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint(4,"[A-Z] %d bytes received from AutoDataIn\r\n",rt_len);
 #endif

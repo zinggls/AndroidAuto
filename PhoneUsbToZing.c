@@ -66,6 +66,12 @@ PhoneUsbToZingThread(
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
 	    }else{
 	    	phoneUsbToZingCnt.receiveOk++;
+            if(rt_len==0) {
+                CyU3PDebugPrint(4,"[P-Z] Data size(%D) received from PhoneDataIn is zero, Skip further processing\r\n",rt_len);
+                continue;
+            }else if(rt_len>512){
+                CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is greater than 512\r\n",rt_len);
+            }
 #ifdef DEBUG_THREAD_LOOP
 	    	CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",rt_len);
 #endif

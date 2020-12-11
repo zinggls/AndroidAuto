@@ -67,7 +67,7 @@ PhoneUsbToZingThread(
 	    }else{
 	    	phoneUsbToZingCnt.receiveOk++;
             if(rt_len==0) {
-                CyU3PDebugPrint(4,"[P-Z] Data size(%D) received from PhoneDataIn is zero, Skip further processing\r\n",rt_len);
+                CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is zero, Skip further processing\r\n",rt_len);
                 continue;
             }else if(rt_len>512){
                 CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is greater than 512\r\n",rt_len);
@@ -85,7 +85,7 @@ PhoneUsbToZingThread(
 #endif
 		}else{
 			phoneUsbToZingCnt.sendErr++;
-			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite error(0x%x)\n",Status);
+			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
 		}
 	}
 }

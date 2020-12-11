@@ -52,7 +52,7 @@ ZingToAutoUsbThread(
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,(uint8_t*)pf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 			zingToAutoUsbCnt.receiveOk++;
             if(pf->size==0) {
-                CyU3PDebugPrint(4,"[Z-A] Data size(%D) received from GpifDataIn is zero, Skip further processing\r\n",pf->size);
+                CyU3PDebugPrint(4,"[Z-A] Data size(%d) received from GpifDataIn is zero, Skip further processing\r\n",pf->size);
                 continue;
             }else if(pf->size>512){
                 CyU3PDebugPrint(4,"[Z-A] Data size(%d) received from GpifDataIn is greater than 512\r\n",pf->size);
@@ -94,7 +94,7 @@ ZingToAutoUsbThread(
 #endif
 			}else{
 				zingToAutoUsbCnt.sendErr++;
-				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite error(0x%x)\n",Status);
+				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite(%d) error(0x%x)\n",pf->size,Status);
 			}
 		}else{
 			zingToAutoUsbCnt.receiveErr++;

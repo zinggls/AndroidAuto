@@ -54,7 +54,7 @@ AutoUsbToZingThread(
 		if((Status=Zing_Transfer_Recv(&glChHandleAutoDataIn,(uint8_t*)pf->data,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
 			autoUsbToZingCnt.receiveOk++;
             if(rt_len==0) {
-                CyU3PDebugPrint(4,"[A-Z] Data size(%D) received from AutoDataIn is zero, Skip further processing\r\n",rt_len);
+                CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is zero, Skip further processing\r\n",rt_len);
                 continue;
             }else if(rt_len>512){
                 CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is greater than 512\r\n",rt_len);
@@ -70,7 +70,7 @@ AutoUsbToZingThread(
 #endif
 			}else{
 				autoUsbToZingCnt.sendErr++;
-				CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite error(0x%x)\n",Status);
+				CyU3PDebugPrint (4, "[A-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
 			}
 		}else{
 			autoUsbToZingCnt.receiveErr++;

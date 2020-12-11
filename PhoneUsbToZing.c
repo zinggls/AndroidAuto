@@ -64,6 +64,7 @@ PhoneUsbToZingThread(
 	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
 	    	phoneUsbToZingCnt.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
+			continue;
 	    }else{
 	    	phoneUsbToZingCnt.receiveOk++;
             if(rt_len==0) {

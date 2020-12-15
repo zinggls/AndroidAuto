@@ -86,6 +86,8 @@
 #include "PacketFormat.h"
 #include "ZingToPhoneUsb.h"
 #include "PhoneUsbToZing.h"
+#include "dma.h"
+#include "ZingHw.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -254,6 +256,15 @@ SendMessage (const char *msg)
 		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
 	}
 	CyU3PDmaBufferFree(pf);
+
+	/* Experiment, send message via control channel */
+	Zing_Header2(Dma.ControlOut_.Buffer_,1,0,0,0,0,1,0,0,strlen(msg));
+	memcpy(Dma.ControlOut_.Buffer_+ZING_HDR_SIZE, (uint8_t*)msg, strlen(msg));
+	if ((status = Zing_Transfer_Send(&Dma.ControlOut_.Channel_,Dma.ControlOut_.Buffer_,strlen(msg)+ZING_HDR_SIZE)) == CY_U3P_SUCCESS) {
+		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,strlen(msg));
+	}else{
+		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
+	}
 }
 
 void

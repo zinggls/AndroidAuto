@@ -53,6 +53,17 @@ void ControlChThread(uint32_t Value)
 					if(rt_len-ZING_HDR_SIZE == 4) { //EP0 : ZING MNGT_TX4B 12345678 --> ZING MNGT_RX4B
 						CcCtx.MngtData_ = *(uint32_t*)(buf+ZING_HDR_SIZE);
 					}
+
+					/* Messages sent from SendMessage in host arrives here (8byte Zing header+message) */
+#ifdef DEBUG
+					CyU3PDebugPrint(4,"[ZCH] SendMessage, rt_len=%d,",rt_len);
+					for(uint32_t i=0;i<rt_len;i++) CyU3PDebugPrint(4,"%x ",buf[i]);
+					CyU3PDebugPrint(4,"\r\n");
+#endif
+			    	if (buf[8]==0x50 && buf[9]==0x49 && buf[10]==0x4E && buf[11]==0x47 && buf[12]==0x20 && buf[13]==0x4F && buf[14]==0x4E )
+			    	{
+			    		CyU3PDebugPrint(4,"[ZCH] PING ON received.\r\n");
+			    	}
 				}
 #ifdef DEBUG
 				CyU3PDebugPrint(4,"[ZCH] Recv:%d Interrupt:%d RegRead:%d ManFrame:%d\n",recv,intEvt,regRead,manFrame);

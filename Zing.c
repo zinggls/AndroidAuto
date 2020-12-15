@@ -41,7 +41,7 @@ static void Zing_AllocBuffer(void)
 	Dma.DataOut_.Buffer_ = (uint8_t *)CyU3PDmaBufferAlloc(8192);
 }
 
-static void Zing_Header(
+void Zing_Header(
         uint8_t *pt,            /* pt : buffer pointer */
         uint16_t payload_size,  /* payload_size : memory size in bytes */
         uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
@@ -58,7 +58,7 @@ static void Zing_Header(
 	p_hdr->length = payload_size;
 }
 
-static void Zing_Header2(
+void Zing_Header2(
         uint8_t *pt,            /* pt : buffer pointer */
         uint16_t dir,
         uint16_t interrupt,

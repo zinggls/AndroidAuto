@@ -25,4 +25,21 @@ CyU3PReturnStatus_t Zing_Transfer_Recv(CyU3PDmaChannel *dma_ch,uint8_t *data,uin
 CyU3PReturnStatus_t Zing_Management_Send(uint8_t *data,uint32_t length);
 CyU3PReturnStatus_t Zing_Golay(uint32_t val);
 
+void Zing_Header(
+        uint8_t *pt,            /* pt : buffer pointer */
+        uint16_t payload_size,  /* payload_size : memory size in bytes */
+        uint16_t addr,          /* addr : zing internal address , address unit = 32bit */
+        uint16_t type           /* type : Read/write */);
+void Zing_Header2(
+        uint8_t *pt,            /* pt : buffer pointer */
+        uint16_t dir,
+        uint16_t interrupt,
+        uint16_t target,
+        uint16_t type,
+        uint16_t req_resp,
+        uint16_t fr_type,
+        uint16_t intr_flags,
+        uint16_t addr,
+        uint16_t payload_size);
+
 #endif

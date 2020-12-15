@@ -614,6 +614,13 @@ CyFxApplnStop ()
     glIsApplnActive = CyFalse;
 }
 
+/* USB host stack EP transfer completion callback. */
+static void
+CyFxHostXferCb (uint8_t ep, CyU3PUsbHostEpStatus_t epStatus)
+{
+	CyU3PDebugPrint (4, "CyFxHostXferCb ep=0x%x,epStatus=0x%x\r\n", ep,epStatus);
+}
+
 /* This function initializes the USB host stack. */
 void
 CyFxUsbHostStart ()
@@ -623,7 +630,7 @@ CyFxUsbHostStart ()
 
     hostCfg.ep0LowLevelControl = CyFalse;
     hostCfg.eventCb = CyFxHostEventCb;
-    hostCfg.xferCb = NULL;
+    hostCfg.xferCb = CyFxHostXferCb;
     status = CyU3PUsbHostStart (&hostCfg);
     if (status != CY_U3P_SUCCESS)
     {

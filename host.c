@@ -629,7 +629,7 @@ CyFxApplnStop ()
 static void
 CyFxHostXferCb (uint8_t ep, CyU3PUsbHostEpStatus_t epStatus)
 {
-	CyU3PDebugPrint (4, "CyFxHostXferCb ep=0x%x,epStatus=0x%x\r\n", ep,epStatus);
+	//CyU3PDebugPrint (4, "CyFxHostXferCb ep=0x%x,epStatus=0x%x\r\n", ep,epStatus);
 }
 
 /* This function initializes the USB host stack. */

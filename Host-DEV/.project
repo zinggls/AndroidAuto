@@ -45,16 +45,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/PIB.h</locationURI>
 		</link>
 		<link>
-			<name>PhoneUsbToZing.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/PhoneUsbToZing.c</locationURI>
-		</link>
-		<link>
-			<name>PhoneUsbToZing.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/PhoneUsbToZing.h</locationURI>
-		</link>
-		<link>
 			<name>Zing.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Zing.c</locationURI>
@@ -63,16 +53,6 @@
 			<name>Zing.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Zing.h</locationURI>
-		</link>
-		<link>
-			<name>ZingToPhoneUsb.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/ZingToPhoneUsb.c</locationURI>
-		</link>
-		<link>
-			<name>ZingToPhoneUsb.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/ZingToPhoneUsb.h</locationURI>
 		</link>
 		<link>
 			<name>cyfx_gcc_startup.S</name>

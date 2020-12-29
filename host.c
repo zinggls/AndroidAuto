@@ -84,8 +84,6 @@
 #include "gpio.h"
 #include "Zing.h"
 #include "PacketFormat.h"
-#include "ZingToPhoneUsb.h"
-#include "PhoneUsbToZing.h"
 #include "dma.h"
 #include "ZingHw.h"
 
@@ -560,11 +558,8 @@ CyFxApplnStart ()
 			glHostOwner     = CY_FX_HOST_OWNER_PHONE_DRIVER;
 			CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
 
-			CyFxCreateZingToPhoneUsbThread ();
-			CyU3PDebugPrint(4,"[Phone] Zing To PhoneUsb Thread Created\n");
-
-			CyFxCreatePhoneUsbToZingThread ();
-			CyU3PDebugPrint(4,"[Phone] PhoneUsb To Zing Thread Created\n");
+			/* TO DO
+			 * Threads are created in here */
 
 			SendMessage("PING ON");
 			return;
@@ -881,9 +876,8 @@ ApplnThread_Entry (
         if(loop%500==0) {	//To print every 5 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
         	iter++;
 #ifndef DEBUG_THREAD_LOOP
-        	CyU3PDebugPrint (2, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
-            		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr,
-            		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
+        	/* TO DO
+        	 * Display current status of threads in here */
 #endif
         }
 

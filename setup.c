@@ -12,8 +12,6 @@
 #include "ZingHw.h"
 #include "AutoUsbToZing.h"
 #include "ZingToAutoUsb.h"
-#include "PhoneUsbToZing.h"
-#include "ZingToPhoneUsb.h"
 #include "util.h"
 
 void
@@ -215,29 +213,8 @@ CyFxCreateZingToAutoUsbThread (
     }
 }
 
-void
-CyFxCreatePhoneUsbToZingThread (
-        void)
-{
-    CyU3PReturnStatus_t apiRetStatus = CreatePhoneUsbToZingThread();
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "PhoneUSB to Zing Thread Creation failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
-}
-
-void
-CyFxCreateZingToPhoneUsbThread (
-        void)
-{
-    CyU3PReturnStatus_t apiRetStatus = CreateZingToPhoneUsbThread();
-    if (apiRetStatus != CY_U3P_SUCCESS)
-    {
-        CyU3PDebugPrint (4, "Zing to PhoneUSB Thread Creation failed, Error code = %d\n", apiRetStatus);
-        CyFxAppErrorHandler(apiRetStatus);
-    }
-}
+/* TO DO
+ * Functions to create new threds placed here */
 
 void
 CyFxUsbConnect (

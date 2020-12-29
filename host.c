@@ -103,6 +103,9 @@ uint8_t glDeviceDesc[32] __attribute__ ((aligned (32)));
 
 uint8_t glHostOwner = CY_FX_HOST_OWNER_NONE;    /* Current owner for the host controller. */
 
+CyU3PQueue GpifDataQueue;
+CyU3PQueue PhoneDataQueue;
+
 /* Application Error Handler */
 void
 CyFxAppErrorHandler (

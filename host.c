@@ -106,6 +106,9 @@ uint8_t glHostOwner = CY_FX_HOST_OWNER_NONE;    /* Current owner for the host co
 CyU3PQueue GpifDataQueue;
 CyU3PQueue PhoneDataQueue;
 
+uint8_t GpifDataQueueStorage[QUEUE_TOTAL_SIZE];
+uint8_t PhoneDataQueueStorage[QUEUE_TOTAL_SIZE];
+
 /* Application Error Handler */
 void
 CyFxAppErrorHandler (
@@ -922,6 +925,14 @@ CyFxApplicationDefine (
         goto InitError;
 
     status = CyU3PEventCreate (&applnEvent);
+    if (status != 0)
+        goto InitError;
+
+    status = CyU3PQueueCreate(&GpifDataQueue,1,GpifDataQueueStorage,QUEUE_TOTAL_SIZE);
+    if (status != 0)
+        goto InitError;
+
+    status = CyU3PQueueCreate(&PhoneDataQueue,1,PhoneDataQueueStorage,QUEUE_TOTAL_SIZE);
     if (status != 0)
         goto InitError;
 

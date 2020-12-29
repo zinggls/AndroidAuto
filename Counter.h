@@ -4,10 +4,8 @@
 #include "cyu3types.h"
 
 typedef struct _Counter{
-    uint32_t	receiveOk;
-    uint32_t	receiveErr;
-    uint32_t	sendOk;
-    uint32_t	sendErr;	
+    uint32_t	Ok;
+    uint32_t	Err;
 }Counter;
 
 #endif

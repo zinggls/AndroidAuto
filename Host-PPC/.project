@@ -35,6 +35,26 @@
 			<locationURI>PARENT-1-PROJECT_LOC/ControlCh.h</locationURI>
 		</link>
 		<link>
+			<name>GpifDataRecv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/GpifDataRecv.c</locationURI>
+		</link>
+		<link>
+			<name>GpifDataRecv.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/GpifDataRecv.h</locationURI>
+		</link>
+		<link>
+			<name>GpifDataSend.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/GpifDataSend.c</locationURI>
+		</link>
+		<link>
+			<name>GpifDataSend.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/GpifDataSend.h</locationURI>
+		</link>
+		<link>
 			<name>PIB.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/PIB.c</locationURI>
@@ -43,6 +63,26 @@
 			<name>PIB.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/PIB.h</locationURI>
+		</link>
+		<link>
+			<name>PhoneDataRecv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/PhoneDataRecv.c</locationURI>
+		</link>
+		<link>
+			<name>PhoneDataRecv.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/PhoneDataRecv.h</locationURI>
+		</link>
+		<link>
+			<name>PhoneDataSend.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/PhoneDataSend.c</locationURI>
+		</link>
+		<link>
+			<name>PhoneDataSend.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/PhoneDataSend.h</locationURI>
 		</link>
 		<link>
 			<name>Zing.c</name>

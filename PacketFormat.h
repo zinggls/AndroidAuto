@@ -10,4 +10,9 @@ typedef struct _PacketFormat{
     uint8_t		data[512*8];
 }PacketFormat;
 
+typedef struct _PPacketFormat{
+    uint32_t	size;
+    uint8_t		*data;
+}PPacketFormat;
+
 #endif

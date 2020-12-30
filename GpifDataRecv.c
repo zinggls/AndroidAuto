@@ -7,6 +7,8 @@
 #include "cyu3usbhost.h"
 #include "PacketFormat.h"
 
+extern CyU3PQueue GpifDataQueue;
+
 CyU3PReturnStatus_t
 CreateGpifDataRecvThread(
 		void)
@@ -42,15 +44,31 @@ GpifDataRecvThread(
 		return;
 	}
 
-	CyU3PDebugPrint(4,"[GpifDataRecv] Zing to Phone USB thread starts\n");
+	CyU3PDebugPrint(4,"[GpifDataRecv] Gpif Data Receiving thread starts\n");
 	CyU3PDebugPrint(4,"[GpifDataRecv] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	memset(&gpifRecvCounter,0,sizeof(gpifRecvCounter));
 	while(1){
+		//CyU3PDebugPrint(4,"[GpifDataRecv] Waiting for data...\r\n");
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,(uint8_t*)pf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			gpifRecvCounter.Ok++;
+			//CyU3PDebugPrint(4,"[GpifDataRecv] %d bytes received from Gpif\r\n",rt_len);
 
-			/* TO DO
-			 * enqueue payload of reveiced PacketFormat */
+			PPacketFormat* packet = (PPacketFormat*)CyU3PMemAlloc(sizeof(PPacketFormat));
+			//CyU3PDebugPrint(4,"[GpifDataRecv] CyU3PMemAlloc packet:0x%x, sizeof(PPacketFormat)=%d,sizeof(PPacketFormat*)=%d\r\n",packet,sizeof(PPacketFormat),sizeof(PPacketFormat*));
+
+			packet->data = (uint8_t*)CyU3PMemAlloc(pf->size);
+			//CyU3PDebugPrint(4,"[GpifDataRecv] CyU3PMemAlloc(%d) packet->data:0x%x\r\n",pf->size,packet->data);
+
+			CyU3PMemCopy(packet->data,pf->data,pf->size);
+			//CyU3PDebugPrint(4,"[GpifDataRecv] CyU3PMemCopy pf->size=%d\r\n",pf->size);
+			packet->size = pf->size;
+
+			//CyU3PDebugPrint(4,"[GpifDataRecv] CyU3PQueueSend(0x%x)...\r\n",packet);
+			if((Status=CyU3PQueueSend(&GpifDataQueue,&packet,CYU3P_WAIT_FOREVER))!=CY_U3P_SUCCESS) {
+				CyU3PDebugPrint(4,"[GpifDataRecv] CyU3PQueueSend failed, error=0x%x\r\n",Status);
+			}else{
+				//CyU3PDebugPrint(4,"[GpifDataRecv] CyU3PQueueSend %d bytes ok\r\n",packet->size);
+			}
+			gpifRecvCounter.Ok++;
 
 #ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint(4,"[GpifDataRecv] %d->%d bytes received from GpifDataIn\r\n",rt_len,pf->size);

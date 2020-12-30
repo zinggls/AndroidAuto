@@ -8,6 +8,8 @@
 #include "uhbuf.h"
 #include "PacketFormat.h"
 
+extern CyU3PQueue PhoneDataQueue;
+
 CyU3PReturnStatus_t
 CreatePhoneDataSendThread(
 		void)
@@ -35,6 +37,7 @@ PhoneDataSendThread(
 		uint32_t Value)
 {
 	CyU3PReturnStatus_t Status;
+	PPacketFormat *packet;
 
 	PacketFormat *pf;
 	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*2))==0){
@@ -45,17 +48,28 @@ PhoneDataSendThread(
 	CyU3PDebugPrint(4,"[PhoneDataSend] Phone Data Sending thread starts\n");
 	memset(&phoneSendCounter,0,sizeof(phoneSendCounter));
 	while(1){
-		/* TO DO
-		 * retrieve message from queue */
+		//CyU3PDebugPrint(4,"[PhoneDataSend] Waiting for data...\r\n");
+		if((Status=CyU3PQueueReceive(&PhoneDataQueue,&packet,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			//CyU3PDebugPrint(4,"[PhoneDataSend] %d bytes received from Queue\r\n",packet->size);
 
-		if((Status=Zing_DataWrite((uint8_t*)pf,pf->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
-			phoneSendCounter.Ok++;
+			CyU3PMemCopy(pf->data,packet->data,packet->size);
+			pf->size = packet->size;
+
+			//CyU3PDebugPrint(4,"[PhoneDataSend] Zing_DataWrite %d bytes...\r\n",pf->size+sizeof(uint32_t));
+			if((Status=Zing_DataWrite((uint8_t*)pf,pf->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
+				//CyU3PDebugPrint(4,"[PhoneDataSend] Zing_DataWrite %d bytes ok\r\n",pf->size+sizeof(uint32_t));
+				phoneSendCounter.Ok++;
 #ifdef DEBUG_THREAD_LOOP
-			CyU3PDebugPrint(4,"[PhoneDataSend] %d bytes sent to GpifDataOut\r\n",rt_len);
+				CyU3PDebugPrint(4,"[PhoneDataSend] %d bytes sent to GpifDataOut\r\n",rt_len);
 #endif
+			}else{
+				phoneSendCounter.Err++;
+				CyU3PDebugPrint (4, "[PhoneDataSend] Zing_DataWrite(%d) error(0x%x)\n",pf->size+sizeof(uint32_t),Status);
+			}
+		    CyU3PMemFree(packet->data);
+		    CyU3PMemFree(packet);
 		}else{
-			phoneSendCounter.Err++;
-			CyU3PDebugPrint (4, "[PhoneDataSend] Zing_DataWrite(%d) error(0x%x)\n",pf->size+sizeof(uint32_t),Status);
+			CyU3PDebugPrint(4,"[PhoneDataSend] CyU3PQueueReceive failed, error=0x%x\r\n",Status);
 		}
 	}
 }

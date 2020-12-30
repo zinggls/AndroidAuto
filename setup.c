@@ -12,6 +12,10 @@
 #include "ZingHw.h"
 #include "AutoUsbToZing.h"
 #include "ZingToAutoUsb.h"
+#include "GpifDataRecv.h"
+#include "GpifDataSend.h"
+#include "PhoneDataRecv.h"
+#include "PhoneDataSend.h"
 #include "util.h"
 
 void
@@ -209,6 +213,54 @@ CyFxCreateZingToAutoUsbThread (
     if (apiRetStatus != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (4, "Zing to AutoUSB Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
+void
+CyFxCreateGpifDataRecvThread (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = CreateGpifDataRecvThread();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Gpif Data Receive Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
+void
+CyFxCreateGpifDataSendThread (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = CreateGpifDataSendThread();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Gpif Data Send Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
+void
+CyFxCreatePhoneDataRecvThread (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = CreatePhoneDataRecvThread();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Phone Data Receive Thread Creation failed, Error code = %d\n", apiRetStatus);
+        CyFxAppErrorHandler(apiRetStatus);
+    }
+}
+
+void
+CyFxCreatePhoneDataSendThread (
+        void)
+{
+    CyU3PReturnStatus_t apiRetStatus = CreatePhoneDataSendThread();
+    if (apiRetStatus != CY_U3P_SUCCESS)
+    {
+        CyU3PDebugPrint (4, "Phone Data Send Thread Creation failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler(apiRetStatus);
     }
 }

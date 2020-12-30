@@ -9,6 +9,7 @@
 #include "uhbuf.h"
 
 extern CyU3PDmaChannel glChHandlePhoneDataOut;
+extern CyU3PQueue GpifDataQueue;
 
 CyU3PReturnStatus_t
 CreateGpifDataSendThread(
@@ -37,24 +38,31 @@ GpifDataSendThread(
 		uint32_t Value)
 {
 	CyU3PReturnStatus_t Status;
+	PPacketFormat* packet;
 
 	CyU3PDebugPrint(4,"[GpifDataSend] Gpif Data Sending thread starts\r\n");
 	memset(&gpifSendCounter,0,sizeof(gpifSendCounter));
 	while(1){
-		/* TO DO
-		 * retrieve message from queue */
+		//CyU3PDebugPrint(4,"[GpifDataSend] Waiting for data...\r\n");
+		if((Status=CyU3PQueueReceive(&GpifDataQueue,&packet,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+			//CyU3PDebugPrint(4,"[GpifDataSend] packet=0x%x &packet=0x%x\r\n",packet,&packet);
+			//CyU3PDebugPrint(4,"[GpifDataSend] %d bytes received from Queue\r\n",packet->size);
 
-        uint8_t *buffer = 0;
-        uint16_t size = 0;
-
-	    if ((Status=CyFxSendBuffer (Phone.outEp,&glChHandlePhoneDataOut,buffer,size)) != CY_U3P_SUCCESS) {
-	    	gpifSendCounter.Err++;
-			CyU3PDebugPrint(4,"[GpifDataSend] sending %d bytes to PhoneDataOut failed error(0x%x),EP=0x%x\r\n",size,Status,Phone.outEp);
-	    }else{
-	    	gpifSendCounter.Ok++;
-#ifdef DEBUG_THREAD_LOOP
-	    	CyU3PDebugPrint(4,"[GpifDataSend] %d bytes sent to PhoneDataOut,EP=0x%x\r\n",size,Phone.outEp);
-#endif
-	    }
+			//CyU3PDebugPrint(4,"[GpifDataSend] CyFxSendBuffer...\r\n");
+		    if ((Status=CyFxSendBuffer (Phone.outEp,&glChHandlePhoneDataOut,packet->data,packet->size)) == CY_U3P_SUCCESS) {
+		    	//CyU3PDebugPrint(4,"[GpifDataSend] CyFxSendBuffer %d bytes ok\r\n",packet->size);
+		    	gpifSendCounter.Ok++;
+	#ifdef DEBUG_THREAD_LOOP
+		    	CyU3PDebugPrint(4,"[GpifDataSend] %d bytes sent to PhoneDataOut,EP=0x%x\r\n",packet->size,Phone.outEp);
+	#endif
+		    }else{
+		    	gpifSendCounter.Err++;
+				CyU3PDebugPrint(4,"[GpifDataSend] sending %d bytes to PhoneDataOut failed error(0x%x),EP=0x%x\r\n",packet->size,Status,Phone.outEp);
+		    }
+		    CyU3PMemFree(packet->data);
+		    CyU3PMemFree(packet);
+		}else{
+			CyU3PDebugPrint(4,"[GpifDataSend] CyU3PQueueReceive failed, error=0x%x\r\n",Status);
+		}
 	}
 }

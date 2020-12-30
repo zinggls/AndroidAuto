@@ -564,8 +564,15 @@ CyFxApplnStart ()
 			glHostOwner     = CY_FX_HOST_OWNER_PHONE_DRIVER;
 			CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
 
-			/* TO DO
-			 * Threads are created in here */
+			CyFxCreateGpifDataRecvThread();
+			CyU3PDebugPrint(4,"[Phone] Gpif Data Receive Thread Created\n");
+			CyFxCreateGpifDataSendThread();
+			CyU3PDebugPrint(4,"[Phone] Gpif Data Send Thread Created\n");
+
+			CyFxCreatePhoneDataRecvThread();
+			CyU3PDebugPrint(4,"[Phone] Phone Data Receive Thread Created\n");
+			CyFxCreatePhoneDataSendThread();
+			CyU3PDebugPrint(4,"[Phone] Phone Data Send Thread Created\n");
 
 			SendMessage("PING ON");
 			return;

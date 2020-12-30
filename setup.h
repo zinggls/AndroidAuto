@@ -72,14 +72,24 @@ void
 CyFxCreateZingToAutoUsbThread (
         void);
 
-/* Create PhoneUSB to Zing Thread */
+/* Create Gpif Data Receive Thread */
 void
-CyFxCreatePhoneUsbToZingThread (
+CyFxCreateGpifDataRecvThread (
         void);
 
-/* Create Zing to PhoneUSB Thread */
+/* Create Gpif Data Send Thread */
 void
-CyFxCreateZingToPhoneUsbThread (
+CyFxCreateGpifDataSendThread (
+        void);
+
+/* Create Phone Data Receive Thread */
+void
+CyFxCreatePhoneDataRecvThread (
+        void);
+
+/* Create Phone Data Send Thread */
+void
+CyFxCreatePhoneDataSendThread (
         void);
 
 /* Connect USB */

@@ -6,8 +6,10 @@
 #include "phonedrv.h"
 #include "cyu3usbhost.h"
 #include "uhbuf.h"
+#include "PacketFormat.h"
 
 extern CyU3PDmaChannel glChHandlePhoneDataIn;
+extern CyU3PQueue PhoneDataQueue;
 
 CyU3PReturnStatus_t
 CreatePhoneDataRecvThread(
@@ -50,18 +52,30 @@ PhoneDataRecvThread(
 	buffer = CyU3PDmaBufferAlloc(glChHandlePhoneDataIn.size);
 	memset(&phoneRecvCounter,0,sizeof(phoneRecvCounter));
 	while(1){
-	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,buffer,glChHandlePhoneDataIn.size,&rt_len)) != CY_U3P_SUCCESS) {
-	    	phoneRecvCounter.Err++;
-			CyU3PDebugPrint(4,"[PhoneDataRecv] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
-	    }else{
-	    	phoneRecvCounter.Ok++;
+		//CyU3PDebugPrint(4,"[PhoneDataRecv] Waiting for data...\r\n");
+		if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,buffer,glChHandlePhoneDataIn.size,&rt_len)) == CY_U3P_SUCCESS) {
+	    	//CyU3PDebugPrint(4,"[PhoneDataRecv] %d bytes received from Phone\r\n",rt_len);
 
-			/* TO DO
-			 * enqueue data received from phone */
+			PPacketFormat* packet = (PPacketFormat*)CyU3PMemAlloc(sizeof(PPacketFormat));
+			packet->data = (uint8_t*)CyU3PMemAlloc(rt_len);
+
+			CyU3PMemCopy(packet->data,buffer,rt_len);
+			packet->size = rt_len;
+
+			//CyU3PDebugPrint(4,"[PhoneDataRecv] CyU3PQueueSend...\r\n");
+			if((Status=CyU3PQueueSend(&PhoneDataQueue,&packet,CYU3P_WAIT_FOREVER))!=CY_U3P_SUCCESS) {
+				CyU3PDebugPrint(4,"[PhoneDataRecv] CyU3PQueueSend failed, error=0x%x\r\n",Status);
+			}else{
+				//CyU3PDebugPrint(4,"[PhoneDataRecv] CyU3PQueueSend %d bytes ok\r\n",packet->size);
+			}
+	    	phoneRecvCounter.Ok++;
 
 #ifdef DEBUG_THREAD_LOOP
 	    	CyU3PDebugPrint(4,"[PhoneDataRecv] %d bytes received from PhoneDataIn\r\n",rt_len);
 #endif
+	    }else{
+	    	phoneRecvCounter.Err++;
+			CyU3PDebugPrint(4,"[PhoneDataRecv] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
 	    }
 	}
 }

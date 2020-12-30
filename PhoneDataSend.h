@@ -5,7 +5,7 @@
 #include "cyu3os.h"
 #include "Counter.h"
 
-#define PHONEDATASEND_THREAD_STACK		(0x1000)
+#define PHONEDATASEND_THREAD_STACK		(0x800)
 #define PHONEDATASEND_THREAD_PRIORITY	(8)
 
 CyU3PReturnStatus_t

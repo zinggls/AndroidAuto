@@ -30,7 +30,7 @@
 #include "cyu3usbhost.h"
 #include "cyu3externcstart.h"
 
-#define CY_FX_APPLN_THREAD_STACK        (0x1000)        /* Application thread stack size */
+#define CY_FX_APPLN_THREAD_STACK        (0x800)         /* Application thread stack size */
 #define CY_FX_APPLN_THREAD_PRIORITY     (8)             /* Application thread priority */
 
 #define CY_FX_HOST_POLL_INTERVAL        (10)            /* The polling interval for the DoWork function in ms. */

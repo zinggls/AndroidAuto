@@ -39,7 +39,7 @@ GpifDataRecvThread(
 	uint32_t rt_len;
 
 	PacketFormat *pf;
-	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*2))==0){
+	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(520))==0){
 		CyU3PDebugPrint(4,"[GpifDataRecv] PacketFormat CyU3PDmaBufferAlloc error\r\n");
 		return;
 	}

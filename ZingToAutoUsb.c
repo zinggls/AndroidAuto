@@ -7,7 +7,6 @@
 #include "setup.h"
 #include "PacketFormat.h"
 
-CyU3PThread ZingToAutoUsbThreadHandle;
 extern CyU3PDmaChannel glChHandleAutoDataOut;
 extern CyBool_t glIsApplnActive;
 
@@ -15,15 +14,14 @@ CyU3PReturnStatus_t
 CreateZingToAutoUsbThread(
 		void)
 {
-	void *StackPtr = NULL;
 	CyU3PReturnStatus_t Status;
 
-	StackPtr = CyU3PMemAlloc(ZINGTOAUTOUSB_THREAD_STACK);
-	Status = CyU3PThreadCreate(&ZingToAutoUsbThreadHandle,	// Handle to my Application Thread
+	zingToAutoUsb.StackPtr_ = CyU3PMemAlloc(ZINGTOAUTOUSB_THREAD_STACK);
+	Status = CyU3PThreadCreate(&zingToAutoUsb.Handle_,		// Handle to my Application Thread
 				"102:ZingToAutoUsb",						// Thread ID and name
 				ZingToAutoUsbThread,						// Thread entry function
 				0,											// Parameter passed to Thread
-				StackPtr,									// Pointer to the allocated thread stack
+				zingToAutoUsb.StackPtr_,					// Pointer to the allocated thread stack
 				ZINGTOAUTOUSB_THREAD_STACK,					// Allocated thread stack size
 				ZINGTOAUTOUSB_THREAD_PRIORITY,				// Thread priority
 				ZINGTOAUTOUSB_THREAD_PRIORITY,				// = Thread priority so no preemption
@@ -47,10 +45,10 @@ ZingToAutoUsbThread(
 	}
 
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
-	memset(&zingToAutoUsbCnt,0,sizeof(zingToAutoUsbCnt));
+	memset(&zingToAutoUsb.Count_,0,sizeof(zingToAutoUsb.Count_));
 	while(1){
 		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,(uint8_t*)pf,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			zingToAutoUsbCnt.receiveOk++;
+			zingToAutoUsb.Count_.receiveOk++;
             if(pf->size==0) {
                 CyU3PDebugPrint(4,"[Z-A] Data size(%d) received from GpifDataIn is zero, Skip further processing\r\n",pf->size);
                 continue;
@@ -88,16 +86,16 @@ ZingToAutoUsbThread(
 	    	if(!glIsApplnActive) continue;
 #endif
 			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,pf->data,pf->size))==CY_U3P_SUCCESS) {
-				zingToAutoUsbCnt.sendOk++;
+				zingToAutoUsb.Count_.sendOk++;
 #ifdef DEBUG_THREAD_LOOP
 				CyU3PDebugPrint(4,"[A-Z] %d bytes sent to AutoDataOut\r\n",pf->size);
 #endif
 			}else{
-				zingToAutoUsbCnt.sendErr++;
+				zingToAutoUsb.Count_.sendErr++;
 				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite(%d) error(0x%x)\n",pf->size,Status);
 			}
 		}else{
-			zingToAutoUsbCnt.receiveErr++;
+			zingToAutoUsb.Count_.receiveErr++;
 			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);
 		}
 	}

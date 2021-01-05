@@ -8,22 +8,20 @@
 #include "uhbuf.h"
 #include "PacketFormat.h"
 
-CyU3PThread PhoneUsbToZingThreadHandle;
 extern CyU3PDmaChannel glChHandlePhoneDataIn;
 
 CyU3PReturnStatus_t
 CreatePhoneUsbToZingThread(
 		void)
 {
-	void *StackPtr = NULL;
 	CyU3PReturnStatus_t Status;
 
-	StackPtr = CyU3PMemAlloc(PHONEUSBTOZING_THREAD_STACK);
-	Status = CyU3PThreadCreate(&PhoneUsbToZingThreadHandle,	// Handle to my Application Thread
+	phoneUsbToZing.StackPtr_ = CyU3PMemAlloc(PHONEUSBTOZING_THREAD_STACK);
+	Status = CyU3PThreadCreate(&phoneUsbToZing.Handle_,		// Handle to my Application Thread
 				"201:PhoneUsbToZing",						// Thread ID and name
 				PhoneUsbToZingThread,						// Thread entry function
 				0,											// Parameter passed to Thread
-				StackPtr,									// Pointer to the allocated thread stack
+				phoneUsbToZing.StackPtr_,					// Pointer to the allocated thread stack
 				PHONEUSBTOZING_THREAD_STACK,				// Allocated thread stack size
 				PHONEUSBTOZING_THREAD_PRIORITY,				// Thread priority
 				PHONEUSBTOZING_THREAD_PRIORITY,				// = Thread priority so no preemption
@@ -59,14 +57,14 @@ PhoneUsbToZingThread(
 	Buf.count = 0;
 	Buf.size = glChHandlePhoneDataIn.size;
 	Buf.status = 0;
-	memset(&phoneUsbToZingCnt,0,sizeof(phoneUsbToZingCnt));
+	memset(&phoneUsbToZing.Count_,0,sizeof(phoneUsbToZing.Count_));
 	while(1){
 	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
-	    	phoneUsbToZingCnt.receiveErr++;
+	    	phoneUsbToZing.Count_.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
 			continue;
 	    }else{
-	    	phoneUsbToZingCnt.receiveOk++;
+	    	phoneUsbToZing.Count_.receiveOk++;
             if(rt_len==0) {
                 CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is zero, Skip further processing\r\n",rt_len);
                 continue;
@@ -80,12 +78,12 @@ PhoneUsbToZingThread(
 
 	    pf->size = rt_len;
 		if((Status=Zing_DataWrite((uint8_t*)pf,pf->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
-			phoneUsbToZingCnt.sendOk++;
+			phoneUsbToZing.Count_.sendOk++;
 #ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",rt_len);
 #endif
 		}else{
-			phoneUsbToZingCnt.sendErr++;
+			phoneUsbToZing.Count_.sendErr++;
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
 		}
 	}

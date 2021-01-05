@@ -882,8 +882,8 @@ ApplnThread_Entry (
         	iter++;
 #ifndef DEBUG_THREAD_LOOP
         	CyU3PDebugPrint (2, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
-            		zingToPhoneUsbCnt.receiveOk,zingToPhoneUsbCnt.receiveErr,zingToPhoneUsbCnt.sendOk,zingToPhoneUsbCnt.sendErr,
-            		phoneUsbToZingCnt.receiveOk,phoneUsbToZingCnt.receiveErr,phoneUsbToZingCnt.sendOk,phoneUsbToZingCnt.sendErr);
+        			zingToPhoneUsb.Count_.receiveOk,zingToPhoneUsb.Count_.receiveErr,zingToPhoneUsb.Count_.sendOk,zingToPhoneUsb.Count_.sendErr,
+            		phoneUsbToZing.Count_.receiveOk,phoneUsbToZing.Count_.receiveErr,phoneUsbToZing.Count_.sendOk,phoneUsbToZing.Count_.sendErr);
 #endif
         }
 

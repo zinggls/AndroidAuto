@@ -2,7 +2,7 @@
 #define __CONTROL_CH_H__
 
 #include "cyu3types.h"
-#include "cyu3os.h"
+#include "thread.h"
 
 #define CONTROLCH_THREAD_STACK		(0x1000)
 #define CONTROLCH_THREAD_PRIORITY	(8)
@@ -19,5 +19,7 @@ ConChCtx_t CcCtx;
 
 void ControlChThread(uint32_t Value);
 CyU3PReturnStatus_t ControlChThread_Create(void);
+
+Thread_t ControlCh;
 
 #endif

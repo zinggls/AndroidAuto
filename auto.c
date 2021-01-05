@@ -554,8 +554,8 @@ AutoThread_Entry (
         iter++;
 #ifndef DEBUG_THREAD_LOOP
         CyU3PDebugPrint (2, "%d [A->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [Z->A] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
-        		autoUsbToZingCnt.receiveOk,autoUsbToZingCnt.receiveErr,autoUsbToZingCnt.sendOk,autoUsbToZingCnt.sendErr,
-        		zingToAutoUsbCnt.receiveOk,zingToAutoUsbCnt.receiveErr,zingToAutoUsbCnt.sendOk,zingToAutoUsbCnt.sendErr);
+        		autoUsbToZing.Count_.receiveOk,autoUsbToZing.Count_.receiveErr,autoUsbToZing.Count_.sendOk,autoUsbToZing.Count_.sendErr,
+        		zingToAutoUsb.Count_.receiveOk,zingToAutoUsb.Count_.receiveErr,zingToAutoUsb.Count_.sendOk,zingToAutoUsb.Count_.sendErr);
 #endif
     }
 }

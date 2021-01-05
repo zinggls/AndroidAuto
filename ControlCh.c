@@ -7,8 +7,6 @@
 #include "cyu3system.h"
 #include "macro.h"
 
-CyU3PThread ControlChThreadHandle;
-
 void ControlChThread(uint32_t Value)
 {
 	REG_Resp_t *resp_pt;
@@ -81,17 +79,16 @@ void ControlChThread(uint32_t Value)
 
 CyU3PReturnStatus_t ControlChThread_Create(void)
 {
-	void *StackPtr = NULL;
 	CyU3PReturnStatus_t Status;
 
 	CHECK(CyU3PEventCreate(&CcCtx.Event_));
 
-	StackPtr = CyU3PMemAlloc(CONTROLCH_THREAD_STACK);
-	Status = CyU3PThreadCreate(&ControlChThreadHandle,	// Handle to my Application Thread
+	ControlCh.StackPtr_ = CyU3PMemAlloc(CONTROLCH_THREAD_STACK);
+	Status = CyU3PThreadCreate(&ControlCh.Handle_,		// Handle to my Application Thread
 				"22:tmp2",								// Thread ID and name
 				ControlChThread,						// Thread entry function
 				0,										// Parameter passed to Thread
-				StackPtr,								// Pointer to the allocated thread stack
+				ControlCh.StackPtr_,					// Pointer to the allocated thread stack
 				CONTROLCH_THREAD_STACK,					// Allocated thread stack size
 				CONTROLCH_THREAD_PRIORITY,				// Thread priority
 				CONTROLCH_THREAD_PRIORITY,				// = Thread priority so no preemption

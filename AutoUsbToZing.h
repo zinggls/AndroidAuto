@@ -2,7 +2,7 @@
 #define __AUTOUSBTOZING_H__
 
 #include "cyu3types.h"
-#include "Counter.h"
+#include "thread.h"
 
 #define AUTOUSBTOZING_THREAD_STACK		(0x1000)
 #define AUTOUSBTOZING_THREAD_PRIORITY	(8)
@@ -15,6 +15,6 @@ void
 AutoUsbToZingThread(
 		uint32_t Value);
 
-Counter autoUsbToZingCnt;
+Thread_t autoUsbToZing;
 
 #endif

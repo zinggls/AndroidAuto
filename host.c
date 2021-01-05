@@ -83,7 +83,6 @@
 #include "setup.h"
 #include "gpio.h"
 #include "Zing.h"
-#include "PacketFormat.h"
 #include "ZingToPhoneUsb.h"
 #include "PhoneUsbToZing.h"
 #include "dma.h"

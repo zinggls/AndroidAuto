@@ -8,6 +8,7 @@
 
 extern CyU3PDmaChannel glChHandleAutoDataOut;
 extern CyBool_t glIsApplnActive;
+CyBool_t AutoUsbToZing = CyFalse;
 
 CyU3PReturnStatus_t
 CreateZingToAutoUsbThread(
@@ -41,6 +42,7 @@ ZingToAutoUsbThread(
 {
 	uint32_t rt_len;
 	CyU3PReturnStatus_t Status;
+	CyBool_t usbCon = CyFalse;
 
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	memset(&zingToAutoUsb.Count_,0,sizeof(zingToAutoUsb.Count_));
@@ -60,21 +62,28 @@ ZingToAutoUsbThread(
 			uint8_t *buf = zingToAutoUsb.pf_->data;
 	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x4E )
 	    	{
-	    		CyU3PDebugPrint(4,"PING ON received. Connecting USB...\r\n");
-	    	    CyFxUsbConnect();
-	    	    CyU3PDebugPrint(4,"USB Connected\r\n");
+	    		if(!usbCon) {
+					CyU3PDebugPrint(4,"PING ON received. Connecting USB...\r\n");
+					CyFxUsbConnect();
+					usbCon = CyTrue;
+					CyU3PDebugPrint(4,"USB Connected\r\n");
 
-	    	    CyFxCreateAutoUsbToZingThread ();
-	    	    CyU3PDebugPrint(4,"[Auto] AutoUsb To Zing Thread Created\n");
-	    	    continue;
+					if(!AutoUsbToZing) {
+						CyFxCreateAutoUsbToZingThread ();
+						CyU3PDebugPrint(4,"[Auto] AutoUsb To Zing Thread Created\n");
+						AutoUsbToZing = CyTrue;
+					}
+	    		}else{
+					CyU3PDebugPrint(4,"PING ON received. Already connected\r\n");
+	    		}
 	    	}
 
 	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x46 && buf[7]==0x46)
 	    	{
 	    		CyU3PDebugPrint(4,"PING OFF received. Disconnecting USB...\r\n");
 	    		CyFxUsbDisconnect();
+	    		usbCon = CyFalse;
 	    		CyU3PDebugPrint(4,"USB Disconnected\r\n");
-	    		CyU3PDeviceReset(CyFalse);
 	    		continue;
 	    	}
 

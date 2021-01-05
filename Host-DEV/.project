@@ -150,6 +150,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/setup.h</locationURI>
 		</link>
 		<link>
+			<name>thread.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/thread.h</locationURI>
+		</link>
+		<link>
 			<name>uhbuf.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/uhbuf.c</locationURI>

@@ -87,6 +87,7 @@
 #include "PhoneUsbToZing.h"
 #include "dma.h"
 #include "ZingHw.h"
+#include "ControlCh.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -788,6 +789,13 @@ CyFxApplnInit (void)
     CyU3PDebugPrint(4,"[Phone] I2C Init OK\n");
     CyFxAutoPibInit();
     CyU3PDebugPrint(4,"[Phone] PIB Init OK\n");
+
+    ControlCh.StackPtr_ = 0;
+    ControlCh.pf_ = 0;
+    phoneUsbToZing.StackPtr_ = 0;
+    phoneUsbToZing.pf_ = 0;
+    zingToPhoneUsb.StackPtr_ = 0;
+    zingToPhoneUsb.pf_ = 0;
 
     CyFxCreateCpuPibDmaChannels("[Phone]",CY_FX_DATA_BURST_LENGTH);
     CyU3PDebugPrint(4,"[Phone] DMA Channels for CPU-PIB Created\n");

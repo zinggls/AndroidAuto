@@ -52,6 +52,7 @@
 #include "gpio.h"
 #include "AutoUsbToZing.h"
 #include "ZingToAutoUsb.h"
+#include "ControlCh.h"
 
 CyU3PThread     AutoAppThread;	         /* Auto application thread structure */
 CyU3PDmaChannel glChHandleAutoDataIn;    /* DMA Channel handle */
@@ -402,6 +403,13 @@ CyFxAutoApplnInit (void)
     CyU3PDebugPrint(4,"[Auto] I2C Init OK\n");
     CyFxAutoPibInit();
     CyU3PDebugPrint(4,"[Auto] PIB Init OK\n");
+
+    ControlCh.StackPtr_ = 0;
+    ControlCh.pf_ = 0;
+    autoUsbToZing.StackPtr_ = 0;
+    autoUsbToZing.pf_ = 0;
+    zingToAutoUsb.StackPtr_ = 0;
+    zingToAutoUsb.pf_ = 0;
 
     CyFxCreateCpuPibDmaChannels("[Auto]",CY_FX_DATA_BURST_LENGTH);
     CyU3PDebugPrint(4,"[Auto] DMA Channels for CPU-PIB Created\n");

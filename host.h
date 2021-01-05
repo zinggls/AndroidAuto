@@ -62,6 +62,7 @@
 #define CY_FX_MSC_TEST_INTERVAL         (100)           /* Run every 100 poll iterations. */
 
 #define CY_FX_USB_CHANGE_EVENT          (1 << 0)        /* Event signaling that a peripheral change is detected. */
+#define CY_FX_PHONEUSB_RECEIVE_ERR		(1 << 1)
 
 #define CY_FX_DATA_BURST_LENGTH			(8)				/* Number of Burst for the Data. USB 3.0 only, fix 8 in ZING */
 #define VBUS_GPIO						(52)			/* Controls the VBUS supply via this GPIO port */

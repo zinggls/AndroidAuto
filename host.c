@@ -847,7 +847,7 @@ ApplnThread_Entry (
     for (;;)
     {
         /* Wait until a peripheral change event has been detected, or until the poll interval has elapsed. */
-        status = CyU3PEventGet (&applnEvent, CY_FX_USB_CHANGE_EVENT, CYU3P_EVENT_OR_CLEAR,
+        status = CyU3PEventGet (&applnEvent, CY_FX_USB_CHANGE_EVENT | CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR_CLEAR,
                 &evStat, CY_FX_HOST_POLL_INTERVAL);
 
         /* If a peripheral change has been detected, go through device discovery. */
@@ -879,6 +879,20 @@ ApplnThread_Entry (
                 {
                     CyU3PDebugPrint (2, "HostPortEnable failed with code %d\r\n", status);
                 }
+            }
+        }else if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0)){
+            CyU3PDebugPrint (2, "PhoneUsb receive error detected\r\n");
+            CyU3PThreadSleep (100);
+
+            CyU3PDebugPrint (2, "CyFxApplnStop...\r\n");
+            CyFxApplnStop ();
+            CyU3PDebugPrint (2, "CyFxApplnStop done\r\n");
+            if((status = CyU3PUsbHostPortEnable ())==CY_U3P_SUCCESS) {
+            	CyU3PDebugPrint (2, "CyFxApplnStart...\r\n");
+                CyFxApplnStart ();
+                CyU3PDebugPrint (2, "CyFxApplnStart done\r\n");
+            }else{
+            	CyU3PDebugPrint (2, "HostPortEnable failed error=0x%x\r\n", status);
             }
         }
 

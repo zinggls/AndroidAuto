@@ -243,7 +243,7 @@ SendMessage (const char *msg)
 {
 	CyU3PReturnStatus_t status;
 	PacketFormat *pf;
-	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(512*17))==0){
+	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(520))==0){
 		CyU3PDebugPrint(4,"[Z-A] %s, PacketFormat CyU3PDmaBufferAlloc error\r\n",msg);
 		return;
 	}

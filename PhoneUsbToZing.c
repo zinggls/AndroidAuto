@@ -6,8 +6,10 @@
 #include "phonedrv.h"
 #include "cyu3usbhost.h"
 #include "uhbuf.h"
+#include "host.h"
 
 extern CyU3PDmaChannel glChHandlePhoneDataIn;
+extern CyU3PEvent  applnEvent;
 
 CyU3PReturnStatus_t
 CreatePhoneUsbToZingThread(
@@ -60,6 +62,9 @@ PhoneUsbToZingThread(
 	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
 	    	phoneUsbToZing.Count_.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
+
+		    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
+		    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
 			continue;
 	    }else{
 	    	phoneUsbToZing.Count_.receiveOk++;

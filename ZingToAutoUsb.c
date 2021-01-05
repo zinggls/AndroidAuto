@@ -76,6 +76,7 @@ ZingToAutoUsbThread(
 	    		}else{
 					CyU3PDebugPrint(4,"PING ON received. Already connected\r\n");
 	    		}
+	    		continue;
 	    	}
 
 	    	if (buf[0]==0x50 && buf[1]==0x49 && buf[2]==0x4E && buf[3]==0x47 && buf[4]==0x20 && buf[5]==0x4F && buf[6]==0x46 && buf[7]==0x46)

@@ -478,8 +478,7 @@ CyFxApplnStart ()
     status = CyU3PUsbHostEpAdd (0, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd error\r\n");
-
+    	CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd(0) error=0x%x\r\n",status);
         goto enum_error;
     }
     CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd returned\r\n");
@@ -569,14 +568,14 @@ CyFxApplnStart ()
 			SendMessage("PING ON");
 			return;
 		}else{
-			CyU3PDebugPrint (4, "Smart phone driver initialization failed, error: %d\r\n",status);
+			CyU3PDebugPrint (4, "Smart phone driver initialization failed, error: 0x%x\r\n",status);
 		}
 	}
 	else
 	{
 		CyU3PDebugPrint (6, "Device is not in Accessory Mode\r\n");
 		if((status = AttemptToStartInAccessoryMode())!=CY_U3P_SUCCESS)
-			CyU3PDebugPrint (4, "Attempt to start in accessory mode failed, error: %d\r\n",status);
+			CyU3PDebugPrint (4, "Attempt to start in accessory mode failed, error: 0x%x\r\n",status);
 	}
 
     /* We do not support this device. Fall-through to disable the USB port. */
@@ -588,7 +587,7 @@ enum_error:
     /* Remove EP0. and disable the port. */
     CyU3PUsbHostEpRemove (0);
     CyU3PUsbHostPortDisable ();
-    CyU3PDebugPrint (4, "Application start failed with error: %d.\r\n", status);
+    CyU3PDebugPrint (4, "Application start failed with error: 0x%x.\r\n", status);
 }
 
 /* This function disables the mouse driver application. */

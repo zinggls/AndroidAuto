@@ -914,6 +914,13 @@ ApplnThread_Entry (
         {
             CyFxMscDriverDoWork ();
         }
+
+#ifdef INTENTIONALLY_CAUSE_RECEIVE_ERROR
+		if(loop%5000==0) {
+		    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
+		    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
+		}
+#endif
     }
 }
 

@@ -81,7 +81,10 @@ CyU3PReturnStatus_t ControlChThread_Create(void)
 {
 	CyU3PReturnStatus_t Status;
 
+	CyU3PDebugPrint (4, "Event group creating...\r\n");
+	CyU3PEventDestroy(&CcCtx.Event_);
 	CHECK(CyU3PEventCreate(&CcCtx.Event_));
+	CyU3PDebugPrint (4, "Event group created\r\n");
 
 	CyU3PMemFree(ControlCh.StackPtr_);
 	ControlCh.StackPtr_ = CyU3PMemAlloc(CONTROLCH_THREAD_STACK);

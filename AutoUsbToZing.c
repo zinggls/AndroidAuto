@@ -13,6 +13,7 @@ CreateAutoUsbToZingThread(
 {
 	CyU3PReturnStatus_t Status;
 
+	CyU3PMemFree(autoUsbToZing.StackPtr_);
 	autoUsbToZing.StackPtr_ = CyU3PMemAlloc(AUTOUSBTOZING_THREAD_STACK);
 	Status = CyU3PThreadCreate(&autoUsbToZing.Handle_,		// Handle to my Application Thread
 				"101:AutoUsbToZing",						// Thread ID and name

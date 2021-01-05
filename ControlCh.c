@@ -83,6 +83,7 @@ CyU3PReturnStatus_t ControlChThread_Create(void)
 
 	CHECK(CyU3PEventCreate(&CcCtx.Event_));
 
+	CyU3PMemFree(ControlCh.StackPtr_);
 	ControlCh.StackPtr_ = CyU3PMemAlloc(CONTROLCH_THREAD_STACK);
 	Status = CyU3PThreadCreate(&ControlCh.Handle_,		// Handle to my Application Thread
 				"22:tmp2",								// Thread ID and name

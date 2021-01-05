@@ -16,6 +16,7 @@ CreatePhoneUsbToZingThread(
 {
 	CyU3PReturnStatus_t Status;
 
+	CyU3PMemFree(phoneUsbToZing.StackPtr_);
 	phoneUsbToZing.StackPtr_ = CyU3PMemAlloc(PHONEUSBTOZING_THREAD_STACK);
 	Status = CyU3PThreadCreate(&phoneUsbToZing.Handle_,		// Handle to my Application Thread
 				"201:PhoneUsbToZing",						// Thread ID and name

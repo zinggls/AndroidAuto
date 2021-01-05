@@ -16,6 +16,7 @@ CreateZingToAutoUsbThread(
 {
 	CyU3PReturnStatus_t Status;
 
+	CyU3PMemFree(zingToAutoUsb.StackPtr_);
 	zingToAutoUsb.StackPtr_ = CyU3PMemAlloc(ZINGTOAUTOUSB_THREAD_STACK);
 	Status = CyU3PThreadCreate(&zingToAutoUsb.Handle_,		// Handle to my Application Thread
 				"102:ZingToAutoUsb",						// Thread ID and name

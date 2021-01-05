@@ -4,7 +4,7 @@
 #include "cyu3types.h"
 #include "thread.h"
 
-#define CONTROLCH_THREAD_STACK		(0x1000)
+#define CONTROLCH_THREAD_STACK		(0x800)
 #define CONTROLCH_THREAD_PRIORITY	(8)
 #define EVT_CTLCH0					(1 << 1)
 

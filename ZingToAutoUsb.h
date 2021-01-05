@@ -4,7 +4,7 @@
 #include "cyu3types.h"
 #include "thread.h"
 
-#define ZINGTOAUTOUSB_THREAD_STACK		(0x1000)
+#define ZINGTOAUTOUSB_THREAD_STACK		(0x800)
 #define ZINGTOAUTOUSB_THREAD_PRIORITY	(8)
 
 CyU3PReturnStatus_t

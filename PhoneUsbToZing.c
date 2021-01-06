@@ -93,6 +93,14 @@ PhoneUsbToZingThread(
 		}else{
 			phoneUsbToZing.Count_.sendErr++;
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
+
+			if(phoneUsbToZingTerminate) {
+#ifndef INTENTIONALLY_CAUSE_RECEIVE_ERROR
+			    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
+			    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
+#endif
+				break;
+			}
 		}
 	}
 	CyU3PDebugPrint (4, "[P-Z] PhoneUsbToZingThread ends\n");

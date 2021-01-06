@@ -61,7 +61,9 @@ void ControlChThread(uint32_t Value)
 #endif
 			    	if (buf[8]==0x50 && buf[9]==0x49 && buf[10]==0x4E && buf[11]==0x47 && buf[12]==0x20 && buf[13]==0x4F && buf[14]==0x4E )
 			    	{
+#ifdef DEBUG
 			    		CyU3PDebugPrint(4,"[ZCH] PING ON received.\r\n");
+#endif
 			    	}
 				}
 #ifdef DEBUG

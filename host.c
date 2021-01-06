@@ -251,7 +251,9 @@ SendMessage (const char *msg)
 	pf->size = strlen(msg);
 	CyU3PMemCopy (pf->data,(uint8_t*)msg,pf->size);
 	if ((status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t))) == CY_U3P_SUCCESS) {
+#ifdef DEBUG
 		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,pf->size);
+#endif
 	}else{
 		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
 		CyU3PDeviceReset(CyFalse);
@@ -262,7 +264,9 @@ SendMessage (const char *msg)
 	Zing_Header2(Dma.ControlOut_.Buffer_,1,0,0,0,0,1,0,0,strlen(msg));
 	memcpy(Dma.ControlOut_.Buffer_+ZING_HDR_SIZE, (uint8_t*)msg, strlen(msg));
 	if ((status = Zing_Transfer_Send(&Dma.ControlOut_.Channel_,Dma.ControlOut_.Buffer_,strlen(msg)+ZING_HDR_SIZE)) == CY_U3P_SUCCESS) {
+#ifdef DEBUG
 		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,strlen(msg));
+#endif
 	}else{
 		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
 	}

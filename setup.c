@@ -175,6 +175,7 @@ CyFxZingInit (
     {
         CyU3PDebugPrint (4, "ZING initialization failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler(apiRetStatus);
+        CyU3PDeviceReset (CyFalse);
     }
 }
 

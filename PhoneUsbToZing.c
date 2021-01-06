@@ -58,14 +58,15 @@ PhoneUsbToZingThread(
 	Buf.size = glChHandlePhoneDataIn.size;
 	Buf.status = 0;
 	memset(&phoneUsbToZing.Count_,0,sizeof(phoneUsbToZing.Count_));
+	phoneUsbToZingTerminate = CyFalse;
 	while(1){
 	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
 	    	phoneUsbToZing.Count_.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
-
-		    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
-		    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
-			continue;
+			if(phoneUsbToZingTerminate) {
+				break;
+			}else
+				continue;
 	    }else{
 	    	phoneUsbToZing.Count_.receiveOk++;
             if(rt_len==0) {
@@ -90,4 +91,5 @@ PhoneUsbToZingThread(
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
 		}
 	}
+	CyU3PDebugPrint (4, "[P-Z] PhoneUsbToZingThread ends\n");
 }

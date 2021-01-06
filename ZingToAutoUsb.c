@@ -85,7 +85,6 @@ ZingToAutoUsbThread(
 	    		CyFxUsbDisconnect();
 	    		usbCon = CyFalse;
 	    		CyU3PDebugPrint(4,"USB Disconnected\r\n");
-	    		CyU3PDeviceReset(CyFalse);
 	    		continue;
 	    	}
 

@@ -16,5 +16,6 @@ PhoneUsbToZingThread(
 		uint32_t Value);
 
 Thread_t phoneUsbToZing;
+CyBool_t phoneUsbToZingTerminate;
 
 #endif

@@ -17,5 +17,6 @@ ZingToPhoneUsbThread(
 		uint32_t Value);
 
 Thread_t zingToPhoneUsb;
+CyBool_t zingToPhoneUsbTerminate;
 
 #endif

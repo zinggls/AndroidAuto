@@ -21,5 +21,6 @@ void ControlChThread(uint32_t Value);
 CyU3PReturnStatus_t ControlChThread_Create(void);
 
 Thread_t ControlCh;
+CyBool_t ControlChTerminate;
 
 #endif

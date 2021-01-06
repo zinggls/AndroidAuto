@@ -74,7 +74,9 @@ ZingToAutoUsbThread(
 						AutoUsbToZing = CyTrue;
 					}
 	    		}else{
+#ifdef DEBUG
 					CyU3PDebugPrint(4,"PING ON received. Already connected\r\n");
+#endif
 	    		}
 	    		continue;
 	    	}

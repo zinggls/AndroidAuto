@@ -11,7 +11,7 @@ void ControlChThread(uint32_t Value)
 {
 	REG_Resp_t *resp_pt;
 	uint32_t rt_len,recv,intEvt,regRead,manFrame;
-	uint8_t *buf = (uint8_t *)CyU3PDmaBufferAlloc (512);
+	uint8_t buf[512];
 	CyU3PReturnStatus_t Status;
 
 	recv = intEvt = regRead = manFrame = 0;
@@ -74,7 +74,6 @@ void ControlChThread(uint32_t Value)
 			CyU3PThreadSleep(10);
 		}
 	}
-	CyU3PDmaBufferFree(buf);
 }
 
 CyU3PReturnStatus_t ControlChThread_Create(void)

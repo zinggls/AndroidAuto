@@ -64,6 +64,10 @@ PhoneUsbToZingThread(
 	    	phoneUsbToZing.Count_.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
 			if(phoneUsbToZingTerminate) {
+#ifndef INTENTIONALLY_CAUSE_RECEIVE_ERROR
+			    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
+			    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
+#endif
 				break;
 			}else
 				continue;

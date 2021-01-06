@@ -880,6 +880,8 @@ ApplnThread_Entry (
             }
         }else if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0)){
             CyU3PDebugPrint (2, "PhoneUsb receive error detected\r\n");
+            CyU3PDeviceReset (CyFalse);
+#if 0
             CyU3PThreadSleep (100);
 
             CyU3PDebugPrint (2, "CyFxApplnStop...\r\n");
@@ -892,6 +894,7 @@ ApplnThread_Entry (
             }else{
             	CyU3PDebugPrint (2, "HostPortEnable failed error=0x%x\r\n", status);
             }
+#endif
         }
 
         loop++;

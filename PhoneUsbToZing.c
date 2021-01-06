@@ -63,14 +63,15 @@ PhoneUsbToZingThread(
 	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
 	    	phoneUsbToZing.Count_.receiveErr++;
 			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
-			if(phoneUsbToZingTerminate) {
+			if(phoneUsbToZingTerminate)
+				break;
+			else{
 #ifndef INTENTIONALLY_CAUSE_RECEIVE_ERROR
 			    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
 			    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
 #endif
-				break;
-			}else
 				continue;
+			}
 	    }else{
 	    	phoneUsbToZing.Count_.receiveOk++;
             if(rt_len==0) {
@@ -94,13 +95,11 @@ PhoneUsbToZingThread(
 			phoneUsbToZing.Count_.sendErr++;
 			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
 
-			if(phoneUsbToZingTerminate) {
 #ifndef INTENTIONALLY_CAUSE_RECEIVE_ERROR
-			    CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
-			    CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
+			CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
+			CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");
 #endif
-				break;
-			}
+			if(phoneUsbToZingTerminate) break;
 		}
 	}
 	CyU3PDebugPrint (4, "[P-Z] PhoneUsbToZingThread ends\n");

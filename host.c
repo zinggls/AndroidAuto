@@ -254,6 +254,7 @@ SendMessage (const char *msg)
 		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,pf->size);
 	}else{
 		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
+		CyU3PDeviceReset(CyFalse);
 	}
 	CyU3PDmaBufferFree(pf);
 

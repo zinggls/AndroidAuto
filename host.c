@@ -841,53 +841,55 @@ ApplnThread_Entry (
                 &evStat, CY_FX_HOST_POLL_INTERVAL);
 
         /* If a peripheral change has been detected, go through device discovery. */
-        if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_USB_CHANGE_EVENT) != 0))
+        if (status == CY_U3P_SUCCESS)
         {
-            /* Add some delay for debouncing. */
-            CyU3PThreadSleep (100);
+        	if((evStat & CY_FX_USB_CHANGE_EVENT) != 0){
+                /* Add some delay for debouncing. */
+                 CyU3PThreadSleep (100);
 
-            /* Clear the CHANGE event notification, so that we do not react to stale events. */
-            CyU3PEventGet (&applnEvent, CY_FX_USB_CHANGE_EVENT, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_NO_WAIT);
+                 /* Clear the CHANGE event notification, so that we do not react to stale events. */
+                 CyU3PEventGet (&applnEvent, CY_FX_USB_CHANGE_EVENT, CYU3P_EVENT_OR_CLEAR, &evStat, CYU3P_NO_WAIT);
 
-            /* Stop previously started application. */
-            if (glIsApplnActive)
-            {
-                CyFxApplnStop ();
-            }
+                 /* Stop previously started application. */
+                 if (glIsApplnActive)
+                 {
+                     CyFxApplnStop ();
+                 }
 
-            /* If a peripheral got connected, then enumerate and start the application. */
-            if (glIsPeripheralPresent)
-            {
-                CyU3PDebugPrint (4, "Enable host port\r\n");
-                status = CyU3PUsbHostPortEnable ();
-                if (status == CY_U3P_SUCCESS)
-                {
-                    CyFxApplnStart ();
-                    CyU3PDebugPrint (4, "App start completed\r\n");
-                }
-                else
-                {
-                    CyU3PDebugPrint (4, "HostPortEnable failed with code %d\r\n", status);
-                }
-            }
-        }else if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0)){
-            CyU3PDebugPrint (4, "PhoneUsb receive error detected\r\n");
-            CyU3PThreadSleep (10);
-            CyU3PDeviceReset (CyFalse);
+                 /* If a peripheral got connected, then enumerate and start the application. */
+                 if (glIsPeripheralPresent)
+                 {
+                     CyU3PDebugPrint (4, "Enable host port\r\n");
+                     status = CyU3PUsbHostPortEnable ();
+                     if (status == CY_U3P_SUCCESS)
+                     {
+                         CyFxApplnStart ();
+                         CyU3PDebugPrint (4, "App start completed\r\n");
+                     }
+                     else
+                     {
+                         CyU3PDebugPrint (4, "HostPortEnable failed with code %d\r\n", status);
+                     }
+                 }
+        	}else if((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0){
+                CyU3PDebugPrint (4, "PhoneUsb receive error detected\r\n");
+                CyU3PThreadSleep (10);
+                CyU3PDeviceReset (CyFalse);
 #if 0
-            CyU3PThreadSleep (100);
+                CyU3PThreadSleep (100);
 
-            CyU3PDebugPrint (4, "CyFxApplnStop...\r\n");
-            CyFxApplnStop ();
-            CyU3PDebugPrint (4, "CyFxApplnStop done\r\n");
-            if((status = CyU3PUsbHostPortEnable ())==CY_U3P_SUCCESS) {
-            	CyU3PDebugPrint (4, "CyFxApplnStart...\r\n");
-                CyFxApplnStart ();
-                CyU3PDebugPrint (4, "CyFxApplnStart done\r\n");
-            }else{
-            	CyU3PDebugPrint (4, "HostPortEnable failed error=0x%x\r\n", status);
-            }
+                CyU3PDebugPrint (4, "CyFxApplnStop...\r\n");
+                CyFxApplnStop ();
+                CyU3PDebugPrint (4, "CyFxApplnStop done\r\n");
+                if((status = CyU3PUsbHostPortEnable ())==CY_U3P_SUCCESS) {
+                	CyU3PDebugPrint (4, "CyFxApplnStart...\r\n");
+                    CyFxApplnStart ();
+                    CyU3PDebugPrint (4, "CyFxApplnStart done\r\n");
+                }else{
+                	CyU3PDebugPrint (4, "HostPortEnable failed error=0x%x\r\n", status);
+                }
 #endif
+        	}
         }
 
         loop++;

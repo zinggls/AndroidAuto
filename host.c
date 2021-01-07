@@ -901,7 +901,7 @@ ApplnThread_Entry (
 
         if(loop%100==0 && glIsApplnActive) SendMessage("PING ON");
 
-        if(loop%500==0) {	//To print every 5 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
+        if(loop%100==0) {	//To print every 1 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
         	iter++;
 #ifndef DEBUG_THREAD_LOOP
         	CyU3PDebugPrint (2, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,

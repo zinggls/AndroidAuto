@@ -46,10 +46,7 @@
 #define CY_FX_HOST_VBUS_DISABLE_VALUE   (!CY_FX_HOST_VBUS_ENABLE_VALUE)
 
 #define CY_FX_HOST_OWNER_NONE           (0)             /* Host controller is not associated with a class driver. */
-#define CY_FX_HOST_OWNER_MOUSE_DRIVER   (1)             /* Host controller associated with mouse driver. */
-#define CY_FX_HOST_OWNER_MSC_DRIVER     (2)             /* Host controller associated with MSC driver. */
-#define CY_FX_HOST_OWNER_ECHO_DRIVER    (3)             /* Host controller associated with echo driver. */
-#define CY_FX_HOST_OWNER_PHONE_DRIVER   (4)
+#define CY_FX_HOST_OWNER_PHONE_DRIVER   (1)
 
 #define CY_FX_MSC_GET_MAX_LUN           (0xFE)          /* Setup request to retreive the MSC MAX_LUN. */
 #define CY_FX_MSC_CBW_CSW_BUFFER_SIZE   (32)            /* Buffer size for receiving CBW / CSW. */

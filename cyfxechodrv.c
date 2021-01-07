@@ -67,20 +67,20 @@ CyFxEchoSendData (
     status = CyU3PDmaChannelGetBuffer (chHandle, &buf_p, CYU3P_WAIT_FOREVER);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to get empty buffer to commit\r\n");
+        CyU3PDebugPrint (4, "Failed to get empty buffer to commit\r\n");
         return status;
     }
 
     if (count > buf_p.size)
     {
-        CyU3PDebugPrint (2, "Invalid count specified\r\n");
+        CyU3PDebugPrint (4, "Invalid count specified\r\n");
         return status;
     }
 
     status = CyU3PDmaChannelCommitBuffer (chHandle, count, 0);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to commit DMA buffer\r\n");
+        CyU3PDebugPrint (4, "Failed to commit DMA buffer\r\n");
         return status;
     }
 
@@ -92,7 +92,7 @@ CyFxEchoSendData (
 
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Out transfer failed with status %d\r\n", status);
+        CyU3PDebugPrint (4, "Out transfer failed with status %d\r\n", status);
     }
 
     return status;
@@ -129,7 +129,7 @@ CyFxEchoReceiveData (
 
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "In transfer failed with status %d\r\n", status);
+        CyU3PDebugPrint (4, "In transfer failed with status %d\r\n", status);
         return status;
     }
 
@@ -137,7 +137,7 @@ CyFxEchoReceiveData (
     if (status != CY_U3P_SUCCESS)
     {
         /* If we received a full packet and the buffer was not filled, GetBuffer() will fail. Ignore this failure. */
-        CyU3PDebugPrint (2, "Failed to get full buffer\r\n");
+        CyU3PDebugPrint (4, "Failed to get full buffer\r\n");
         return CY_U3P_SUCCESS;
     }
 
@@ -180,7 +180,7 @@ DoEchoDeviceTesting (
     status = CyU3PUsbHostEpAdd (inEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to add endpoint %x\r\n", inEp);
+        CyU3PDebugPrint (4, "Failed to add endpoint %x\r\n", inEp);
         return status;
     }
 
@@ -188,7 +188,7 @@ DoEchoDeviceTesting (
     if (status != CY_U3P_SUCCESS)
     {
         CyU3PUsbHostEpRemove (inEp);
-        CyU3PDebugPrint (2, "Failed to add endpoint %x\r\n", outEp);
+        CyU3PDebugPrint (4, "Failed to add endpoint %x\r\n", outEp);
         return status;
     }
 
@@ -202,7 +202,7 @@ DoEchoDeviceTesting (
     status = CyU3PUsbHostEpAdd (inIntrEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to add endpoint %x\r\n", inIntrEp);
+        CyU3PDebugPrint (4, "Failed to add endpoint %x\r\n", inIntrEp);
         CyU3PUsbHostEpRemove (inEp);
         CyU3PUsbHostEpRemove (outEp);
         return status;
@@ -211,7 +211,7 @@ DoEchoDeviceTesting (
     status = CyU3PUsbHostEpAdd (outIntrEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to add endpoint %x\r\n", outIntrEp);
+        CyU3PDebugPrint (4, "Failed to add endpoint %x\r\n", outIntrEp);
         CyU3PUsbHostEpRemove (inIntrEp);
         CyU3PUsbHostEpRemove (inEp);
         CyU3PUsbHostEpRemove (outEp);
@@ -238,7 +238,7 @@ DoEchoDeviceTesting (
         CyU3PUsbHostEpRemove (inIntrEp);
         CyU3PUsbHostEpRemove (inEp);
         CyU3PUsbHostEpRemove (outEp);
-        CyU3PDebugPrint (2, "Failed to create IN DMA channel\r\n");
+        CyU3PDebugPrint (4, "Failed to create IN DMA channel\r\n");
         return status;
     }
 
@@ -253,7 +253,7 @@ DoEchoDeviceTesting (
         CyU3PUsbHostEpRemove (inEp);
         CyU3PUsbHostEpRemove (outEp);
         CyU3PDmaChannelDestroy (&gEchoInChannel);
-        CyU3PDebugPrint (2, "Failed to create OUT DMA channel\r\n");
+        CyU3PDebugPrint (4, "Failed to create OUT DMA channel\r\n");
         return status;
     }
 
@@ -272,7 +272,7 @@ DoEchoDeviceTesting (
     status = CyU3PDmaChannelCreate (&gLoopOutChannel, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to create interrupt OUT DMA channel\r\n");
+        CyU3PDebugPrint (4, "Failed to create interrupt OUT DMA channel\r\n");
         CyU3PUsbHostEpRemove (outIntrEp);
         CyU3PUsbHostEpRemove (inIntrEp);
         CyU3PUsbHostEpRemove (inEp);
@@ -287,7 +287,7 @@ DoEchoDeviceTesting (
     status = CyU3PDmaChannelCreate (&gLoopInChannel, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Failed to create interrupt IN DMA channel\r\n");
+        CyU3PDebugPrint (4, "Failed to create interrupt IN DMA channel\r\n");
         CyU3PUsbHostEpRemove (outIntrEp);
         CyU3PUsbHostEpRemove (inIntrEp);
         CyU3PUsbHostEpRemove (inEp);
@@ -316,7 +316,7 @@ DoEchoDeviceTesting (
 
         if (status != CY_U3P_SUCCESS)
         {
-            CyU3PDebugPrint (2, "CyFxEchoSendData failed on iteration %d\r\n", iter);
+            CyU3PDebugPrint (4, "CyFxEchoSendData failed on iteration %d\r\n", iter);
             break;
         }
     }
@@ -329,7 +329,7 @@ DoEchoDeviceTesting (
         status = CyFxEchoReceiveData (CyFalse, 16384);
         if (status != CY_U3P_SUCCESS)
         {
-            CyU3PDebugPrint (2, "CyFxEchoReceiveData failed on iteration %d\r\n", iter);
+            CyU3PDebugPrint (4, "CyFxEchoReceiveData failed on iteration %d\r\n", iter);
             break;
         }
     }
@@ -342,7 +342,7 @@ DoEchoDeviceTesting (
         status = CyFxEchoSendData (CyTrue, iter + 1);
         if (status != CY_U3P_SUCCESS)
         {
-            CyU3PDebugPrint (2, "Interrupt OUT send failed on iteration %d\r\n", iter);
+            CyU3PDebugPrint (4, "Interrupt OUT send failed on iteration %d\r\n", iter);
             break;
         }
         else
@@ -350,7 +350,7 @@ DoEchoDeviceTesting (
             status = CyFxEchoReceiveData (CyTrue, 512);
             if (status != CY_U3P_SUCCESS)
             {
-                CyU3PDebugPrint (2, "Interrupt IN received failed on iteration %d\r\n", iter);
+                CyU3PDebugPrint (4, "Interrupt IN received failed on iteration %d\r\n", iter);
                 break;
             }
         }
@@ -459,13 +459,13 @@ CyFxEchoDriverInit (
     /* Verify that we got hold of two valid endpoints. */
     if ((outEp == 0x00) || (outEp > 0x0F) || (inEp == 0x80) || (inEp > 0x8F))
     {
-        CyU3PDebugPrint (2, "Failed to get valid endpoints\r\n");
+        CyU3PDebugPrint (4, "Failed to get valid endpoints\r\n");
         goto enum_error;
     }
 
     if ((outIntrEp == 0x00) || (outIntrEp > 0x0F) || (inIntrEp == 0x80) || (inIntrEp > 0x8F))
     {
-        CyU3PDebugPrint (2, "Failed to get valid endpoints\r\n");
+        CyU3PDebugPrint (4, "Failed to get valid endpoints\r\n");
         goto enum_error;
     }
 

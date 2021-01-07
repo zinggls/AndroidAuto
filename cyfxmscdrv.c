@@ -497,7 +497,7 @@ CyFxMscDriverInit ()
     {
         goto app_error;
     }
-    CyU3PDebugPrint (1, "CyU3PDmaChannelCreate glMscInCh=%d\n", glMscInCh);
+    CyU3PDebugPrint (4, "CyU3PDmaChannelCreate glMscInCh=%d\n", glMscInCh);
 
     /* Create a DMA channel for OUT EP. */
     dmaCfg.prodSckId = CY_U3P_CPU_SOCKET_PROD;
@@ -507,7 +507,7 @@ CyFxMscDriverInit ()
     {
         goto app_error;
     }
-    CyU3PDebugPrint (1, "CyU3PDmaChannelCreate glMscOutCh=%d\n", glMscOutCh);
+    CyU3PDebugPrint (4, "CyU3PDmaChannelCreate glMscOutCh=%d\n", glMscOutCh);
 
     for (retry = 0; retry < CY_FX_MSC_MAX_RETRY; retry++)
     {
@@ -647,7 +647,7 @@ CyFxMscDriverDoWork ()
             {
                 if (glMscSector[temp] != pattern)
                 {
-                    CyU3PDebugPrint (6, "Compare failed for sector: %d at byte %d.\r\n", glMscSector, temp);
+                    CyU3PDebugPrint (4, "Compare failed for sector: %d at byte %d.\r\n", glMscSector, temp);
                     status = CY_U3P_ERROR_FAILURE;
                     break;
                 }

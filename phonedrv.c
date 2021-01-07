@@ -32,7 +32,7 @@ PhoneDriverInit ()
             (CY_U3P_USB_CONFIG_DESCR << 8), 0, 4, glEp0Buffer);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[PhoneDriverInit] CY_U3P_USB_SC_GET_DESCRIPTOR config error\n");
+        CyU3PDebugPrint (4, "[PhoneDriverInit] CY_U3P_USB_SC_GET_DESCRIPTOR config error\n");
         goto enum_error;
     }
 
@@ -40,23 +40,23 @@ PhoneDriverInit ()
     length = CY_U3P_MAKEWORD(glEp0Buffer[3], glEp0Buffer[2]);
     if (length > 512)
     {
-        CyU3PDebugPrint (1, "[PhoneDriverInit] length error\n");
+        CyU3PDebugPrint (4, "[PhoneDriverInit] length error\n");
         goto enum_error;
     }
-    CyU3PDebugPrint (1, "[PhoneDriverInit] length=%d\n",length);
+    CyU3PDebugPrint (4, "[PhoneDriverInit] length=%d\n",length);
 
     /* Read the full configuration descriptor. */
     status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
             (CY_U3P_USB_CONFIG_DESCR << 8), 0, length, glEp0Buffer);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[PhoneDriverInit] CY_U3P_USB_SC_GET_DESCRIPTOR config error\n");
+        CyU3PDebugPrint (4, "[PhoneDriverInit] CY_U3P_USB_SC_GET_DESCRIPTOR config error\n");
         goto enum_error;
     }
 
-    CyU3PDebugPrint (6, "Identify the EP characteristics\n");
-    for(int i=0;i<length;i++) CyU3PDebugPrint (6,"%x ", glEp0Buffer[i]);
-    CyU3PDebugPrint(6, "\n");
+    CyU3PDebugPrint (4, "Identify the EP characteristics\n");
+    for(int i=0;i<length;i++) CyU3PDebugPrint (4,"%x ", glEp0Buffer[i]);
+    CyU3PDebugPrint(4, "\n");
 
     /* Identify the EP characteristics. */
     offset = epSizeSet = inEpSet = outEpSet =0;
@@ -66,22 +66,22 @@ PhoneDriverInit ()
         {
             if (glEp0Buffer[offset + 3] != CY_U3P_USB_EP_BULK)
             {
-                CyU3PDebugPrint (1, "[PhoneDriverInit] glEp0Buffer[%d](%d)!= CY_U3P_USB_EP_BULK(%d)\n",
+                CyU3PDebugPrint (4, "[PhoneDriverInit] glEp0Buffer[%d](%d)!= CY_U3P_USB_EP_BULK(%d)\n",
                 		offset+3,glEp0Buffer[offset+3],CY_U3P_USB_EP_BULK);
             }else{
                 /* Retreive the information. */
                 if(!epSizeSet) { Phone.epSize = CY_U3P_MAKEWORD(glEp0Buffer[offset + 5],glEp0Buffer[offset + 4]); epSizeSet=1; }
-                CyU3PDebugPrint (1, "[PhoneDriverInit] EpSize=%d\n", Phone.epSize);
+                CyU3PDebugPrint (4, "[PhoneDriverInit] EpSize=%d\n", Phone.epSize);
 
                 if (glEp0Buffer[offset + 2] & 0x80)
                 {
                 	if(!inEpSet) { Phone.inEp = glEp0Buffer[offset + 2]; inEpSet=1; }
-                	CyU3PDebugPrint (1, "[PhoneDriverInit] inEp=%d(0x%x)\n", Phone.inEp,Phone.inEp);
+                	CyU3PDebugPrint (4, "[PhoneDriverInit] inEp=%d(0x%x)\n", Phone.inEp,Phone.inEp);
                 }
                 else
                 {
                 	if(!outEpSet) { Phone.outEp = glEp0Buffer[offset + 2]; outEpSet=1; }
-                	CyU3PDebugPrint (1, "[PhoneDriverInit] outEp=%d(0x%x)\n", Phone.outEp,Phone.outEp);
+                	CyU3PDebugPrint (4, "[PhoneDriverInit] outEp=%d(0x%x)\n", Phone.outEp,Phone.outEp);
                 }
             }
         }
@@ -95,11 +95,11 @@ PhoneDriverInit ()
             1, 0, 0, glEp0Buffer);
     if (status != CY_U3P_SUCCESS)
     {
-    	CyU3PDebugPrint (1, "[PhoneDriverInit] CyFxSendSetupRqt, CY_U3P_USB_SC_SET_CONFIGURATION error(0x%x)\n",status);
+    	CyU3PDebugPrint (4, "[PhoneDriverInit] CyFxSendSetupRqt, CY_U3P_USB_SC_SET_CONFIGURATION error(0x%x)\n",status);
         goto enum_error;
     }
 
-    CyU3PDebugPrint (1, "[PhoneDriverInit] outEp=%d(0x%x), inEp=%d(0x%x), epSize=%d\n",Phone.outEp,Phone.outEp,Phone.inEp,Phone.inEp,Phone.epSize);
+    CyU3PDebugPrint (4, "[PhoneDriverInit] outEp=%d(0x%x), inEp=%d(0x%x), epSize=%d\n",Phone.outEp,Phone.outEp,Phone.inEp,Phone.inEp,Phone.epSize);
 
     /* Add the IN endpoint. */
     CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof(epCfg));
@@ -117,7 +117,7 @@ PhoneDriverInit ()
     status = CyU3PUsbHostEpAdd (Phone.inEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[PhoneDriverInit] CyU3PUsbHostEpAdd(glInEp) error\n");
+        CyU3PDebugPrint (4, "[PhoneDriverInit] CyU3PUsbHostEpAdd(glInEp) error\n");
         goto enum_error;
     }
 
@@ -125,7 +125,7 @@ PhoneDriverInit ()
     status = CyU3PUsbHostEpAdd (Phone.outEp, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[PhoneDriverInit] CyU3PUsbHostEpAdd(glOutEp) error\n");
+        CyU3PDebugPrint (4, "[PhoneDriverInit] CyU3PUsbHostEpAdd(glOutEp) error\n");
         goto enum_error;
     }
 
@@ -145,7 +145,7 @@ PhoneDriverInit ()
     status = CyU3PDmaChannelCreate (&glChHandlePhoneDataIn, CY_U3P_DMA_TYPE_MANUAL_IN, &dmaCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[DriverInit] CyU3PDmaChannelCreate(glChHandlePhoneDataIn) error(%d)\r\n", status);
+        CyU3PDebugPrint (4, "[DriverInit] CyU3PDmaChannelCreate(glChHandlePhoneDataIn) error(%d)\r\n", status);
         goto app_error;
     }
 
@@ -155,7 +155,7 @@ PhoneDriverInit ()
     status = CyU3PDmaChannelCreate (&glChHandlePhoneDataOut, CY_U3P_DMA_TYPE_MANUAL_OUT, &dmaCfg);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[DriverInit] CyU3PDmaChannelCreate(glChHandlePhoneDataOut) error(%d)\r\n", status);
+        CyU3PDebugPrint (4, "[DriverInit] CyU3PDmaChannelCreate(glChHandlePhoneDataOut) error(%d)\r\n", status);
         goto app_error;
     }
 
@@ -179,7 +179,7 @@ PhoneDriverInit ()
 		CyU3PDebugPrint(4,"[Phone] Control Channel Thread Created\n");
 	}
 
-    CyU3PDebugPrint (1, "PhoneDriverInit OK\n");
+    CyU3PDebugPrint (4, "PhoneDriverInit OK\n");
     return CY_U3P_SUCCESS;
 
 app_error:
@@ -197,7 +197,7 @@ app_error:
 	}
 
 enum_error:
-	CyU3PDebugPrint (1, "PhoneDriverInit failed\n");
+	CyU3PDebugPrint (4, "PhoneDriverInit failed\n");
     return CY_U3P_ERROR_FAILURE;
 }
 
@@ -285,5 +285,5 @@ PhoneDriverDeInit ()
     	CyU3PDebugPrint(4,"[DriverDeInit] tx_thread_terminate(ControlCh.Handle_) error(0x%x)\n",status);
     }
 
-	CyU3PDebugPrint (1, "[DriverDeInit] PhoneDriverDeInit done\n");
+	CyU3PDebugPrint (4, "[DriverDeInit] PhoneDriverDeInit done\n");
 }

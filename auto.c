@@ -126,22 +126,22 @@ CyFxAutoApplnStart (
      * create a DMA channel and start the transfer on this. */
 
     /* Based on the Bus Speed configure the endpoint packet size */
-    CyU3PDebugPrint (1, "CyFxAutoApplnStart start\r\n",size);
+    CyU3PDebugPrint (4, "CyFxAutoApplnStart start\r\n",size);
     switch (usbSpeed)
     {
         case CY_U3P_FULL_SPEED:
             size = 64;
-            CyU3PDebugPrint (1, "CyFxAutoApplnStart, CY_U3P_FULL_SPEED(%d)\r\n",size);
+            CyU3PDebugPrint (4, "CyFxAutoApplnStart, CY_U3P_FULL_SPEED(%d)\r\n",size);
             break;
 
         case CY_U3P_HIGH_SPEED:
             size = 512;
-            CyU3PDebugPrint (1, "CyFxAutoApplnStart, CY_U3P_HIGH_SPEED(%d)\r\n",size);
+            CyU3PDebugPrint (4, "CyFxAutoApplnStart, CY_U3P_HIGH_SPEED(%d)\r\n",size);
             break;
 
         case  CY_U3P_SUPER_SPEED:
             size = 1024;
-            CyU3PDebugPrint (1, "CyFxAutoApplnStart, CY_U3P_SUPER_SPEED(%d)\r\n",size);
+            CyU3PDebugPrint (4, "CyFxAutoApplnStart, CY_U3P_SUPER_SPEED(%d)\r\n",size);
             break;
 
         default:
@@ -183,7 +183,7 @@ CyFxAutoApplnStart (
                       0,
                       &glChHandleAutoDataIn,
                       CY_U3P_DMA_TYPE_MANUAL_IN);
-	CyU3PDebugPrint(4,"[Auto] USB Prod - CPU Consumer DMA channel created\n");
+	CyU3PDebugPrint (4,"[Auto] USB Prod - CPU Consumer DMA channel created\n");
 
 	CyFxCreateChannel(size*8,
                       CY_FX_AUTO_DMA_BUF_COUNT,
@@ -201,7 +201,7 @@ CyFxAutoApplnStart (
 
     /* Update the status flag. */
     glIsApplnActive = CyTrue;
-    CyU3PDebugPrint (1, "CyFxAutoApplnStart end\r\n",size);
+    CyU3PDebugPrint (4, "CyFxAutoApplnStart end\r\n",size);
 }
 
 /* This function stops the Auto application. This shall be called whenever
@@ -214,7 +214,7 @@ CyFxAutoApplnStop (
     CyU3PEpConfig_t epCfg;
     CyU3PReturnStatus_t apiRetStatus = CY_U3P_SUCCESS;
 
-    CyU3PDebugPrint (1, "CyFxAutoApplnStop start\r\n");
+    CyU3PDebugPrint (4, "CyFxAutoApplnStop start\r\n");
     /* Update the flag. */
     glIsApplnActive = CyFalse;
 
@@ -248,7 +248,7 @@ CyFxAutoApplnStop (
         CyU3PDebugPrint (4, "CyU3PSetEpConfig failed, Error code = %d\n", apiRetStatus);
         CyFxAppErrorHandler (apiRetStatus);
     }
-    CyU3PDebugPrint (1, "CyFxAutoApplnStop end\r\n");
+    CyU3PDebugPrint (4, "CyFxAutoApplnStop end\r\n");
 }
 
 /* Callback to handle the USB setup requests. */
@@ -561,7 +561,7 @@ AutoThread_Entry (
     {
         CyU3PThreadSleep (1000);
     	if(prevCount == zingToAutoUsb.Count_.receiveOk) {
-    		CyU3PDebugPrint (2, "%d [A->Z] No input data Time out, Reset\r\n",iter);
+    		CyU3PDebugPrint (4, "%d [A->Z] No input data Time out, Reset\r\n",iter);
     		CyU3PThreadSleep (10);
     		CyU3PDeviceReset (CyFalse);
     	}
@@ -569,7 +569,7 @@ AutoThread_Entry (
 
         iter++;
 #ifndef DEBUG_THREAD_LOOP
-        CyU3PDebugPrint (2, "%d [A->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [Z->A] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
+        CyU3PDebugPrint (4, "%d [A->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [Z->A] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
         		autoUsbToZing.Count_.receiveOk,autoUsbToZing.Count_.receiveErr,autoUsbToZing.Count_.sendOk,autoUsbToZing.Count_.sendErr,
         		zingToAutoUsb.Count_.receiveOk,zingToAutoUsb.Count_.receiveErr,zingToAutoUsb.Count_.sendOk,zingToAutoUsb.Count_.sendErr);
 #endif

@@ -468,7 +468,7 @@ CyFxApplnStart ()
 
     //CyU3PUsbHostPortStatus
     status = CyU3PUsbHostGetPortStatus(&portStatus, &portSpeed);
-    CyU3PDebugPrint (1, "[CyFxApplnStart] call CyU3PUsbHostGetPortStatus, status=%d, portStatus=%d, portSpeed=%d\r\n", status, portStatus, portSpeed);
+    CyU3PDebugPrint (4, "[CyFxApplnStart] call CyU3PUsbHostGetPortStatus, status=%d, portStatus=%d, portSpeed=%d\r\n", status, portStatus, portSpeed);
 
     /* Add EP0 to the scheduler. */
     CyU3PMemSet ((uint8_t *)&epCfg, 0, sizeof(epCfg));
@@ -480,27 +480,27 @@ CyFxApplnStart ()
     epCfg.fullPktSize = 64;//8;
     epCfg.isStreamMode = CyFalse;
 
-    CyU3PDebugPrint (1, "[CyFxApplnStart] call CyU3PUsbHostEpAdd\r\n");
+    CyU3PDebugPrint (4, "[CyFxApplnStart] call CyU3PUsbHostEpAdd\r\n");
     status = CyU3PUsbHostEpAdd (0, &epCfg);
     if (status != CY_U3P_SUCCESS)
     {
-    	CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd(0) error=0x%x\r\n",status);
+    	CyU3PDebugPrint (4, "[CyFxApplnStart] CyU3PUsbHostEpAdd(0) error=0x%x\r\n",status);
         goto enum_error;
     }
-    CyU3PDebugPrint (1, "[CyFxApplnStart] CyU3PUsbHostEpAdd returned\r\n");
+    CyU3PDebugPrint (4, "[CyFxApplnStart] CyU3PUsbHostEpAdd returned\r\n");
 	    CyU3PThreadSleep (100);
 
-    CyU3PDebugPrint (1, "[CyFxApplnStart] call CyFxSendSetupRqt\r\n");
+    CyU3PDebugPrint (4, "[CyFxApplnStart] call CyFxSendSetupRqt\r\n");
 
     /* Get the device descriptor. */
     status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
             (CY_U3P_USB_DEVICE_DESCR << 8), 0, 8, glEp0Buffer);
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (1, "[CyFxApplnStart] CyFxSendSetupRqt error\r\n");
+        CyU3PDebugPrint (4, "[CyFxApplnStart] CyFxSendSetupRqt error\r\n");
         goto enum_error;
     }
-    CyU3PDebugPrint (6, "Device descriptor received\r\n");
+    CyU3PDebugPrint (4, "Device descriptor received\r\n");
 
     /* Identify the EP0 packet size and update the scheduler. */
     if (glEp0Buffer[7] != 8)
@@ -543,27 +543,27 @@ CyFxApplnStart ()
         goto enum_error;
     }
 
-    CyU3PDebugPrint (6, "Device address set\r\n");
+    CyU3PDebugPrint (4, "Device address set\r\n");
 
     status = CyFxSendSetupRqt(0x00, CY_U3P_USB_SC_SET_CONFIGURATION,
         1, 0, 0, glEp0Buffer);
 	if (status != CY_U3P_SUCCESS)
 	{
-		CyU3PDebugPrint (6, "Set configured Error!!\r\n");
+		CyU3PDebugPrint (4, "Set configured Error!!\r\n");
 		goto enum_error;
 	}
 
-	CyU3PDebugPrint (6, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
-	CyU3PDebugPrint (6, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00 or 0x2D01)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
+	CyU3PDebugPrint (4, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
+	CyU3PDebugPrint (4, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00 or 0x2D01)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
 	if ( IsDeviceInAccessoryMode () )
 	{
-		CyU3PDebugPrint (6, "Device is in Accessory Mode\r\n");
+		CyU3PDebugPrint (4, "Device is in Accessory Mode\r\n");
 		status = PhoneDriverInit ();
 		if (status == CY_U3P_SUCCESS)
 		{
 			glIsApplnActive = CyTrue;
 			glHostOwner     = CY_FX_HOST_OWNER_PHONE_DRIVER;
-			CyU3PDebugPrint (6, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
+			CyU3PDebugPrint (4, "Smart phone driver is initialized, OutEp=0x%x, InEp=0x%x, EpSize=%d\n",Phone.outEp,Phone.inEp,Phone.epSize);
 			SendMessage("PING ON");
 			return;
 		}else{
@@ -572,13 +572,13 @@ CyFxApplnStart ()
 	}
 	else
 	{
-		CyU3PDebugPrint (6, "Device is not in Accessory Mode\r\n");
+		CyU3PDebugPrint (4, "Device is not in Accessory Mode\r\n");
 		if((status = AttemptToStartInAccessoryMode())!=CY_U3P_SUCCESS)
 			CyU3PDebugPrint (4, "Attempt to start in accessory mode failed, error: 0x%x\r\n",status);
 	}
 
     /* We do not support this device. Fall-through to disable the USB port. */
-    CyU3PDebugPrint (6, "Unknown device type\r\n");
+    CyU3PDebugPrint (4, "Unknown device type\r\n");
     status = CY_U3P_ERROR_NOT_SUPPORTED;
 
 enum_error:
@@ -680,7 +680,7 @@ CyFxUsbVBusControl (
         CyU3PGpioSimpleSetValue (VBUS_GPIO, CY_FX_HOST_VBUS_DISABLE_VALUE);
     }
 
-    CyU3PDebugPrint (2, "VBUS enable:%d\r\n", isEnable);
+    CyU3PDebugPrint (4, "VBUS enable:%d\r\n", isEnable);
 }
 
 /* OTG event handler. */
@@ -838,7 +838,7 @@ ApplnThread_Entry (
     status = CyFxApplnInit();
     if (status != CY_U3P_SUCCESS)
     {
-        CyU3PDebugPrint (2, "Application initialization failed. Aborting.\r\n");
+        CyU3PDebugPrint (4, "Application initialization failed. Aborting.\r\n");
         CyFxAppErrorHandler (status);
     }
 
@@ -867,34 +867,34 @@ ApplnThread_Entry (
             /* If a peripheral got connected, then enumerate and start the application. */
             if (glIsPeripheralPresent)
             {
-                CyU3PDebugPrint (2, "Enable host port\r\n");
+                CyU3PDebugPrint (4, "Enable host port\r\n");
                 status = CyU3PUsbHostPortEnable ();
                 if (status == CY_U3P_SUCCESS)
                 {
                     CyFxApplnStart ();
-                    CyU3PDebugPrint (2, "App start completed\r\n");
+                    CyU3PDebugPrint (4, "App start completed\r\n");
                 }
                 else
                 {
-                    CyU3PDebugPrint (2, "HostPortEnable failed with code %d\r\n", status);
+                    CyU3PDebugPrint (4, "HostPortEnable failed with code %d\r\n", status);
                 }
             }
         }else if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0)){
-            CyU3PDebugPrint (2, "PhoneUsb receive error detected\r\n");
+            CyU3PDebugPrint (4, "PhoneUsb receive error detected\r\n");
             CyU3PThreadSleep (10);
             CyU3PDeviceReset (CyFalse);
 #if 0
             CyU3PThreadSleep (100);
 
-            CyU3PDebugPrint (2, "CyFxApplnStop...\r\n");
+            CyU3PDebugPrint (4, "CyFxApplnStop...\r\n");
             CyFxApplnStop ();
-            CyU3PDebugPrint (2, "CyFxApplnStop done\r\n");
+            CyU3PDebugPrint (4, "CyFxApplnStop done\r\n");
             if((status = CyU3PUsbHostPortEnable ())==CY_U3P_SUCCESS) {
-            	CyU3PDebugPrint (2, "CyFxApplnStart...\r\n");
+            	CyU3PDebugPrint (4, "CyFxApplnStart...\r\n");
                 CyFxApplnStart ();
-                CyU3PDebugPrint (2, "CyFxApplnStart done\r\n");
+                CyU3PDebugPrint (4, "CyFxApplnStart done\r\n");
             }else{
-            	CyU3PDebugPrint (2, "HostPortEnable failed error=0x%x\r\n", status);
+            	CyU3PDebugPrint (4, "HostPortEnable failed error=0x%x\r\n", status);
             }
 #endif
         }
@@ -906,7 +906,7 @@ ApplnThread_Entry (
         if(loop%100==0) {	//To print every 1 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
         	iter++;
 #ifndef DEBUG_THREAD_LOOP
-        	CyU3PDebugPrint (2, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
+        	CyU3PDebugPrint (4, "%d [Z->P] Rcv(o:%d x:%d) Snd(o:%d x:%d) | [P->Z] Rcv(o:%d x:%d) Snd(o:%d x:%d)\r\n",iter,
         			zingToPhoneUsb.Count_.receiveOk,zingToPhoneUsb.Count_.receiveErr,zingToPhoneUsb.Count_.sendOk,zingToPhoneUsb.Count_.sendErr,
             		phoneUsbToZing.Count_.receiveOk,phoneUsbToZing.Count_.receiveErr,phoneUsbToZing.Count_.sendOk,phoneUsbToZing.Count_.sendErr);
 #endif

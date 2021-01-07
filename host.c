@@ -873,9 +873,10 @@ ApplnThread_Entry (
                  }
         	}else if((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0){
                 CyU3PDebugPrint (4, "PhoneUsb receive error detected\r\n");
+#if 1
                 CyU3PThreadSleep (10);
                 CyU3PDeviceReset (CyFalse);
-#if 0
+#else
                 CyU3PThreadSleep (100);
 
                 CyU3PDebugPrint (4, "CyFxApplnStop...\r\n");

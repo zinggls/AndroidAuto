@@ -48,16 +48,6 @@
 #define CY_FX_HOST_OWNER_NONE           (0)             /* Host controller is not associated with a class driver. */
 #define CY_FX_HOST_OWNER_PHONE_DRIVER   (1)
 
-#define CY_FX_MSC_GET_MAX_LUN           (0xFE)          /* Setup request to retreive the MSC MAX_LUN. */
-#define CY_FX_MSC_CBW_CSW_BUFFER_SIZE   (32)            /* Buffer size for receiving CBW / CSW. */
-#define CY_FX_MSC_MAX_SECTOR_SIZE       (0x1000)        /* Maximum sector size supported. */
-#define CY_FX_MSC_WAIT_TIMEOUT          (5000)          /* Timeout for MSC transfers. */
-#define CY_FX_MSC_MAX_RETRY             (10)            /* Maximum retry count. */
-
-#define CY_FX_MSC_TEST_SECTOR_OFFSET    (256)           /* Offset address from which the MSC test can run. */
-#define CY_FX_MSC_TEST_SECTOR_COUNT     (10)            /* Number of sectors tested in a single run. */
-#define CY_FX_MSC_TEST_INTERVAL         (100)           /* Run every 100 poll iterations. */
-
 #define CY_FX_USB_CHANGE_EVENT          (1 << 0)        /* Event signaling that a peripheral change is detected. */
 #define CY_FX_PHONEUSB_RECEIVE_ERR		(1 << 1)
 

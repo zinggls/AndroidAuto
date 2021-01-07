@@ -895,7 +895,7 @@ ApplnThread_Entry (
 
         loop++;
 
-        if(loop%100==0 && glIsApplnActive) SendMessage("PING ON");
+        if(loop%10==0 && glIsApplnActive) SendMessage("PING ON");
 
         if(loop%100==0) {	//To print every 1 sec. cf. CY_FX_HOST_POLL_INTERVAL is 10ms
         	iter++;

@@ -256,6 +256,7 @@ SendMessage (const char *msg)
 #endif
 	}else{
 		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
+		CyU3PThreadSleep (10);
 		CyU3PDeviceReset(CyFalse);
 	}
 	CyU3PDmaBufferFree(pf);
@@ -880,6 +881,7 @@ ApplnThread_Entry (
             }
         }else if ((status == CY_U3P_SUCCESS) && ((evStat & CY_FX_PHONEUSB_RECEIVE_ERR) != 0)){
             CyU3PDebugPrint (2, "PhoneUsb receive error detected\r\n");
+            CyU3PThreadSleep (10);
             CyU3PDeviceReset (CyFalse);
 #if 0
             CyU3PThreadSleep (100);

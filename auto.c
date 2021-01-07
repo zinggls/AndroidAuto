@@ -562,6 +562,7 @@ AutoThread_Entry (
         CyU3PThreadSleep (1000);
     	if(prevCount == zingToAutoUsb.Count_.receiveOk) {
     		CyU3PDebugPrint (2, "%d [A->Z] No input data Time out, Reset\r\n",iter);
+    		CyU3PThreadSleep (10);
     		CyU3PDeviceReset (CyFalse);
     	}
     	prevCount = zingToAutoUsb.Count_.receiveOk;

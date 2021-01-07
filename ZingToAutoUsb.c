@@ -103,6 +103,7 @@ ZingToAutoUsbThread(
 			}else{
 				zingToAutoUsb.Count_.sendErr++;
 				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite(%d) error(0x%x)\n",zingToAutoUsb.pf_->size,Status);
+				CyU3PThreadSleep (10);
 				CyU3PDeviceReset (CyFalse);
 			}
 		}else{

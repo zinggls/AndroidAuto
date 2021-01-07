@@ -80,21 +80,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/cyfx_gcc_startup.S</locationURI>
 		</link>
 		<link>
-			<name>cyfxechodrv.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/cyfxechodrv.c</locationURI>
-		</link>
-		<link>
-			<name>cyfxmousedrv.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/cyfxmousedrv.c</locationURI>
-		</link>
-		<link>
-			<name>cyfxmscdrv.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/cyfxmscdrv.c</locationURI>
-		</link>
-		<link>
 			<name>cyfxtx.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/cyfxtx.c</locationURI>

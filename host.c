@@ -596,15 +596,6 @@ CyFxApplnStop ()
     /* Call the device specific de-init routine. */
     switch (glHostOwner)
     {
-        case CY_FX_HOST_OWNER_MOUSE_DRIVER:
-            CyFxMouseDriverDeInit ();
-            break;
-        case CY_FX_HOST_OWNER_MSC_DRIVER:
-            CyFxMscDriverDeInit ();
-            break;
-        case CY_FX_HOST_OWNER_ECHO_DRIVER:
-            CyFxEchoDriverDeInit ();
-            break;
         case CY_FX_HOST_OWNER_PHONE_DRIVER:
         	SendMessage("PING OFF");
         	PhoneDriverDeInit ();
@@ -910,12 +901,6 @@ ApplnThread_Entry (
         			zingToPhoneUsb.Count_.receiveOk,zingToPhoneUsb.Count_.receiveErr,zingToPhoneUsb.Count_.sendOk,zingToPhoneUsb.Count_.sendErr,
             		phoneUsbToZing.Count_.receiveOk,phoneUsbToZing.Count_.receiveErr,phoneUsbToZing.Count_.sendOk,phoneUsbToZing.Count_.sendErr);
 #endif
-        }
-
-        /* If a mass storage device is attached, perform the periodic test actions. */
-        if (glHostOwner == CY_FX_HOST_OWNER_MSC_DRIVER)
-        {
-            CyFxMscDriverDoWork ();
         }
 
 #ifdef INTENTIONALLY_CAUSE_RECEIVE_ERROR

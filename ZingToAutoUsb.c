@@ -42,7 +42,9 @@ ZingToAutoUsbThread(
 {
 	uint32_t rt_len;
 	CyU3PReturnStatus_t Status;
+#ifndef PERSISTENT_USB
 	CyBool_t usbCon = CyFalse;
+#endif
 
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	memset(&zingToAutoUsb.Count_,0,sizeof(zingToAutoUsb.Count_));

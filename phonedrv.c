@@ -7,7 +7,7 @@
 #include "cyu3usbotg.h"
 #include "cyu3utils.h"
 #include "host.h"
-#include "Dma.h"
+#include "dma.h"
 #include "ZingToPhoneUsb.h"
 #include "PhoneUsbToZing.h"
 #include "ControlCh.h"

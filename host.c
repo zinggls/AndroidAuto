@@ -89,6 +89,7 @@
 #include "ZingHw.h"
 #include "ControlCh.h"
 #include "helper.h"
+#include "gitcommit.h"
 
 CyU3PThread applnThread;                        /* Application thread structure */
 CyU3PEvent  applnEvent;                         /* Event group used to signal the thread. */
@@ -790,6 +791,8 @@ ApplnThread_Entry (
 
     /* Initialize the debug logger. */
     CyFxApplnDebugInit ();
+
+    CyU3PDebugPrint(4,"[Phone] Git:%s\r\n",GIT_INFO);
 
     /* Initialize the example application. */
     status = CyFxApplnInit();

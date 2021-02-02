@@ -539,7 +539,7 @@ void
 AutoThread_Entry (
         uint32_t input)
 {
-    uint32_t iter,prevCount;
+    uint32_t iter,prevCount,noChangeCount;
 
     /* Initialize the debug module */
     CyFxAutoApplnDebugInit();
@@ -557,15 +557,18 @@ AutoThread_Entry (
 
     iter = 0;
     prevCount = -1;
+    noChangeCount = 0;
     for (;;)
     {
         CyU3PThreadSleep (1000);
-    	if(prevCount == zingToAutoUsb.Count_.receiveOk) {
+        if(prevCount == zingToAutoUsb.Count_.receiveOk) { noChangeCount++; }else { noChangeCount=0; }
+        prevCount = zingToAutoUsb.Count_.receiveOk;
+
+        if(noChangeCount>=3) {	//more than 3 sec
     		CyU3PDebugPrint (4, "%d [A->Z] No input data Time out, Reset\r\n",iter);
     		CyU3PThreadSleep (10);
     		CyU3PDeviceReset (CyFalse);
     	}
-    	prevCount = zingToAutoUsb.Count_.receiveOk;
 
         iter++;
 #ifndef DEBUG_THREAD_LOOP

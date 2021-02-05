@@ -13,24 +13,7 @@ SendMessage (
 		const char *msg)
 {
 	CyU3PReturnStatus_t status;
-	PacketFormat *pf;
-	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(520))==0){
-		CyU3PDebugPrint(4,"[Z-A] %s, PacketFormat CyU3PDmaBufferAlloc error\r\n",msg);
-		return;
-	}
-
-	pf->size = strlen(msg);
-	CyU3PMemCopy (pf->data,(uint8_t*)msg,pf->size);
-	if ((status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t))) == CY_U3P_SUCCESS) {
-#ifdef DEBUG
-		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,pf->size);
-#endif
-	}else{
-		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
-		CyU3PThreadSleep (10);
-		CyU3PDeviceReset(CyFalse);
-	}
-	CyU3PDmaBufferFree(pf);
+	SendBuffer(msg,strlen(msg));
 
 	/* Experiment, send message via control channel */
 #if 0
@@ -44,4 +27,30 @@ SendMessage (
 		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",msg,status);
 	}
 #endif
+}
+
+void
+SendBuffer (
+		const char *buffer,
+		uint32_t size)
+{
+	CyU3PReturnStatus_t status;
+	PacketFormat *pf;
+	if((pf=(PacketFormat*)CyU3PDmaBufferAlloc(520))==0){
+		CyU3PDebugPrint(4,"[Z-A] %s, PacketFormat CyU3PDmaBufferAlloc error\r\n",buffer);
+		return;
+	}
+
+	pf->size = size;
+	CyU3PMemCopy (pf->data,(uint8_t*)buffer,pf->size);
+	if ((status = Zing_DataWrite((uint8_t*)pf, pf->size+sizeof(uint32_t))) == CY_U3P_SUCCESS) {
+#ifdef DEBUG
+		CyU3PDebugPrint(4,"[Phone] %s %d bytes sent\n",msg,pf->size);
+#endif
+	}else{
+		CyU3PDebugPrint(4,"[Phone] %s sent failed error: %d\n",buffer,status);
+		CyU3PThreadSleep (10);
+		CyU3PDeviceReset(CyFalse);
+	}
+	CyU3PDmaBufferFree(pf);
 }

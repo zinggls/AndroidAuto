@@ -247,7 +247,7 @@ CyFxUsbConnect (
 	/* type-c connector
 	 * Check the enumeration MuxControl_GPIO to High */
 
-	CyU3PReturnStatus_t apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
+	CyU3PReturnStatus_t apiRetStatus = CyU3PConnectState(CyTrue, CyFalse);
     if (apiRetStatus != CY_U3P_SUCCESS)
     {
         CyU3PDebugPrint (4, "USB Connect failed, Error code = %d\n", apiRetStatus);
@@ -280,7 +280,7 @@ CyFxUsbConnect (
 	        CyFxAppErrorHandler(apiRetStatus);
 	    }
 
-		apiRetStatus = CyU3PConnectState(CyTrue, CyTrue);
+		apiRetStatus = CyU3PConnectState(CyTrue, CyFalse);
 	    if (apiRetStatus != CY_U3P_SUCCESS)
 	    {
 	        CyU3PDebugPrint (4, "USB Connect failed, Error code = %d\n", apiRetStatus);

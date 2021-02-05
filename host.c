@@ -512,14 +512,6 @@ CyFxApplnStart ()
 
     CyU3PDebugPrint (4, "Device address set\r\n");
 
-    status = CyFxSendSetupRqt(0x00, CY_U3P_USB_SC_SET_CONFIGURATION,
-        1, 0, 0, glEp0Buffer);
-	if (status != CY_U3P_SUCCESS)
-	{
-		CyU3PDebugPrint (4, "Set configured Error!!\r\n");
-		goto enum_error;
-	}
-
 	CyU3PDebugPrint (4, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
 	CyU3PDebugPrint (4, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00 or 0x2D01)\r\n",glEp0Buffer[11],glEp0Buffer[10]);
 	if ( IsDeviceInAccessoryMode () )

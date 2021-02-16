@@ -502,6 +502,7 @@ CyFxApplnStart ()
     {
         goto enum_error;
     }
+    CyU3PDebugPrint (4, "Device address set : %d\r\n",CY_FX_HOST_PERIPHERAL_ADDRESS);
 
     status = CyFxSendSetupRqt (0x80, CY_U3P_USB_SC_GET_DESCRIPTOR,
             (CY_U3P_USB_DEVICE_DESCR << 8), 0, 18, glEp0Buffer);
@@ -509,8 +510,6 @@ CyFxApplnStart ()
     {
         goto enum_error;
     }
-
-    CyU3PDebugPrint (4, "Device address set\r\n");
 
 	CyU3PDebugPrint (4, "Current Vendor ID:0x%x%x, (cf. google=0x18D1)\r\n",glEp0Buffer[9],glEp0Buffer[8]);
 	CyU3PDebugPrint (4, "Current Product ID:0x%x%x, (cf. Android-powered device=0x2D00 or 0x2D01)\r\n",glEp0Buffer[11],glEp0Buffer[10]);

@@ -32,7 +32,7 @@ CreateAutoUsbToZingThread(
 	return Status;
 }
 
-void
+CyBool_t
 ReceiveFromAutoDataIn(
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *data,
@@ -44,7 +44,6 @@ ReceiveFromAutoDataIn(
 		autoUsbToZing.Count_.receiveOk++;
         if(*length==0) {
             CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is zero, Skip further processing\r\n",*length);
-            return;
         }else if(*length>512){
             CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is greater than 512\r\n",*length);
         }
@@ -54,7 +53,9 @@ ReceiveFromAutoDataIn(
 	}else{
 		autoUsbToZing.Count_.receiveErr++;
 		CyU3PDebugPrint (4, "[A-Z] Zing_Transfer_Recv error(0x%x)\n",Status);
+		return CyFalse;
 	}
+	return CyTrue;
 }
 
 void
@@ -90,11 +91,8 @@ AutoUsbToZingThread(
 	CyU3PDebugPrint(4,"[A-Z] AutoDataIn.size=%d\n",glChHandleAutoDataIn.size);
 	memset(&autoUsbToZing.Count_,0,sizeof(autoUsbToZing.Count_));
 	while(1){
-		ReceiveFromAutoDataIn(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len);
-        if(rt_len==0) {
-        	CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is zero, Skip further processing\r\n",rt_len);
-        	continue;
-        }
+		if(CyFalse == ReceiveFromAutoDataIn(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len)) continue;
+        if(rt_len==0) continue;
 
 		SendToGpifDataOut(autoUsbToZing.pf_,rt_len);
 	}

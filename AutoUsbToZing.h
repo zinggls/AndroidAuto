@@ -13,7 +13,7 @@ CreateAutoUsbToZingThread(
 
 typedef struct CyU3PDmaChannel CyU3PDmaChannel;
 
-void
+CyBool_t
 ReceiveFromAutoDataIn(
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *data,

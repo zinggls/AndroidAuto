@@ -59,7 +59,7 @@ ReceiveFromAutoDataIn(
 }
 
 void
-SendToGpifDataOut(
+SendToGpifDataOutByAuto(
 		PacketFormat *pf,
 		uint32_t pfSize)
 {
@@ -94,6 +94,6 @@ AutoUsbToZingThread(
 		if(CyFalse == ReceiveFromAutoDataIn(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len)) continue;
         if(rt_len==0) continue;
 
-		SendToGpifDataOut(autoUsbToZing.pf_,rt_len);
+        SendToGpifDataOutByAuto(autoUsbToZing.pf_,rt_len);
 	}
 }

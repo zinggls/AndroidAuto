@@ -20,7 +20,7 @@ ReceiveFromAutoDataIn(
 		uint32_t *length);
 
 void
-SendToGpifDataOut(
+SendToGpifDataOutByAuto(
 		PacketFormat *pf,
 		uint32_t pfSize);
 

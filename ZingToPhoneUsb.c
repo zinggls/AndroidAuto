@@ -36,8 +36,9 @@ CreateZingToPhoneUsbThread(
 	return Status;
 }
 
+static
 CyBool_t
-ReceiveFromGpifDataIn(
+Receive(
 		CyU3PDmaChannel *dmaCh,
 		PacketFormat *pf,
 		uint32_t *length)
@@ -63,8 +64,9 @@ ReceiveFromGpifDataIn(
 	return CyTrue;
 }
 
+static
 CyBool_t
-SendToPhoneDataOut(
+Send(
 		uint8_t ep,
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *buffer,
@@ -96,13 +98,13 @@ ZingToPhoneUsbThread(
 	memset(&zingToPhoneUsb.Count_,0,sizeof(zingToPhoneUsb.Count_));
 	zingToPhoneUsbTerminate = CyFalse;
 	while(1){
-		if(CyFalse==ReceiveFromGpifDataIn(&Dma.DataIn_.Channel_,zingToPhoneUsb.pf_,&rt_len)) {
+		if(CyFalse==Receive(&Dma.DataIn_.Channel_,zingToPhoneUsb.pf_,&rt_len)) {
 			if(zingToPhoneUsbTerminate) break;
 			continue;
 		}
 		if(zingToPhoneUsb.pf_->size==0) continue;
 
-		SendToPhoneDataOut(Phone.outEp,&glChHandlePhoneDataOut,zingToPhoneUsb.pf_->data,zingToPhoneUsb.pf_->size);
+		Send(Phone.outEp,&glChHandlePhoneDataOut,zingToPhoneUsb.pf_->data,zingToPhoneUsb.pf_->size);
 	}
 	CyU3PDebugPrint (4, "[Z-P] ZingToPhoneUsbThread ends\n");
 }

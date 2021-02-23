@@ -88,8 +88,9 @@ onPingOff()
 }
 #endif
 
+static
 CyBool_t
-ReceiveFromGpifDataIn(
+Receive(
 		CyU3PDmaChannel *dmaCh,
 		PacketFormat *pf,
 		uint32_t *length
@@ -114,8 +115,9 @@ ReceiveFromGpifDataIn(
 	return CyTrue;
 }
 
+static
 void
-SendToAutoDataOut(
+Send(
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *data,
 		uint32_t length)
@@ -144,7 +146,7 @@ ZingToAutoUsbThread(
 	CyU3PDebugPrint(4,"[Z-A] GpifDataIn.size=%d\n",Dma.DataIn_.Channel_.size);
 	memset(&zingToAutoUsb.Count_,0,sizeof(zingToAutoUsb.Count_));
 	while(1){
-		if(CyFalse==ReceiveFromGpifDataIn(&Dma.DataIn_.Channel_,zingToAutoUsb.pf_,&rt_len)) continue;
+		if(CyFalse==Receive(&Dma.DataIn_.Channel_,zingToAutoUsb.pf_,&rt_len)) continue;
 		if(zingToAutoUsb.pf_->size==0) continue;
 
 #ifndef PERSISTENT_USB
@@ -161,6 +163,6 @@ ZingToAutoUsbThread(
 		 * */
 		if(!glIsApplnActive) continue;
 #endif
-    	SendToAutoDataOut(&glChHandleAutoDataOut,zingToAutoUsb.pf_->data,zingToAutoUsb.pf_->size);
+    	Send(&glChHandleAutoDataOut,zingToAutoUsb.pf_->data,zingToAutoUsb.pf_->size);
 	}
 }

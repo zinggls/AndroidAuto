@@ -32,8 +32,9 @@ CreateAutoUsbToZingThread(
 	return Status;
 }
 
+static
 CyBool_t
-ReceiveFromAutoDataIn(
+Receive(
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *data,
 		uint32_t *length)
@@ -58,8 +59,9 @@ ReceiveFromAutoDataIn(
 	return CyTrue;
 }
 
+static
 void
-SendToGpifDataOutByAuto(
+Send(
 		PacketFormat *pf,
 		uint32_t pfSize)
 {
@@ -91,9 +93,9 @@ AutoUsbToZingThread(
 	CyU3PDebugPrint(4,"[A-Z] AutoDataIn.size=%d\n",glChHandleAutoDataIn.size);
 	memset(&autoUsbToZing.Count_,0,sizeof(autoUsbToZing.Count_));
 	while(1){
-		if(CyFalse == ReceiveFromAutoDataIn(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len)) continue;
+		if(CyFalse == Receive(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len)) continue;
         if(rt_len==0) continue;
 
-        SendToGpifDataOutByAuto(autoUsbToZing.pf_,rt_len);
+        Send(autoUsbToZing.pf_,rt_len);
 	}
 }

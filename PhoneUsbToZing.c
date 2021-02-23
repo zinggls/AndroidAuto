@@ -37,8 +37,9 @@ CreatePhoneUsbToZingThread(
 	return Status;
 }
 
+static
 CyBool_t
-ReceiveFromPhoneDataIn(
+Receive(
 		uint8_t ep,
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *buffer,
@@ -65,8 +66,9 @@ ReceiveFromPhoneDataIn(
     return CyTrue;
 }
 
+static
 CyBool_t
-SendToGpifDataOutByPhone(
+Send(
 		PacketFormat *pf,
 		uint32_t pfSize)
 {
@@ -108,7 +110,7 @@ PhoneUsbToZingThread(
 	memset(&phoneUsbToZing.Count_,0,sizeof(phoneUsbToZing.Count_));
 	phoneUsbToZingTerminate = CyFalse;
 	while(1){
-		if(CyFalse==ReceiveFromPhoneDataIn(Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) {
+		if(CyFalse==Receive(Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) {
 			if(phoneUsbToZingTerminate)
 				break;
 			else{
@@ -120,7 +122,7 @@ PhoneUsbToZingThread(
 			}
 		}
 
-		if(CyFalse==SendToGpifDataOutByPhone(phoneUsbToZing.pf_,rt_len)) {
+		if(CyFalse==Send(phoneUsbToZing.pf_,rt_len)) {
 #ifndef INTENTIONALLY_CAUSE_RECEIVE_ERROR
 			CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
 			CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");

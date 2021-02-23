@@ -12,7 +12,9 @@ void
 SendMessage (
 		const char *msg)
 {
+#if 0
 	CyU3PReturnStatus_t status;
+#endif
 	SendBuffer(msg,strlen(msg));
 
 	/* Experiment, send message via control channel */

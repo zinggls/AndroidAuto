@@ -33,7 +33,7 @@ CreateAutoUsbToZingThread(
 }
 
 void
-Receive(
+ReceiveFromAutoDataIn(
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *data,
 		uint32_t *length)
@@ -58,7 +58,7 @@ Receive(
 }
 
 void
-Send(
+SendToGpifDataOut(
 		PacketFormat *pf,
 		uint32_t pfSize)
 {
@@ -90,12 +90,12 @@ AutoUsbToZingThread(
 	CyU3PDebugPrint(4,"[A-Z] AutoDataIn.size=%d\n",glChHandleAutoDataIn.size);
 	memset(&autoUsbToZing.Count_,0,sizeof(autoUsbToZing.Count_));
 	while(1){
-		Receive(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len);
+		ReceiveFromAutoDataIn(&glChHandleAutoDataIn,(uint8_t*)autoUsbToZing.pf_->data,&rt_len);
         if(rt_len==0) {
         	CyU3PDebugPrint(4,"[A-Z] Data size(%d) received from AutoDataIn is zero, Skip further processing\r\n",rt_len);
         	continue;
         }
 
-		Send(autoUsbToZing.pf_,rt_len);
+		SendToGpifDataOut(autoUsbToZing.pf_,rt_len);
 	}
 }

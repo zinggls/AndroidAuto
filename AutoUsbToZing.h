@@ -14,13 +14,13 @@ CreateAutoUsbToZingThread(
 typedef struct CyU3PDmaChannel CyU3PDmaChannel;
 
 void
-Receive(
+ReceiveFromAutoDataIn(
 		CyU3PDmaChannel *dmaCh,
 		uint8_t *data,
 		uint32_t *length);
 
 void
-Send(
+SendToGpifDataOut(
 		PacketFormat *pf,
 		uint32_t pfSize);
 

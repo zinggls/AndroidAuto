@@ -37,6 +37,34 @@ CreatePhoneUsbToZingThread(
 	return Status;
 }
 
+CyBool_t
+ReceiveFromPhoneDataIn(
+		uint8_t ep,
+		CyU3PDmaChannel *dmaCh,
+		uint8_t *buffer,
+		uint16_t count,
+		uint32_t *length)
+{
+	CyU3PReturnStatus_t Status;
+
+    if ((Status=CyFxRecvBuffer (ep,dmaCh,buffer,count,length)) != CY_U3P_SUCCESS) {
+    	phoneUsbToZing.Count_.receiveErr++;
+		CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,ep);
+	    return CyFalse;
+    }else{
+    	phoneUsbToZing.Count_.receiveOk++;
+        if(*length==0) {
+            CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is zero, Skip further processing\r\n",*length);
+        }else if(*length>512){
+            CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is greater than 512\r\n",*length);
+        }
+#ifdef DEBUG_THREAD_LOOP
+    	CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",rt_len);
+#endif
+    }
+    return CyTrue;
+}
+
 void
 PhoneUsbToZingThread(
 		uint32_t Value)
@@ -60,9 +88,7 @@ PhoneUsbToZingThread(
 	memset(&phoneUsbToZing.Count_,0,sizeof(phoneUsbToZing.Count_));
 	phoneUsbToZingTerminate = CyFalse;
 	while(1){
-	    if ((Status=CyFxRecvBuffer (Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) != CY_U3P_SUCCESS) {
-	    	phoneUsbToZing.Count_.receiveErr++;
-			CyU3PDebugPrint(4,"[P-Z] receiving from PhoneDataIn failed error(0x%x),EP=0x%x\r\n",Status,Phone.inEp);
+		if(CyFalse==ReceiveFromPhoneDataIn(Phone.inEp,&glChHandlePhoneDataIn,Buf.buffer,Buf.size,&rt_len)) {
 			if(phoneUsbToZingTerminate)
 				break;
 			else{
@@ -72,18 +98,7 @@ PhoneUsbToZingThread(
 #endif
 				continue;
 			}
-	    }else{
-	    	phoneUsbToZing.Count_.receiveOk++;
-            if(rt_len==0) {
-                CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is zero, Skip further processing\r\n",rt_len);
-                continue;
-            }else if(rt_len>512){
-                CyU3PDebugPrint(4,"[P-Z] Data size(%d) received from PhoneDataIn is greater than 512\r\n",rt_len);
-            }
-#ifdef DEBUG_THREAD_LOOP
-	    	CyU3PDebugPrint(4,"[P-Z] %d bytes received from PhoneDataIn\r\n",rt_len);
-#endif
-	    }
+		}
 
 	    phoneUsbToZing.pf_->size = rt_len;
 		if((Status=Zing_DataWrite((uint8_t*)phoneUsbToZing.pf_,phoneUsbToZing.pf_->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {

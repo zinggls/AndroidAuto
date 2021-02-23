@@ -11,6 +11,16 @@ CyU3PReturnStatus_t
 CreatePhoneUsbToZingThread(
 		void);
 
+typedef struct CyU3PDmaChannel CyU3PDmaChannel;
+
+CyBool_t
+ReceiveFromPhoneDataIn(
+		uint8_t ep,
+		CyU3PDmaChannel *dmaCh,
+        uint8_t *buffer,
+        uint16_t count,
+        uint32_t *length);
+
 void
 PhoneUsbToZingThread(
 		uint32_t Value);

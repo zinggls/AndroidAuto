@@ -65,11 +65,31 @@ ReceiveFromPhoneDataIn(
     return CyTrue;
 }
 
+CyBool_t
+SendToGpifDataOutByPhone(
+		PacketFormat *pf,
+		uint32_t pfSize)
+{
+	CyU3PReturnStatus_t Status;
+
+    phoneUsbToZing.pf_->size = pfSize;
+	if((Status=Zing_DataWrite((uint8_t*)pf,pfSize+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
+		phoneUsbToZing.Count_.sendOk++;
+#ifdef DEBUG_THREAD_LOOP
+		CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",pfSize);
+#endif
+	}else{
+		phoneUsbToZing.Count_.sendErr++;
+		CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",pfSize,Status);
+		return CyFalse;
+	}
+	return CyTrue;
+}
+
 void
 PhoneUsbToZingThread(
 		uint32_t Value)
 {
-	CyU3PReturnStatus_t Status;
 	uint32_t rt_len;
 	CyU3PDmaBuffer_t Buf;
 
@@ -100,16 +120,7 @@ PhoneUsbToZingThread(
 			}
 		}
 
-	    phoneUsbToZing.pf_->size = rt_len;
-		if((Status=Zing_DataWrite((uint8_t*)phoneUsbToZing.pf_,phoneUsbToZing.pf_->size+sizeof(uint32_t)))==CY_U3P_SUCCESS) {
-			phoneUsbToZing.Count_.sendOk++;
-#ifdef DEBUG_THREAD_LOOP
-			CyU3PDebugPrint(4,"[P-Z] %d bytes sent to GpifDataOut\r\n",rt_len);
-#endif
-		}else{
-			phoneUsbToZing.Count_.sendErr++;
-			CyU3PDebugPrint (4, "[P-Z] Zing_DataWrite(%d) error(0x%x)\n",rt_len,Status);
-
+		if(CyFalse==SendToGpifDataOutByPhone(phoneUsbToZing.pf_,rt_len)) {
 #ifndef INTENTIONALLY_CAUSE_RECEIVE_ERROR
 			CyU3PEventSet (&applnEvent, CY_FX_PHONEUSB_RECEIVE_ERR, CYU3P_EVENT_OR);
 			CyU3PDebugPrint(4,"Set PhoneUsb receive Error event\r\n");

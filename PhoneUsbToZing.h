@@ -21,6 +21,11 @@ ReceiveFromPhoneDataIn(
         uint16_t count,
         uint32_t *length);
 
+CyBool_t
+SendToGpifDataOutByPhone(
+		PacketFormat *pf,
+		uint32_t pfSize);
+
 void
 PhoneUsbToZingThread(
 		uint32_t Value);

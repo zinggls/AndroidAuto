@@ -37,6 +37,33 @@ CreateZingToPhoneUsbThread(
 }
 
 CyBool_t
+ReceiveFromGpifDataIn(
+		CyU3PDmaChannel *dmaCh,
+		PacketFormat *pf,
+		uint32_t *length)
+{
+	CyU3PReturnStatus_t Status;
+
+	if((Status=Zing_Transfer_Recv(dmaCh,(uint8_t*)pf,length,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
+		zingToPhoneUsb.Count_.receiveOk++;
+        if(zingToPhoneUsb.pf_->size==0) {
+            CyU3PDebugPrint(4,"[Z-P] Data size(%d) received from GpifDataIn is zero, Skip further processing\r\n",zingToPhoneUsb.pf_->size);
+        }else if(zingToPhoneUsb.pf_->size>512){
+            CyU3PDebugPrint(4,"[Z-P] Data size(%d) received from GpifDataIn is greater than 512\r\n",zingToPhoneUsb.pf_->size);
+        }
+#ifdef DEBUG_THREAD_LOOP
+		CyU3PDebugPrint(4,"[Z-P] %d->%d bytes received from GpifDataIn\r\n",*length,zingToPhoneUsb.pf_->size);
+#endif
+
+	}else{
+		zingToPhoneUsb.Count_.receiveErr++;
+		CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
+		return CyFalse;
+	}
+	return CyTrue;
+}
+
+CyBool_t
 SendToPhoneDataOut(
 		uint8_t ep,
 		CyU3PDmaChannel *dmaCh,
@@ -62,7 +89,6 @@ void
 ZingToPhoneUsbThread(
 		uint32_t Value)
 {
-	CyU3PReturnStatus_t Status;
 	uint32_t rt_len;
 
 	CyU3PDebugPrint(4,"[Z-P] Zing to Phone USB thread starts\n");
@@ -70,24 +96,13 @@ ZingToPhoneUsbThread(
 	memset(&zingToPhoneUsb.Count_,0,sizeof(zingToPhoneUsb.Count_));
 	zingToPhoneUsbTerminate = CyFalse;
 	while(1){
-		if((Status=Zing_Transfer_Recv(&Dma.DataIn_.Channel_,(uint8_t*)zingToPhoneUsb.pf_,&rt_len,CYU3P_WAIT_FOREVER))==CY_U3P_SUCCESS) {
-			zingToPhoneUsb.Count_.receiveOk++;
-            if(zingToPhoneUsb.pf_->size==0) {
-                CyU3PDebugPrint(4,"[Z-P] Data size(%d) received from GpifDataIn is zero, Skip further processing\r\n",zingToPhoneUsb.pf_->size);
-                continue;
-            }else if(zingToPhoneUsb.pf_->size>512){
-                CyU3PDebugPrint(4,"[Z-P] Data size(%d) received from GpifDataIn is greater than 512\r\n",zingToPhoneUsb.pf_->size);
-            }
-#ifdef DEBUG_THREAD_LOOP
-			CyU3PDebugPrint(4,"[Z-P] %d->%d bytes received from GpifDataIn\r\n",rt_len,pf->size);
-#endif
-
-			SendToPhoneDataOut(Phone.outEp,&glChHandlePhoneDataOut,zingToPhoneUsb.pf_->data,zingToPhoneUsb.pf_->size);
-		}else{
-			zingToPhoneUsb.Count_.receiveErr++;
-			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);
+		if(CyFalse==ReceiveFromGpifDataIn(&Dma.DataIn_.Channel_,zingToPhoneUsb.pf_,&rt_len)) {
 			if(zingToPhoneUsbTerminate) break;
+			continue;
 		}
+		if(zingToPhoneUsb.pf_->size==0) continue;
+
+		SendToPhoneDataOut(Phone.outEp,&glChHandlePhoneDataOut,zingToPhoneUsb.pf_->data,zingToPhoneUsb.pf_->size);
 	}
 	CyU3PDebugPrint (4, "[Z-P] ZingToPhoneUsbThread ends\n");
 }

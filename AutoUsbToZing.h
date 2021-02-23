@@ -11,19 +11,6 @@ CyU3PReturnStatus_t
 CreateAutoUsbToZingThread(
 		void);
 
-typedef struct CyU3PDmaChannel CyU3PDmaChannel;
-
-CyBool_t
-ReceiveFromAutoDataIn(
-		CyU3PDmaChannel *dmaCh,
-		uint8_t *data,
-		uint32_t *length);
-
-void
-SendToGpifDataOutByAuto(
-		PacketFormat *pf,
-		uint32_t pfSize);
-
 void
 AutoUsbToZingThread(
 		uint32_t Value);

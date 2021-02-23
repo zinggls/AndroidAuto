@@ -37,6 +37,27 @@ CreateZingToAutoUsbThread(
 }
 
 void
+SendToAutoDataOut(
+		CyU3PDmaChannel *dmaCh,
+		uint8_t *data,
+		uint32_t length)
+{
+	CyU3PReturnStatus_t Status;
+
+	if((Status=Zing_Transfer_Send(dmaCh,data,length))==CY_U3P_SUCCESS) {
+		zingToAutoUsb.Count_.sendOk++;
+#ifdef DEBUG_THREAD_LOOP
+		CyU3PDebugPrint(4,"[A-Z] %d bytes sent to AutoDataOut\r\n",length);
+#endif
+	}else{
+		zingToAutoUsb.Count_.sendErr++;
+		CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite(%d) error(0x%x)\n",length,Status);
+		CyU3PThreadSleep (10);
+		CyU3PDeviceReset (CyFalse);
+	}
+}
+
+void
 ZingToAutoUsbThread(
 		uint32_t Value)
 {
@@ -97,17 +118,7 @@ ZingToAutoUsbThread(
 	    	 * */
 	    	if(!glIsApplnActive) continue;
 #endif
-			if((Status=Zing_Transfer_Send(&glChHandleAutoDataOut,zingToAutoUsb.pf_->data,zingToAutoUsb.pf_->size))==CY_U3P_SUCCESS) {
-				zingToAutoUsb.Count_.sendOk++;
-#ifdef DEBUG_THREAD_LOOP
-				CyU3PDebugPrint(4,"[A-Z] %d bytes sent to AutoDataOut\r\n",pf->size);
-#endif
-			}else{
-				zingToAutoUsb.Count_.sendErr++;
-				CyU3PDebugPrint (4, "[Z-A] Zing_DataWrite(%d) error(0x%x)\n",zingToAutoUsb.pf_->size,Status);
-				CyU3PThreadSleep (10);
-				CyU3PDeviceReset (CyFalse);
-			}
+	    	SendToAutoDataOut(&glChHandleAutoDataOut,zingToAutoUsb.pf_->data,zingToAutoUsb.pf_->size);
 		}else{
 			zingToAutoUsb.Count_.receiveErr++;
 			CyU3PDebugPrint (4, "[Z-A] Zing_Transfer_Recv error(0x%x)\n",Status);

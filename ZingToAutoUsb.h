@@ -11,6 +11,14 @@ CyU3PReturnStatus_t
 CreateZingToAutoUsbThread(
 		void);
 
+typedef struct CyU3PDmaChannel CyU3PDmaChannel;
+
+void
+SendToAutoDataOut(
+		CyU3PDmaChannel *dmaCh,
+		uint8_t *data,
+		uint32_t length);
+
 void
 ZingToAutoUsbThread(
 		uint32_t Value);

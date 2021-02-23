@@ -36,6 +36,28 @@ CreateZingToPhoneUsbThread(
 	return Status;
 }
 
+CyBool_t
+SendToPhoneDataOut(
+		uint8_t ep,
+		CyU3PDmaChannel *dmaCh,
+		uint8_t *buffer,
+		uint16_t count)
+{
+	CyU3PReturnStatus_t Status;
+
+    if ((Status=CyFxSendBuffer (ep,dmaCh,buffer,count)) != CY_U3P_SUCCESS) {
+    	zingToPhoneUsb.Count_.sendErr++;
+		CyU3PDebugPrint(4,"[Z-P] sending %d bytes to PhoneDataOut failed error(0x%x),EP=0x%x\r\n",count,ep);
+	    return CyFalse;
+    }else{
+    	zingToPhoneUsb.Count_.sendOk++;
+#ifdef DEBUG_THREAD_LOOP
+    	CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut,EP=0x%x\r\n",count,ep);
+#endif
+    }
+    return CyTrue;
+}
+
 void
 ZingToPhoneUsbThread(
 		uint32_t Value)
@@ -59,15 +81,8 @@ ZingToPhoneUsbThread(
 #ifdef DEBUG_THREAD_LOOP
 			CyU3PDebugPrint(4,"[Z-P] %d->%d bytes received from GpifDataIn\r\n",rt_len,pf->size);
 #endif
-		    if ((Status=CyFxSendBuffer (Phone.outEp,&glChHandlePhoneDataOut,zingToPhoneUsb.pf_->data,zingToPhoneUsb.pf_->size)) != CY_U3P_SUCCESS) {
-		    	zingToPhoneUsb.Count_.sendErr++;
-				CyU3PDebugPrint(4,"[Z-P] sending %d bytes to PhoneDataOut failed error(0x%x),EP=0x%x\r\n",zingToPhoneUsb.pf_->size,Status,Phone.outEp);
-		    }else{
-		    	zingToPhoneUsb.Count_.sendOk++;
-#ifdef DEBUG_THREAD_LOOP
-		    	CyU3PDebugPrint(4,"[Z-P] %d bytes sent to PhoneDataOut,EP=0x%x\r\n",zingToPhoneUsb.pf_->size,Phone.outEp);
-#endif
-		    }
+
+			SendToPhoneDataOut(Phone.outEp,&glChHandlePhoneDataOut,zingToPhoneUsb.pf_->data,zingToPhoneUsb.pf_->size);
 		}else{
 			zingToPhoneUsb.Count_.receiveErr++;
 			CyU3PDebugPrint (4, "[Z-P] Zing_Transfer_Recv error(0x%x)\n",Status);

@@ -45,11 +45,11 @@ const uint8_t CyFxUSB30DeviceDscr[] __attribute__ ((aligned (32))) =
     0x00,                           /* Device protocol */
     0x09,                           /* Maxpacket size for EP0 : 2^9 */
     0xD1,0x18,                      /* Vendor ID */
-    0x00,0x2D,                      /* Product ID */
+    0x01,0x2D,                      /* Product ID */
     0x00,0x00,                      /* Device release number */
     0x01,                           /* Manufacture string index */
     0x02,                           /* Product string index */
-    0x00,                           /* Serial number string index */
+    0x03,                           /* Serial number string index */
     0x01                            /* Number of configurations */
 };
 
@@ -64,11 +64,11 @@ const uint8_t CyFxUSB20DeviceDscr[] __attribute__ ((aligned (32))) =
     0x00,                           /* Device protocol */
     0x40,                           /* Maxpacket size for EP0 : 64 bytes */
     0xD1,0x18,                      /* Vendor ID */
-    0x00,0x2D,                      /* Product ID */
+    0x01,0x2D,                      /* Product ID */
     0x00,0x00,                      /* Device release number */
     0x01,                           /* Manufacture string index */
     0x02,                           /* Product string index */
-    0x00,                           /* Serial number string index */
+    0x03,                           /* Serial number string index */
     0x01                            /* Number of configurations */
 };
 
@@ -84,17 +84,17 @@ const uint8_t CyFxUSBBOSDscr[] __attribute__ ((aligned (32))) =
     0x07,                           /* Descriptor size */
     CY_U3P_DEVICE_CAPB_DESCR,       /* Device capability type descriptor */
     CY_U3P_USB2_EXTN_CAPB_TYPE,     /* USB 2.0 extension capability type */
-    0x02,0x00,0x00,0x00,            /* Supported device level features: LPM support  */
+    0x00,0x00,0x00,0x00,            /* Supported device level features: LPM support  */
 
     /* SuperSpeed device capability */
     0x0A,                           /* Descriptor size */
     CY_U3P_DEVICE_CAPB_DESCR,       /* Device capability type descriptor */
     CY_U3P_SS_USB_CAPB_TYPE,        /* SuperSpeed device capability type */
     0x00,                           /* Supported device level features  */
-    0x0E,0x00,                      /* Speeds supported by the device : SS, HS and FS */
-    0x03,                           /* Functionality support */
-    0x00,                           /* U1 Device Exit latency */
-    0x00,0x00                       /* U2 Device Exit latency */
+    0x0F,0x00,                      /* Speeds supported by the device : SS, HS and FS */
+    0x01,                           /* Functionality support */
+    0x01,                           /* U1 Device Exit latency */
+    0xF4,0x01                       /* U2 Device Exit latency */
 };
 
 /* Standard device qualifier descriptor */
@@ -133,7 +133,7 @@ const uint8_t CyFxUSBSSConfigDscr[] __attribute__ ((aligned (32))) =
     0xFF,                           /* Interface class */
     0xFF,                           /* Interface sub class */
     0x00,                           /* Interface protocol code */
-    0x00,                           /* Interface descriptor string index */
+    0x05,                           /* Interface descriptor string index */
 
     /* Endpoint descriptor for producer EP */
     0x07,                           /* Descriptor size */
@@ -188,7 +188,7 @@ const uint8_t CyFxUSBHSConfigDscr[] __attribute__ ((aligned (32))) =
     0xFF,                           /* Interface class */
     0xFF,                           /* Interface sub class */
     0x00,                           /* Interface protocol code */
-    0x00,                           /* Interface descriptor string index */
+    0x05,                           /* Interface descriptor string index */
 
     /* Endpoint descriptor for producer EP */
     0x07,                           /* Descriptor size */
@@ -259,23 +259,111 @@ const uint8_t CyFxUSBStringLangIDDscr[] __attribute__ ((aligned (32))) =
 /* Standard manufacturer string descriptor */
 const uint8_t CyFxUSBManufactureDscr[] __attribute__ ((aligned (32))) =
 {
-    0x0A,                           /* Descriptor size */
+    0x18,                           /* Descriptor size */
     CY_U3P_USB_STRING_DESCR,        /* Device descriptor type */
-    'E',0x00,
-    'T',0x00,
-    'R',0x00,
+    'G',0x00,
+    'o',0x00,
+    'o',0x00,
+    'g',0x00,
+    'l',0x00,
+    'e',0x00,
+    ' ',0x00,
     'I',0x00,
+    'n',0x00,
+    'c',0x00,
+    '.',0x00
 };
 
 /* Standard product string descriptor */
 const uint8_t CyFxUSBProductDscr[] __attribute__ ((aligned (32))) =
 {
-    0x0A,                           /* Descriptor size */
+    0x3C,                           /* Descriptor size */
     CY_U3P_USB_STRING_DESCR,        /* Device descriptor type */
-    'Z',0x00,
-    'i',0x00,
+    'A',0x00,
     'n',0x00,
-    'g',0x00
+    'd',0x00,
+    'r',0x00,
+    'o',0x00,
+    'i',0x00,
+    'd',0x00,
+    ' ',0x00,
+    'O',0x00,
+    'p',0x00,
+    'e',0x00,
+    'n',0x00,
+    ' ',0x00,
+    'A',0x00,
+    'c',0x00,
+    'c',0x00,
+    'e',0x00,
+    's',0x00,
+    's',0x00,
+    'o',0x00,
+    'r',0x00,
+    'y',0x00,
+    ' ',0x00,
+    'd',0x00,
+    'e',0x00,
+    'v',0x00,
+    'i',0x00,
+    'c',0x00,
+    'e',0x00
+};
+
+/* string descriptor for describing the interface */
+const uint8_t CyFxUSBInterfaceDscr[] __attribute__ ((aligned (32))) =
+{
+    0x38,                           /* Descriptor size */
+    CY_U3P_USB_STRING_DESCR,        /* Device descriptor type */
+    'A',0x00,
+    'n',0x00,
+    'd',0x00,
+    'r',0x00,
+    'o',0x00,
+    'i',0x00,
+    'd',0x00,
+    ' ',0x00,
+    'A',0x00,
+    'c',0x00,
+    'c',0x00,
+    'e',0x00,
+    's',0x00,
+    's',0x00,
+    'o',0x00,
+    'r',0x00,
+    'y',0x00,
+    ' ',0x00,
+    'I',0x00,
+    'n',0x00,
+    't',0x00,
+    'e',0x00,
+    'r',0x00,
+    'f',0x00,
+    'a',0x00,
+    'c',0x00,
+    'e',0x00
+};
+
+const uint8_t CyFxUSBSerialNumberDscr[] __attribute__ ((aligned (32))) =
+{
+    0x22,                           /* Descriptor size */
+    CY_U3P_USB_STRING_DESCR,        /* Device descriptor type */
+    '2',0x00,
+    '1',0x00,
+    '2',0x00,
+    'd',0x00,
+    'd',0x00,
+    '4',0x00,
+    '7',0x00,
+    'a',0x00,
+    '0',0x00,
+    '6',0x00,
+    '0',0x00,
+    '1',0x00,
+    '7',0x00,
+    'e',0x00,
+    'c',0x00,
+    'e',0x00
 };
 
 /* Place this buffer as the last buffer so that no other variable / code shares

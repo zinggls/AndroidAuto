@@ -413,7 +413,8 @@ CyFxAutoApplnUSBEventCB (
                 CyFxAutoApplnStop ();
             }
             break;
-
+        case CY_U3P_USB_EVENT_EP0_STAT_CPLT:
+            break;
         default:
         	CyU3PDebugPrint (4, "event not handled(%d)\n",evtype);
             break;

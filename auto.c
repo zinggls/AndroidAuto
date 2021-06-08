@@ -275,24 +275,34 @@ CyFxAutoApplnUSBSetupCB (
     wValue   = ((setupdat0 & CY_U3P_USB_VALUE_MASK)   >> CY_U3P_USB_VALUE_POS);
     wIndex   = ((setupdat1 & CY_U3P_USB_INDEX_MASK)   >> CY_U3P_USB_INDEX_POS);
 
+#ifdef USBSETUPCB_DEBUG
     CyU3PDebugPrint (4, "setupdat0:%d setupdat1:%d ReqType:%d type:%d target:%d request:%d wValue:%d wIndex:%d\r\n",setupdat0,setupdat1,bReqType,bType,bTarget,bRequest,wValue,wIndex);
+#endif
 
     if (bType == CY_U3P_USB_STANDARD_RQT)
     {
+#ifdef USBSETUPCB_DEBUG
         CyU3PDebugPrint (4, "bType == CY_U3P_USB_STANDARD_RQT\r\n");
+#endif
         /* Handle SET_FEATURE(FUNCTION_SUSPEND) and CLEAR_FEATURE(FUNCTION_SUSPEND)
          * requests here. It should be allowed to pass if the device is in configured
          * state and failed otherwise. */
         if ((bTarget == CY_U3P_USB_TARGET_INTF) && ((bRequest == CY_U3P_USB_SC_SET_FEATURE)
                     || (bRequest == CY_U3P_USB_SC_CLEAR_FEATURE)) && (wValue == 0))
         {
+#ifdef USBSETUPCB_DEBUG
             CyU3PDebugPrint (4, "(bTarget == CY_U3P_USB_TARGET_INTF)&&((bRequest == CY_U3P_USB_SC_SET_FEATURE)||(bRequest == CY_U3P_USB_SC_CLEAR_FEATURE))&&(wValue == 0)\r\n");
+#endif
 
             if (glIsApplnActive){
+#ifdef USBSETUPCB_DEBUG
                 CyU3PDebugPrint (4, "glIsApplnActive,CyU3PUsbAckSetup...\r\n");
+#endif
                 CyU3PUsbAckSetup ();
             }else{
+#ifdef USBSETUPCB_DEBUG
                 CyU3PDebugPrint (4, "glIsApplnActive false,CyU3PUsbStall...\r\n");
+#endif
                 CyU3PUsbStall (0, CyTrue, CyFalse);
             }
 
@@ -312,13 +322,19 @@ CyFxAutoApplnUSBSetupCB (
         if ((bTarget == CY_U3P_USB_TARGET_ENDPT) && (bRequest == CY_U3P_USB_SC_CLEAR_FEATURE)
                 && (wValue == CY_U3P_USBX_FS_EP_HALT))
         {
+#ifdef USBSETUPCB_DEBUG
             CyU3PDebugPrint (4, "(bTarget == CY_U3P_USB_TARGET_ENDPT) && (bRequest == CY_U3P_USB_SC_CLEAR_FEATURE)&& (wValue == CY_U3P_USBX_FS_EP_HALT)\r\n");
+#endif
             if ((wIndex == CY_FX_EP_PRODUCER) || (wIndex == CY_FX_EP_CONSUMER))
             {
+#ifdef USBSETUPCB_DEBUG
                 CyU3PDebugPrint (4, "(wIndex == CY_FX_EP_PRODUCER) || (wIndex == CY_FX_EP_CONSUMER)\r\n");
+#endif
                 if (glIsApplnActive)
                 {
+#ifdef USBSETUPCB_DEBUG
                     CyU3PDebugPrint (4, "glIsApplnActive true\r\n");
+#endif
                     CyU3PUsbSetEpNak (CY_FX_EP_PRODUCER, CyTrue);
                     CyU3PUsbSetEpNak (CY_FX_EP_CONSUMER, CyTrue);
                     CyU3PBusyWait (125);
@@ -351,13 +367,17 @@ CyFxAutoApplnUSBSetupCB (
                 uint8_t version[2]={2,0};
                 CyU3PUsbSendEP0Data (2, (uint8_t *)version);
                 isHandled = CyTrue;
+#ifdef USBSETUPCB_DEBUG
                 CyU3PDebugPrint (4, "0x33 version\r\n");
+#endif
                 break;
             }
         }
     }
 
+#ifdef USBSETUPCB_DEBUG
     CyU3PDebugPrint (4, "CyFxAutoApplnUSBSetupCB return=%d\r\n",isHandled);
+#endif
     return isHandled;
 }
 

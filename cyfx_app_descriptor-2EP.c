@@ -49,7 +49,7 @@ const uint8_t CyFxUSB30DeviceDscr[] __attribute__ ((aligned (32))) =
     0x00,0x00,                      /* Device release number */
     0x01,                           /* Manufacture string index */
     0x02,                           /* Product string index */
-    0x00,                           /* Serial number string index */
+    0x03,                           /* Serial number string index */
     0x01                            /* Number of configurations */
 };
 
@@ -68,7 +68,7 @@ const uint8_t CyFxUSB20DeviceDscr[] __attribute__ ((aligned (32))) =
     0x00,0x00,                      /* Device release number */
     0x01,                           /* Manufacture string index */
     0x02,                           /* Product string index */
-    0x00,                           /* Serial number string index */
+    0x03,                           /* Serial number string index */
     0x01                            /* Number of configurations */
 };
 
@@ -276,6 +276,28 @@ const uint8_t CyFxUSBProductDscr[] __attribute__ ((aligned (32))) =
     'i',0x00,
     'n',0x00,
     'g',0x00
+};
+
+const uint8_t CyFxUSBSerialNumberDscr[] __attribute__ ((aligned (32))) =
+{
+    0x22,                           /* Descriptor size */
+    CY_U3P_USB_STRING_DESCR,        /* Device descriptor type */
+    '0',0x00,
+    '1',0x00,
+    '2',0x00,
+    '3',0x00,
+    '4',0x00,
+    '5',0x00,
+    '6',0x00,
+    '7',0x00,
+    '8',0x00,
+    '9',0x00,
+    '0',0x00,
+    '1',0x00,
+    '2',0x00,
+    '3',0x00,
+    '4',0x00,
+    '5',0x00
 };
 
 /* Place this buffer as the last buffer so that no other variable / code shares
